@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Log.d(TAG, "onCreate: Pinche Segundo" );
+        Log.d(TAG, "onCreate: Rodrigo" );
         //edited from web
     }
 }
