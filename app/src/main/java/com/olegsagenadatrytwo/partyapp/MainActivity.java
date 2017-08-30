@@ -19,9 +19,6 @@ public class MainActivity extends AppCompatActivity {
         //edited from web
 
         // TODO: 8/30/17 testing
-        //alksjdfl;kasjdf
-        //Rodrigo Chavez
-        //More
 
     }
 }
