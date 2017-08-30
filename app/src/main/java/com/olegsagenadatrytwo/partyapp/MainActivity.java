@@ -14,5 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: Pinche Segundo" );
         //edited from web
+
+        // TODO: 8/30/17 testing
     }
 }
