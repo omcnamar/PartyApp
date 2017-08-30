@@ -17,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: " + "test1");
         Log.d(TAG, "onCreate: Test2" );
         //edited from web
+
+        // TODO: 8/30/17 testing
         //alksjdfl;kasjdf
+
     }
 }
