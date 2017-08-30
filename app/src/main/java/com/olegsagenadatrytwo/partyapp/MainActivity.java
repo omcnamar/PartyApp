@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: Pinche Segundo" );
         Log.d(TAG, "onCreate: Rodrigo" );
+        Log.d(TAG, "onCreate: Test2" );
         //edited from web
     }
 }
