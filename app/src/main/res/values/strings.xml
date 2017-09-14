@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">PartyApp</string>
+    <string name="app_name">Party App</string>
+    <string name="facebook_app_id">1922802901374037</string>
+    <string name="fb_login_protocol_scheme">fb1922802901374037</string>
+    <string name="register">Register here!</string>
+    <string name="twitterCONSUMER_KEY">a1W1LcqJhB72uD7RDem7fA2rS</string>
+    <string name="twitterCONSUMER_SECRET">9xEk1YpddnwkLkAjRsjXVShyromR3nh2xzILVUCnCDPxgMblIn</string>
+    <string name="action_profile">profile</string>
 </resources>

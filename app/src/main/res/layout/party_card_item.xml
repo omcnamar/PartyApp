@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="75dp"
+        android:background="@drawable/round_frame_layout"
+        android:elevation="5dp">
+
+
+        <ImageView
+            android:id="@+id/ivPartyHeader"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="200dp"
+            android:background="@drawable/event_layout"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="20dp">
+
+            <LinearLayout
+                android:id="@+id/llInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="15dp"
+                android:paddingTop="10dp">
+
+                <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
+                    android:id="@+id/auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="House Party"
+                    android:textColor="@android:color/white"
+                    android:maxLines="1"
+                    android:textSize="40sp"
+                    />
+
+                <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
+                    android:id="@+id/tvPartyDistance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="X miles away"
+                    android:textColor="@android:color/white" />
+
+                <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
+                    android:id="@+id/tvPartyDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:text="Lorem impsum dolor sit, adispiscing elit, sed dc"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+
+            <android.support.v7.widget.ButtonBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="50dp"
+                android:layout_marginTop="100dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/btnPriceIndicator"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:elevation="3dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/round_button_cheap"
+                        android:text="$" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/btnShareParty"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/round_button" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/btnPublicOrPrivate"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/round_button" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.ButtonBarLayout>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|top"
+        android:background="@drawable/round_frame_layout_pic"
+        android:elevation="6dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@mipmap/ic_launcher"
+            app:civ_border_color="#999999"
+            app:civ_border_width="3dp" />
+
+    </FrameLayout>
+
+</android.support.design.widget.CoordinatorLayout>
