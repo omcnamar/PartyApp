@@ -9,6 +9,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.olegsagenadatrytwo.partyapp.R;
+import com.olegsagenadatrytwo.partyapp.inject.home_activity.DaggerHomeActivityComponent;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,13 +21,17 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    @Inject HomeActivityPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-
         setSupportActionBar(toolbar);
+        DaggerHomeActivityComponent.create().inject(this);
+
+        presenter.fetchEventbriteEvents();
     }
 
     @Override
@@ -43,5 +50,11 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.removeView();
+        super.onDestroy();
     }
 }
