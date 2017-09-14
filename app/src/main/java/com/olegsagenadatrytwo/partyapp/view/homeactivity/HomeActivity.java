@@ -1,15 +1,16 @@
 package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.home_activity.DaggerHomeActivityComponent;
+import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 
 import javax.inject.Inject;
 
@@ -45,7 +46,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_profile:
-                Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
+                Intent loginIntent = new Intent(this, LoginActivity.class);
+                startActivity(loginIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
