@@ -44,7 +44,6 @@ public class LoginActivityPresenter implements LoginActivityContract.Presenter, 
         }
     }
 
-    @Override
     public void setContext(Context context) {
         this.context = context;
     }

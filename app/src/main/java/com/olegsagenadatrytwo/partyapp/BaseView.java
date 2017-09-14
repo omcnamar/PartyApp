@@ -5,4 +5,5 @@ package com.olegsagenadatrytwo.partyapp;
  */
 
 public interface BaseView{
+
 }
