@@ -1,4 +1,4 @@
-package com.olegsagenadatrytwo.partyapp.inject;
+package com.olegsagenadatrytwo.partyapp.inject.home_activity;
 
 import com.olegsagenadatrytwo.partyapp.view.homeactivity.HomeActivityPresenter;
 
@@ -15,4 +15,5 @@ class HomeActivityModule {
     HomeActivityPresenter ProvideshomeActivityPresenter() {
         return new HomeActivityPresenter();
     }
+
 }
