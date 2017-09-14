@@ -7,7 +7,23 @@
     android:orientation="vertical">
 
 
-    <RelativeLayout
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|top"
+        android:background="@drawable/round_frame_layout_pic"
+        android:elevation="6dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/party"
+            app:civ_border_color="#999999"
+            app:civ_border_width="3dp" />
+
+    </FrameLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="50dp"
@@ -15,19 +31,21 @@
         android:layout_marginRight="50dp"
         android:layout_marginTop="75dp"
         android:background="@drawable/round_frame_layout"
-        android:elevation="5dp">
+        android:orientation="vertical">
 
 
         <ImageView
             android:id="@+id/ivPartyHeader"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@drawable/party"
+            android:layout_weight="5"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="200dp"
+            android:layout_weight="2"
             android:background="@drawable/event_layout"
             android:orientation="vertical"
             android:paddingLeft="20dp"
@@ -46,9 +64,9 @@
                     android:id="@+id/auto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
                     android:text="House Party"
                     android:textColor="@android:color/white"
-                    android:maxLines="1"
                     android:textSize="40sp"
                     />
 
@@ -58,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:text="X miles away"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"/>
 
                 <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
                     android:id="@+id/tvPartyDescription"
@@ -67,88 +85,49 @@
                     android:maxLines="2"
                     android:text="Lorem impsum dolor sit, adispiscing elit, sed dc"
                     android:textColor="@android:color/white"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"/>
 
             </LinearLayout>
 
 
-            <android.support.v7.widget.ButtonBarLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="50dp"
-                android:layout_marginTop="100dp"
                 android:orientation="horizontal">
 
-                <LinearLayout
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btnPriceIndicator"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:gravity="center">
+                    android:background="@drawable/round_button_cheap"
+                    android:elevation="3dp"
+                    android:text="$"/>
 
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnPriceIndicator"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:elevation="3dp"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_button_cheap"
-                        android:text="$" />
-
-                </LinearLayout>
-
-                <LinearLayout
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btnShareParty"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:gravity="center">
+                    android:background="@drawable/round_button"/>
 
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnShareParty"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_button" />
-
-                </LinearLayout>
-
-                <LinearLayout
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btnPublicOrPrivate"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:gravity="center">
+                    android:background="@drawable/round_button"/>
 
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnPublicOrPrivate"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_button" />
-
-                </LinearLayout>
-
-            </android.support.v7.widget.ButtonBarLayout>
+            </LinearLayout>
 
         </RelativeLayout>
 
 
-    </RelativeLayout>
-
-
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|top"
-        android:background="@drawable/round_frame_layout_pic"
-        android:elevation="6dp">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@mipmap/ic_launcher"
-            app:civ_border_color="#999999"
-            app:civ_border_width="3dp" />
-
-    </FrameLayout>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

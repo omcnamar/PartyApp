@@ -6,9 +6,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.olegsagenadatrytwo.partyapp.R;
+import com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,12 +20,12 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-
         setSupportActionBar(toolbar);
     }
 
