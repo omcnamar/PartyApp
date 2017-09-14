@@ -15,5 +15,6 @@ public interface HomeActivityContract {
 
     interface presenter extends BasePresenter<view> {
 
+        void fetchEventbriteEvents();
     }
 }

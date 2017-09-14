@@ -1,4 +1,4 @@
-package com.olegsagenadatrytwo.partyapp.inject;
+package com.olegsagenadatrytwo.partyapp.inject.home_activity;
 
 import com.olegsagenadatrytwo.partyapp.view.homeactivity.HomeActivity;
 
@@ -11,4 +11,5 @@ import dagger.Component;
 public interface HomeActivityComponent {
 
     void inject(HomeActivity homeActivity);
+
 }

@@ -1,5 +1,6 @@
 package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +12,10 @@ import android.widget.Toast;
 
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView;
+import com.olegsagenadatrytwo.partyapp.inject.home_activity.DaggerHomeActivityComponent;
+import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,12 +26,17 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     Toolbar toolbar;
 
 
+    @Inject HomeActivityPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        DaggerHomeActivityComponent.create().inject(this);
+
+        presenter.fetchEventbriteEvents();
     }
 
     @Override
@@ -40,10 +50,17 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_profile:
-                Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
+                Intent loginIntent = new Intent(this, LoginActivity.class);
+                startActivity(loginIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.removeView();
+        super.onDestroy();
     }
 }

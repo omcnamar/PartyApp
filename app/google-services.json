@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "116367511869-qpmrclr6ngm9fb6kj2972mdai60tfkb7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.olegsagenadatrytwo.partyapp",
+            "certificate_hash": "7e9177d4e06c20366efa1291a50e2e7bd4e28e60"
+          }
+        },
+        {
           "client_id": "116367511869-t1p7sgbvqqqo15drp3khm7mpfqspo3k7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -30,6 +38,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyAzFR8FamzVkmwxsPSmafhjOrBo5DH4YCY"
+        },
+        {
+          "current_key": "AIzaSyC7_xijX-oJAkt1NZ1b2vuRlGryCQSfXv4"
         }
       ],
       "services": {
