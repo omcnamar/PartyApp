@@ -51,4 +51,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        presenter.removeView();
+        super.onDestroy();
+    }
 }

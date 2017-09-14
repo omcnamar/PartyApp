@@ -15,7 +15,6 @@ import retrofit2.http.Query;
 
 public class RetrofitHelper {
 
-    // Retrofit Creator
     public static Retrofit create(String baseUrl) {
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -26,6 +25,10 @@ public class RetrofitHelper {
         return retrofit;
     }
 
+    /**
+     *
+     * @return list of events
+     */
     public static Call<EventbriteEvents> callEventbriteEvents() {
 
         Retrofit retrofit = create(Constant.EVENTBRITE_BASE_URL);
@@ -35,6 +38,12 @@ public class RetrofitHelper {
     }
     public interface ApiService {
 
+        /**
+         *
+         * @param category
+         * @param token
+         * @return list of events
+         */
         @GET(Constant.EVENTBRITE_EVENTS_PATH)
         Call<EventbriteEvents> getEventList(@Query("categories") String category, @Query("token") String token);
     }

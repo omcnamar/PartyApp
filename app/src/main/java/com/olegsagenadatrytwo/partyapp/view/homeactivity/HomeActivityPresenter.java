@@ -27,6 +27,9 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
         this.view = null;
     }
 
+    /**
+     * This method will make a call to the Eventbrite Api and retrieve a list of events
+     */
     @Override
     public void fetchEventbriteEvents() {
 
