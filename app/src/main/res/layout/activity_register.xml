@@ -1,10 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/login"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:gravity="center"
     tools:context="com.olegsagenadatrytwo.partyapp.view.registeractivity.RegisterActivity">
-
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp" >
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/signup_input_layout_name"
+            android:textColorHint="@color/colorWhite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp">
+            <EditText
+                android:id="@+id/signup_input_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:textColor="@color/colorWhite"
+                android:hint="Name"/>
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/signup_input_layout_email"
+            android:textColorHint="@color/colorWhite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp">
+            <EditText
+                android:id="@+id/signup_input_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorWhite"
+                android:ems="10"
+                android:inputType="textEmailAddress"
+                android:hint="Email" />
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/signup_input_layout_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/colorWhite"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp">
+            <EditText
+                android:id="@+id/signup_input_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPassword"
+                android:textColorHint="@color/colorWhite"
+                android:hint="Password" />
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/signup_input_layout_age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textColorHint="@color/colorWhite"
+            android:layout_marginTop="10dp">
+            <EditText
+                android:id="@+id/signup_input_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:textColorHint="@color/colorWhite"
+                android:hint="Dob"/>
+        </android.support.design.widget.TextInputLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp">
+            <TextView
+                android:id="@+id/gender_textview"
+                android:paddingRight="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender"
+                android:textSize="20dp"
+                android:textColor="@color/colorWhite"
+                />
+            <RadioGroup
+                android:id="@+id/gender_radio_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/gender_textview"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/male_radio_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/male"
+                    android:textColor="@color/colorWhite"
+                    android:checked="true"
+                    />
+                <RadioButton
+                    android:id="@+id/female_radio_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/colorWhite"
+                    android:text = "@string/female"
+                    />
+            </RadioGroup>
+        </RelativeLayout>
+        <Button android:id="@+id/btn_signup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/colorWhite"
+            android:text="Sign Up"
+            android:background="@drawable/rounded_login_button"
+            android:layout_marginTop="40dp"
+            android:textColor="@android:color/white"/>
+        <Button android:id="@+id/btn_link_login"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Log in"
+            android:background="@drawable/rounded_login_button"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/colorWhite"/>
+    </LinearLayout>
+</LinearLayout>
