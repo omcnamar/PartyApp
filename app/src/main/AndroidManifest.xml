@@ -11,14 +11,16 @@
         android:roundIcon="@drawable/party"
         android:supportsRtl="true"
         android:theme="@style/LoginThem">
-        <activity android:name=".view.homeactivity.HomeActivity"></activity>
-        <activity
-            android:name=".view.loginactivity.LoginActivity">
+        <activity android:name=".view.homeactivity.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.loginactivity.LoginActivity">
+
         </activity>
 
         <meta-data
