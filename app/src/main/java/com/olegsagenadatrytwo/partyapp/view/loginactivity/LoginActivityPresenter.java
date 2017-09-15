@@ -80,9 +80,6 @@ public class LoginActivityPresenter implements LoginActivityContract.Presenter, 
                 }
             }
         };
-
-//        //view.googleApiClientReady(mGoogleApiClient);
-//        //this.mAuth = firebaseAuth;
     }
 
     @Override
