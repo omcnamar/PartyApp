@@ -6,4 +6,6 @@
     <string name="twitterCONSUMER_KEY">a1W1LcqJhB72uD7RDem7fA2rS</string>
     <string name="twitterCONSUMER_SECRET">9xEk1YpddnwkLkAjRsjXVShyromR3nh2xzILVUCnCDPxgMblIn</string>
     <string name="action_profile">profile</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
 </resources>

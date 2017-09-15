@@ -11,11 +11,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.olegsagenadatrytwo.partyapp.R;
-import com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView;
 import com.olegsagenadatrytwo.partyapp.inject.home_activity.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.Event;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
