@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
                 // ...
             }
         };
-        loginWithGoogle.setSize(SignInButton.SIZE_STANDARD);
+        loginWithGoogle.setSize(SignInButton.SIZE_ICON_ONLY);
         loginWithGoogle.setColorScheme(SignInButton.COLOR_LIGHT);
         mPresenter.loginWithGoogleSetUp(this, mAuth);
         loginWithGoogle.setOnClickListener(new View.OnClickListener() {
