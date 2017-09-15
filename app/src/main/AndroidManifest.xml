@@ -11,9 +11,7 @@
         android:roundIcon="@drawable/party"
         android:supportsRtl="true"
         android:theme="@style/LoginThem">
-        <activity android:name=".view.homeactivity.HomeActivity"></activity>
-        <activity
-            android:name=".view.loginactivity.LoginActivity">
+        <activity android:name=".view.homeactivity.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +22,6 @@
             android:name=".view.loginactivity.LoginActivity">
 
         </activity>
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
