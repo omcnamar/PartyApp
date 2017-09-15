@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/LoginThem">
         <activity
-            android:name=".view.homeactivity.HomeActivity">
+            android:name=".view.homeactivity.HomeActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,7 +22,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.loginactivity.LoginActivity">
+            android:name=".view.loginactivity.LoginActivity"
+            android:screenOrientation="portrait">
 
         </activity>
         <meta-data
@@ -44,7 +46,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.registeractivity.RegisterActivity"></activity>
+        <activity android:name=".view.registeractivity.RegisterActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
