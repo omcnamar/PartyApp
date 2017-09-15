@@ -7,8 +7,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.olegsagenadatrytwo.partyapp.R;
+import com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView;
 import com.olegsagenadatrytwo.partyapp.inject.home_activity.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 
@@ -21,6 +24,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
 
     @Inject HomeActivityPresenter presenter;
 
