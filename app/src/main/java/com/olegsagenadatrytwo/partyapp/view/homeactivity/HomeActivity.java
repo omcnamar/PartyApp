@@ -7,13 +7,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.olegsagenadatrytwo.partyapp.R;
-import com.olegsagenadatrytwo.partyapp.inject.home_activity.DaggerHomeActivityComponent;
+import com.olegsagenadatrytwo.partyapp.inject.view.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.Event;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
