@@ -61,7 +61,7 @@
                 android:paddingTop="10dp">
 
                 <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
-                    android:id="@+id/auto"
+                    android:id="@+id/tvPartyType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
