@@ -8,12 +8,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.widget.LoginButton;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -39,6 +45,8 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
+import java.util.Arrays;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -51,7 +59,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
     @BindView(R.id.etPassword)
     EditText mEtPassword;
     @BindView(R.id.fb_login_button)
-    LoginButton mFbLoginButton;
+    ImageButton mFbLoginButton;
     @BindView(R.id.login_with_google)
     SignInButton loginWithGoogle;
     @BindView(R.id.btnTwitter)
@@ -60,13 +68,12 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
     private CallbackManager callbackManager;
 
     private LoginActivityPresenter mPresenter;
-    private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
-    private String name;
-    private String email;
+    AccessTokenTracker mAccessTokenTracker;
+    LoginManager mLoginManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,20 +96,16 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
         mPresenter.attachView(this);
         mPresenter.setContext(this);
         mPresenter.initializeFirebase();
-        mPresenter.init(this, mAuth, authStateListener);
+        mPresenter.init(this, mAuth, mAuthListener);
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-
-                    // User is signed in
                     Log.d(TAG, "onAuthStateChanged: " + user.getUid());
                 } else {
-                    // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
-                // ...
             }
         };
         loginWithGoogle.setSize(SignInButton.SIZE_ICON_ONLY);
@@ -119,13 +122,18 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
                 }
             }
         });
-
         //facebook
-        mFbLoginButton.setReadPermissions("email");
-        callbackManager = CallbackManager.Factory.create();
-        mPresenter.logInWithFacebookSetUp(mFbLoginButton, callbackManager, this);
+        setupFacebookStuff();
+        mFbLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handleFacebookLogin();
+            }
+        });
         //Twitter
-        btnTwitter.setCallback(new Callback<TwitterSession>() {
+        //btnTwitter.setBackgroundResource(R.drawable.tw__ic_logo_default);
+        btnTwitter.setText("");
+            btnTwitter.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
                 Log.d(TAG, "twitterLogin:success" + result);
@@ -139,6 +147,47 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
             }
         });
     }
+    private void setupFacebookStuff() {
+
+        // This should normally be on your application class
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        mAccessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,AccessToken currentAccessToken) {
+            }
+        };
+        mLoginManager = LoginManager.getInstance();
+        callbackManager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void handleFacebookLogin() {
+        if (AccessToken.getCurrentAccessToken() != null){
+            mLoginManager.logOut();
+        }else{
+            mAccessTokenTracker.startTracking();
+            mLoginManager.logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile"));
+        }
+
+    }
+
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
