@@ -64,7 +64,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
     SignInButton loginWithGoogle;
     @BindView(R.id.btnTwitter)
     TwitterLoginButton btnTwitter;
-
     private CallbackManager callbackManager;
 
     private LoginActivityPresenter mPresenter;
@@ -118,7 +117,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
                     case R.id.login_with_google:
                         signIn();
                         break;
-                    // ...
                 }
             }
         });
@@ -131,7 +129,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
             }
         });
         //Twitter
-        //btnTwitter.setBackgroundResource(R.drawable.tw__ic_logo_default);
         btnTwitter.setText("");
             btnTwitter.setCallback(new Callback<TwitterSession>() {
             @Override
@@ -148,7 +145,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
         });
     }
     private void setupFacebookStuff() {
-
         // This should normally be on your application class
         FacebookSdk.sdkInitialize(getApplicationContext());
         mAccessTokenTracker = new AccessTokenTracker() {
