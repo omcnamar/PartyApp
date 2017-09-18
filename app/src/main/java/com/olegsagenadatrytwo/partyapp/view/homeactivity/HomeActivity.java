@@ -10,11 +10,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.home_activity.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.Event;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
+import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 
 import javax.inject.Inject;
@@ -61,6 +63,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
             case R.id.action_profile:
                 Intent loginIntent = new Intent(this, LoginActivity.class);
                 startActivity(loginIntent);
+                return true;
+            case R.id.action_add_party:
+                Intent addPartyIntent = new Intent(this, AddPartyActivity.class);
+                startActivity(addPartyIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -4,6 +4,12 @@
 
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
+        android:id="@+id/action_add_party"
+        android:icon="@drawable/ic_party_add"
+        android:title="@string/add_party"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/action_profile"
         android:icon="@drawable/ic_person_black_48dp"
         android:title="@string/action_profile"
