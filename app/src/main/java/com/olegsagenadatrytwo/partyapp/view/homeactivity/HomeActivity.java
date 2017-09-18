@@ -6,10 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.view.DaggerHomeActivityComponent;
@@ -21,12 +19,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class HomeActivity extends AppCompatActivity implements HomeActivityContract.view {
 
     private static final String TAG = "HomeActivity";
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
 
     @BindView(R.id.party_view_pager)
     ViewPager viewPager;
@@ -40,33 +37,11 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
         DaggerHomeActivityComponent.create().inject(this);
-
         presenter.attachView(this);
         presenter.setContext(this);
         presenter.fetchEventbriteEvents();
 
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_actions, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_profile:
-                Intent loginIntent = new Intent(this, LoginActivity.class);
-                startActivity(loginIntent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override
@@ -97,5 +72,27 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
             }
         });
 
+    }
+
+    @OnClick({R.id.action_map, R.id.action_location, R.id.action_profile})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.action_map:
+                // TODO: 9/17/17 implement the Map View
+                Toast.makeText(this, "Map", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.action_location:
+                Toast.makeText(this, "Location", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.action_profile:
+                Intent loginIntent = new Intent(this, LoginActivity.class);
+                startActivity(loginIntent);
+                // TODO: 9/17/17 need to implement back button for profile class
+                break;
+
+        }
+    }
+
+    public void goToLocation(View view) {
     }
 }

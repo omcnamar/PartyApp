@@ -6,4 +6,6 @@
     <color name="colorBasic">#B3B0A9</color>
     <color name="colorLogin">#2b4174</color>
     <color name="colorWhite">#ffffff</color>
+    <color name="colorGreen">#3af107</color>
+    <color name="colorCustomToolbar">#00ffffff</color>
 </resources>
