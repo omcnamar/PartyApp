@@ -11,7 +11,7 @@
     <LinearLayout
         android:id="@+id/lvView"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:onClick="goToLocation"
         android:orientation="horizontal"
         android:weightSum="3">
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:src="@drawable/ic_person_black_24dp"
+            android:src="@drawable/ic_person_black_48dp"
             android:title="@string/action_profile" />
 
 
