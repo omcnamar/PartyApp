@@ -1,13 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.Toolbar android:id="@+id/toolbar"
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:background="@color/colorPrimary"
-    android:elevation="4dp"
-    app:titleTextColor="@color/colorWhite"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+    <LinearLayout
+        android:id="@+id/lvView"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:onClick="goToLocation"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <ImageButton
+            android:id="@+id/action_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_weight="1.3"
+            android:background="@color/colorPrimary"
+            android:orderInCategory="200"
+            android:src="@drawable/ic_map_black_48dp" />
+
+
+        <LinearLayout
+            android:id="@+id/linearSth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight=".6"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/action_textView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:gravity="right"
+                android:hint="User request"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:title="@string/action_textView" />
+
+            <ImageButton
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:background="@null"
+                android:gravity="right"
+                android:src="@drawable/ic_arrow_drop_down_black_48dp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/action_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/ic_person_black_24dp"
+            android:title="@string/action_profile" />
+
+
+    </LinearLayout>
 
 </android.support.v7.widget.Toolbar>
