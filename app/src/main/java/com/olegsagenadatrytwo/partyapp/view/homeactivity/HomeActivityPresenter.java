@@ -1,8 +1,14 @@
 package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
 import android.content.Context;
+
+import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
 import com.olegsagenadatrytwo.partyapp.retrofit.RetrofitHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,8 +49,22 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                     //get the singleton class that will hold the event list
                     PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
                     //set the events list to the events retrieved for further use inside the activity
-                    partyLabSingleTon.setEvents(events.getEvents());
-                    view.eventsLoadedUpdateUI(events);
+
+                    //copy events from API into parties
+                    List<Party> parties = new ArrayList<>();
+                    for (int i = 0; i < events.getEvents().size(); i++) {
+                        Party p = new Party();
+                        p.setId(UUID.randomUUID());
+                        p.setPartyName(events.getEvents().get(i).getName().getText());
+                        p.setDescription(events.getEvents().get(i).getDescription().getText());
+                        p.setStartTime(events.getEvents().get(i).getStart().getUtc());
+                        p.setEndTime(events.getEvents().get(i).getEnd().getUtc());
+                        p.setCapacity(events.getEvents().get(i).getCapacity());
+                        parties.add(p);
+                    }
+
+                    partyLabSingleTon.setEvents(parties);
+                    view.eventsLoadedUpdateUI(parties);
                 }
             }
 

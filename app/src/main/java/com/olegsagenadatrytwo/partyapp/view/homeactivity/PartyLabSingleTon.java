@@ -1,7 +1,8 @@
 package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
 import android.content.Context;
-import com.olegsagenadatrytwo.partyapp.model.eventbrite.Event;
+
+import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class PartyLabSingleTon {
 
     private Context context;
     private static PartyLabSingleTon partyLab;
-    private static List<Event> events = new ArrayList<>();
+    private static List<Party> events = new ArrayList<>();
 
     //private constructor
     private PartyLabSingleTon(Context context){
@@ -30,12 +31,12 @@ public class PartyLabSingleTon {
     }
 
     //this method will return the list of events
-    List<Event> getEvents() {
+    List<Party> getEvents() {
         return events;
     }
 
     //this method will set the list of events
-    void setEvents(List<Event> events) {
+    void setEvents(List<Party> events) {
         this.events = events;
     }
 }

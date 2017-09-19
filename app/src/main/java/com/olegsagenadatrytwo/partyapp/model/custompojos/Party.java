@@ -1,7 +1,9 @@
 package com.olegsagenadatrytwo.partyapp.model.custompojos;
 
+import java.util.UUID;
+
 public class Party {
-    private String id;
+    private UUID id;
     private String ownerId;
     private String partyName;
     private String description;
@@ -13,14 +15,45 @@ public class Party {
     private int capacity;
     private int currentAttendance;
 
+    @Override
+    public String toString() {
+        return "Party{" +
+                "id='" + id + '\'' +
+                ", ownerId='" + ownerId + '\'' +
+                ", partyName='" + partyName + '\'' +
+                ", description='" + description + '\'' +
+                ", address='" + address + '\'' +
+                ", date='" + date + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", ageRequired='" + ageRequired + '\'' +
+                ", capacity=" + capacity +
+                ", currentAttendance=" + currentAttendance +
+                '}';
+    }
+
     public Party() {
     }
 
-    public String getId() {
+    public Party(Party party){
+        this.id = party.getId();
+        this.ownerId = party.getOwnerId();
+        this.partyName = party.getPartyName();
+        this.description = party.getDescription();
+        this.address = party.getAddress();
+        this.date = party.getDate();
+        this.startTime = party.getStartTime();
+        this.endTime = party.getEndTime();
+        this.ageRequired = party.getAgeRequired();
+        this.capacity = party.getCapacity();
+        this.currentAttendance = party.getCurrentAttendance();
+    }
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

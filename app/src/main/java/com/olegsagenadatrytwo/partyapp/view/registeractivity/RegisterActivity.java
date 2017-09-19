@@ -16,7 +16,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.olegsagenadatrytwo.partyapp.R;
+import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
+import com.olegsagenadatrytwo.partyapp.model.custompojos.Profile;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivityContract;
 
 import butterknife.BindView;
@@ -101,8 +105,19 @@ public class RegisterActivity extends AppCompatActivity implements LoginActivity
                                                 Toast.LENGTH_LONG).show();
                                         signupInputEmail.setText("");
                                         signupInputPassword.setText("");
-                                    /*After signing up the user logs in*/
+                                        /*After signing up the user logs in*/
                                         mPresenter.signIn(userName, password);
+                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                        DatabaseReference profileReference = database.getReference("profiles");
+
+                                        Party party = new Party();
+                                        party.setPartyName("Name of the party");
+
+                                        Profile profile = new Profile();
+                                        profile.setUserName(userName);
+                                        profile.getParties().add(party);
+                                        profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(profile);
+
 
                                     }
                                     // If sign in fails, display a message to the user. If sign in succeeds
