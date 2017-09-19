@@ -1,11 +1,7 @@
 package com.olegsagenadatrytwo.partyapp.view.addpartyactivity;
 
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,8 +38,6 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
     EditText mEtCapacity;
     @BindView(R.id.btnSubmitParty)
     Button mBtnSubmitParty;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
 
     private AddPartyActivityPresenter presenter;
 
@@ -53,21 +47,12 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_party);
         ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
-
         //set up presenter
         presenter = new AddPartyActivityPresenter();
         presenter.attachView(this);
         presenter.setContext(this);
         presenter.init();
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_actions, menu);
-        return true;
     }
 
     //method to add a party to the dataBase
