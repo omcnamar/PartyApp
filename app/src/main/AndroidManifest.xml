@@ -46,9 +46,11 @@
                 <data android:scheme="@string/fb_login_protocol_scheme"/>
             </intent-filter>
         </activity>
+        <activity android:name=".view.registeractivity.RegisterActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".view.registeractivity.RegisterActivity"
-            android:screenOrientation="portrait"/>
+            android:name=".view.details_activity.DetailsActivity"
+            android:screenOrientation="portrait"></activity>
         <activity android:name=".view.addpartyactivity.AddPartyActivity">
         </activity>
     </application>

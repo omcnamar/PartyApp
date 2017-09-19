@@ -1,4 +1,4 @@
-package com.olegsagenadatrytwo.partyapp.inject.home_activity;
+package com.olegsagenadatrytwo.partyapp.inject.view.home_activity;
 
 import com.olegsagenadatrytwo.partyapp.view.homeactivity.HomeActivityPresenter;
 
