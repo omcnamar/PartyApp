@@ -86,6 +86,12 @@ dependencies {
     //glide
     compile 'com.github.bumptech.glide:glide:3.7.0'
 
+    //Google Maps
+    compile 'com.google.maps.android:android-maps-utils:0.4+'
+    compile 'com.google.android.gms:play-services-maps:11.2.2'
+
+
+
 
 }
 
