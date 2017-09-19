@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.olegsagenadatrytwo.partyapp.R;
-import com.olegsagenadatrytwo.partyapp.inject.view.DaggerHomeActivityComponent;
+import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.Event;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
