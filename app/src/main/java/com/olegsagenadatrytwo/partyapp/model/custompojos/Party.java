@@ -10,6 +10,7 @@ public class Party {
     private String address;
     private String date;
     private String startTime;
+    private String endDate;
     private String endTime;
     private String ageRequired;
     private int capacity;
@@ -25,6 +26,7 @@ public class Party {
                 ", address='" + address + '\'' +
                 ", date='" + date + '\'' +
                 ", startTime='" + startTime + '\'' +
+                ", date='" + endDate + '\'' +
                 ", endTime='" + endTime + '\'' +
                 ", ageRequired='" + ageRequired + '\'' +
                 ", capacity=" + capacity +
@@ -43,6 +45,7 @@ public class Party {
         this.address = party.getAddress();
         this.date = party.getDate();
         this.startTime = party.getStartTime();
+        this.endDate = party.getEndDate();
         this.endTime = party.getEndTime();
         this.ageRequired = party.getAgeRequired();
         this.capacity = party.getCapacity();
@@ -103,6 +106,14 @@ public class Party {
 
     public void setStartTime(String startTime) {
         this.startTime = startTime;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     public String getEndTime() {
