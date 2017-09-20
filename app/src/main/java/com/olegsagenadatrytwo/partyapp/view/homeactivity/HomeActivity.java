@@ -56,7 +56,6 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         presenter.attachView(this);
         presenter.setContext(this);
 
-        pbLoading.setVisibility(View.VISIBLE);
         presenter.rxJavaEventbrite();
     }
 
