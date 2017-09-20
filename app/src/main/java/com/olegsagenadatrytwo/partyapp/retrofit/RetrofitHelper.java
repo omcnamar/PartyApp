@@ -11,7 +11,6 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -62,17 +61,8 @@ public class RetrofitHelper {
 
     /**
      *
-     * @return list of events
+     * @return list instance of ApiService
      */
-    public Call<EventbriteEvents> callEventbriteEvents() {
-
-        Retrofit retrofit = create(Constant.EVENTBRITE_BASE_URL);
-        ApiService apiService = retrofit.create(ApiService.class);
-
-
-        return apiService.getEventList("", Constant.EVENTBRITE_TOKEN);
-    }
-
     public ApiService getEventBriteService() {
         final Retrofit retrofit = create(Constant.EVENTBRITE_BASE_URL);
         return retrofit.create(ApiService.class);
@@ -83,12 +73,8 @@ public class RetrofitHelper {
         /**
          *
          * @param category
-         * @param token
          * @return list of events
          */
-        @GET(Constant.EVENTBRITE_EVENTS_PATH)
-        Call<EventbriteEvents> getEventList(@Query("categories") String category, @Query("token") String token);
-
         @GET(Constant.EVENTBRITE_EVENTS_PATH)
         Single<EventbriteEvents> queryEventList(@Query("categories") String category);
     }

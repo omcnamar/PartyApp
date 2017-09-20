@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
+import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 
@@ -83,6 +84,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
             }
         };
         pbLoading.setVisibility(View.GONE);
+        viewPager.setPageTransformer(true, new DepthPageTransformer());
         //set Adapter for ViewPager
         viewPager.setAdapter(adapter);
 
