@@ -250,7 +250,6 @@
 
 
                 </android.support.design.widget.TextInputLayout>
-
                 <Button
                     android:id="@+id/btnSubmitParty"
                     android:layout_width="fill_parent"
