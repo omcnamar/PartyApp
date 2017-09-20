@@ -15,6 +15,9 @@ public class Party {
     private int capacity;
     private int currentAttendance;
 
+    public Party() {
+    }
+
     @Override
     public String toString() {
         return "Party{" +
@@ -30,9 +33,6 @@ public class Party {
                 ", capacity=" + capacity +
                 ", currentAttendance=" + currentAttendance +
                 '}';
-    }
-
-    public Party() {
     }
 
     public Party(Party party){
