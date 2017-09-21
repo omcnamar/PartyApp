@@ -38,7 +38,9 @@
             android:id="@+id/ivPartyHeader"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/partylogo"
+            android:adjustViewBounds="true"
+            android:src="@drawable/partylogo"
+            android:scaleType="centerCrop"
             android:layout_weight="5"/>
 
         <RelativeLayout

@@ -52,7 +52,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
 
                     //copy events from API into parties
                     List<Party> parties = new ArrayList<>();
-                    for (int i = 0; i < events.getEvents().size(); i++) {
+                    for (int i = 0; i < 5; i++) {
                         Party p = new Party();
                         p.setId(UUID.randomUUID());
                         p.setPartyName(events.getEvents().get(i).getName().getText());
@@ -60,6 +60,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                         p.setStartTime(events.getEvents().get(i).getStart().getUtc());
                         p.setEndTime(events.getEvents().get(i).getEnd().getUtc());
                         p.setCapacity(events.getEvents().get(i).getCapacity());
+                        p.setImageURL(events.getEvents().get(i).getLogo().getUrl());
                         parties.add(p);
                     }
 

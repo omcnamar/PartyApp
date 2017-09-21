@@ -102,6 +102,14 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
 
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
+        min = String.valueOf(calendar.get(Calendar.MINUTE));
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        showDate(year, month + 1, day, "start");
+        showStartTime(hour, min, "start");
+
         party = new Party();
 
         //onclick for the image icon
@@ -156,13 +164,6 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
             }
 
         }
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
-        min = String.valueOf(calendar.get(Calendar.MINUTE));
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        showDate(year, month + 1, day, "start");
-        showStartTime(hour, min, "start");
     }
 
 
@@ -224,17 +225,9 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
             party.setEndTime(mEtEndTime.getText().toString());
             party.setAgeRequired(mEtMinAge.getText().toString());
             party.setCapacity(Integer.parseInt(mEtCapacity.getText().toString()));
-        party.setPartyName(mEtPartyName.getText().toString());
-        party.setAddress(mEtPartyAddress.getText().toString());
-        party.setDescription(mEtPartyDescription.getText().toString());
-        party.setDate(mEtDate.getText().toString());
-        party.setStartTime(mEtStartTime.getText().toString());
-        party.setEndTime(mEtEndTime.getText().toString());
-        party.setAgeRequired(mEtMinAge.getText().toString());
-        party.setCapacity(Integer.parseInt(mEtCapacity.getText().toString()));
 
-        presenter.addNewParty(party, bitmap);
-            presenter.addNewParty(party);
+            presenter.addNewParty(party, bitmap);
+
         }
     }
 
