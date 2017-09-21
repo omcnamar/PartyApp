@@ -29,7 +29,7 @@ import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
-import com.olegsagenadatrytwo.partyapp.view.mypartiesactivity.MyPartiesActivity;
+import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 
 import java.util.List;
 
@@ -195,8 +195,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 //                Intent loginIntent = new Intent(this, LoginActivity.class);
 //                startActivity(loginIntent);
                 if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    Intent myParietes = new Intent(this, MyPartiesActivity.class);
-                    startActivity(myParietes);
+                    /*startActivity(new Intent(this, MyPartiesActivity.class));*/
+                    startActivity(new Intent(this, ProfileActivity.class));
                 }else {
                     Intent logInIntent = new Intent(this, LoginActivity.class);
                     startActivity(logInIntent);
