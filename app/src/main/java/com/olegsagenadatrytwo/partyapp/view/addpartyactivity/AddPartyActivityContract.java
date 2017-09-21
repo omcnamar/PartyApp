@@ -1,12 +1,11 @@
 package com.olegsagenadatrytwo.partyapp.view.addpartyactivity;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.olegsagenadatrytwo.partyapp.BasePresenter;
 import com.olegsagenadatrytwo.partyapp.BaseView;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
-import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
-import com.olegsagenadatrytwo.partyapp.view.homeactivity.HomeActivityContract;
 
 /**
  * Created by omcna on 9/17/2017.
@@ -19,7 +18,7 @@ public interface AddPartyActivityContract {
     }
 
     interface presenter extends BasePresenter<AddPartyActivityContract.view> {
-        void addNewParty(Party party);
+        void addNewParty(Party party, Bitmap bitmap);
         void setContext(Context context);
         void init();
     }

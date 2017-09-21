@@ -14,7 +14,12 @@ public class Party {
     private String endTime;
     private String ageRequired;
     private int capacity;
+    private String imageURL;
+
     private int currentAttendance;
+
+    public Party() {
+    }
 
     @Override
     public String toString() {
@@ -34,9 +39,6 @@ public class Party {
                 '}';
     }
 
-    public Party() {
-    }
-
     public Party(Party party){
         this.id = party.getId();
         this.ownerId = party.getOwnerId();
@@ -50,6 +52,26 @@ public class Party {
         this.ageRequired = party.getAgeRequired();
         this.capacity = party.getCapacity();
         this.currentAttendance = party.getCurrentAttendance();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Party p = (Party)obj;
+        boolean eq = true;
+
+        if(!this.id.toString().equals(p.getId().toString())){
+            return false;
+        }
+
+        return eq;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     public UUID getId() {
