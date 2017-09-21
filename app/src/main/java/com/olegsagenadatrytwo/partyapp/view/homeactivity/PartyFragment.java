@@ -1,14 +1,19 @@
 package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
 import android.content.Context;
+import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -32,6 +37,7 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -49,6 +55,12 @@ public class PartyFragment extends Fragment implements ChildEventListener {
     CircleImageView ivPartyHost;
 
     Unbinder unbinder;
+    @BindView(R.id.btnPriceIndicator)
+    AppCompatImageButton btnPriceIndicator;
+    @BindView(R.id.btnShareParty)
+    AppCompatImageButton btnShareParty;
+    @BindView(R.id.btnPublicOrPrivate)
+    AppCompatImageButton btnPublicOrPrivate;
 
     private List<Party> parties;
     private Party party;
@@ -126,7 +138,7 @@ public class PartyFragment extends Fragment implements ChildEventListener {
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.centerCrop();
 
-        if (url == null){
+        if (url == null) {
 
             Glide.with(context)
                     .load(R.drawable.partylogo)
@@ -207,5 +219,33 @@ public class PartyFragment extends Fragment implements ChildEventListener {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick({R.id.btnPriceIndicator, R.id.btnShareParty, R.id.btnPublicOrPrivate})
+    public void onViewClicked(View view) {
+        final Animation animation = AnimationUtils.loadAnimation(context, R.anim.bounce);
+        TransitionDrawable like = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.like);
+        TransitionDrawable unlike = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.unlike);
+
+        switch (view.getId()) {
+            case R.id.btnPriceIndicator:
+                if(party.getLiked()){
+                    btnPriceIndicator.setImageDrawable(unlike);
+                    unlike.reverseTransition(1000);
+                    btnPriceIndicator.startAnimation(animation);
+                } else {
+                    btnPriceIndicator.setImageDrawable(like);
+                    like.reverseTransition(1000);
+                    btnPriceIndicator.startAnimation(animation);
+                }
+
+                break;
+            case R.id.btnShareParty:
+                btnShareParty.startAnimation(animation);
+                break;
+            case R.id.btnPublicOrPrivate:
+                btnPublicOrPrivate.startAnimation(animation);
+                break;
+        }
     }
 }

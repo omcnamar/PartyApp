@@ -15,6 +15,7 @@ public class Party {
     private String ageRequired;
     private int capacity;
     private String imageURL;
+    private boolean isLiked;
 
     private int currentAttendance;
 
@@ -36,6 +37,7 @@ public class Party {
                 ", ageRequired='" + ageRequired + '\'' +
                 ", capacity=" + capacity +
                 ", currentAttendance=" + currentAttendance +
+                ", isLiked=" + isLiked +
                 '}';
     }
 
@@ -52,6 +54,7 @@ public class Party {
         this.ageRequired = party.getAgeRequired();
         this.capacity = party.getCapacity();
         this.currentAttendance = party.getCurrentAttendance();
+        this.isLiked = party.getLiked();
     }
 
     @Override
@@ -64,6 +67,14 @@ public class Party {
         }
 
         return eq;
+    }
+
+    public boolean getLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 
     public String getImageURL() {
