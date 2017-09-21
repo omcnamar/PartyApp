@@ -83,8 +83,8 @@ public class Party implements Parcelable{
         this.ageRequired = party.getAgeRequired();
         this.capacity = party.getCapacity();
         this.currentAttendance = party.getCurrentAttendance();
-        this.isLiked = party.getLiked();
-    }
+        this.isLiked = party.isLiked();
+}
 
     @Override
     public boolean equals(Object obj) {
@@ -98,7 +98,7 @@ public class Party implements Parcelable{
         return eq;
     }
 
-    public boolean getLiked() {
+    public boolean isLiked() {
         return isLiked;
     }
 

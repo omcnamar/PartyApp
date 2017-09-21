@@ -29,38 +29,30 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView;
+import com.olegsagenadatrytwo.partyapp.customviews.ImageViewRoundedCorners;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class PartyFragment extends Fragment implements ChildEventListener {
+public class PartyFragment extends Fragment implements ChildEventListener, View.OnClickListener {
 
     public static final String TAG = "PartyFragment";
     private static final String PARTY_ID = "party_id";
 
-    @BindView(R.id.ivPartyHost)
     CircleImageView ivPartyHost;
 
-    Unbinder unbinder;
-    @BindView(R.id.btnPriceIndicator)
-    AppCompatImageButton btnPriceIndicator;
-    @BindView(R.id.btnShareParty)
+    AppCompatImageButton btnLike;
     AppCompatImageButton btnShareParty;
-    @BindView(R.id.btnPublicOrPrivate)
     AppCompatImageButton btnPublicOrPrivate;
 
     private List<Party> parties;
     private Party party;
-    private AutoResizeTextView tvPartyName;
+    private AutoResizeTextView tvPartyType;
     private AutoResizeTextView tvDescription;
-    private ImageView ivLogo;
+    private ImageViewRoundedCorners ivLogo;
     private DatabaseReference partiesReference;
     private Context context;
 
@@ -105,7 +97,16 @@ public class PartyFragment extends Fragment implements ChildEventListener {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.party_card_item2, container, false);
-        unbinder = ButterKnife.bind(this, v);
+        ivPartyHost = v.findViewById(R.id.ivPartyHost);
+        btnLike = v.findViewById(R.id.btnLike);
+        btnShareParty = v.findViewById(R.id.btnShareParty);
+        btnPublicOrPrivate = v.findViewById(R.id.btnPublicOrPrivate);
+        tvPartyType = v.findViewById(R.id.tvPartyType);
+        tvDescription= v.findViewById(R.id.tvPartyDescription);
+        ivLogo = v.findViewById(R.id.ivPartyHeader);
+        btnLike.setOnClickListener(this);
+        btnPublicOrPrivate.setOnClickListener(this);
+        btnShareParty.setOnClickListener(this);
 
         //if the party is not null than set the ImageViews and TextViews according to the Event
         if (party != null) {
@@ -113,6 +114,11 @@ public class PartyFragment extends Fragment implements ChildEventListener {
             tvDescription.setText(party.getDescription());
             loadPartyImage(party.getImageURL(), ivLogo); // Header Image
             loadPartyImage(null, ivPartyHost); // Host Image
+            if (party.isLiked()){
+                btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
+            } else {
+                btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike_48dp));
+            }
         }
         return v;
     }
@@ -212,28 +218,26 @@ public class PartyFragment extends Fragment implements ChildEventListener {
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
 
-    @OnClick({R.id.btnPriceIndicator, R.id.btnShareParty, R.id.btnPublicOrPrivate})
-    public void onViewClicked(View view) {
+    @Override
+    public void onClick(View view) {
         final Animation animation = AnimationUtils.loadAnimation(context, R.anim.bounce);
         TransitionDrawable like = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.like);
         TransitionDrawable unlike = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.unlike);
 
         switch (view.getId()) {
-            case R.id.btnPriceIndicator:
-                if(party.getLiked()){
-                    btnPriceIndicator.setImageDrawable(unlike);
-                    unlike.reverseTransition(1000);
-                    btnPriceIndicator.startAnimation(animation);
+            case R.id.btnLike:
+                if(party.isLiked()){
+                    party.setLiked(false);
+                    btnLike.setImageDrawable(unlike);
+                    unlike.reverseTransition(100);
+                    btnLike.startAnimation(animation);
+                    btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike_48dp));
                 } else {
-                    btnPriceIndicator.setImageDrawable(like);
+                    party.setLiked(true);
+                    btnLike.setImageDrawable(like);
                     like.reverseTransition(1000);
-                    btnPriceIndicator.startAnimation(animation);
+                    btnLike.startAnimation(animation);
                 }
 
                 break;
