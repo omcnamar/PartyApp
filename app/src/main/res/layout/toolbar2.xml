@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="80dp"
     android:paddingTop="10dp"
-    android:background="@color/colorLightGray"
+    android:background="@color/colorCustomToolbar"
     android:orientation="horizontal">
 
     <ImageButton
