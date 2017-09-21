@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -77,6 +78,7 @@ dependencies {
 
     // Support library
     compile 'com.android.support:support-core-utils:26.1.0'
+    compile 'com.android.support:appcompat-v7:26.1.0'
 
     // Design (ex. Snackbar)
     compile 'com.android.support:design:26.1.0'
