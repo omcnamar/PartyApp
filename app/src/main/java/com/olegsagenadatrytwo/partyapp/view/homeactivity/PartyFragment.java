@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,31 +29,20 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PartyFragment extends Fragment implements ChildEventListener {
 
     public static final String TAG = "PartyFragment";
     private static final String PARTY_ID = "party_id";
-    @BindView(R.id.ivPartyHeader)
-    ImageView ivLogo;
-    @BindView(R.id.tvPartyType)
-    AutoResizeTextView tvPartyType;
-    @BindView(R.id.tvPartyDescription)
-    AutoResizeTextView tvDescription;
-    @BindView(R.id.ivPartyHost)
-    CircleImageView ivPartyHost;
 
-    Unbinder unbinder;
+    ImageView ivLogo;
+    AutoResizeTextView tvPartyType;
+    AutoResizeTextView tvDescription;
+    CircleImageView ivPartyHost;
 
     private List<Party> parties;
     private Party party;
-    private AutoResizeTextView tvPartyName;
-    private AutoResizeTextView tvDescription;
-    private ImageView ivLogo;
     private DatabaseReference partiesReference;
     private Context context;
 
@@ -99,7 +87,11 @@ public class PartyFragment extends Fragment implements ChildEventListener {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.party_card_item2, container, false);
-        unbinder = ButterKnife.bind(this, v);
+
+        ivLogo = v.findViewById(R.id.ivPartyHeader);
+        tvPartyType = v.findViewById(R.id.tvPartyType);
+        tvDescription = v.findViewById(R.id.tvPartyDescription);
+        ivPartyHost = v.findViewById(R.id.ivPartyHost);
 
         //if the party is not null than set the ImageViews and TextViews according to the Event
         if (party != null) {
@@ -161,6 +153,7 @@ public class PartyFragment extends Fragment implements ChildEventListener {
 
     @Override
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
         final Party partyChanged = dataSnapshot.getValue(Party.class);
         partyChanged.setId(dataSnapshot.getKey());
 
@@ -204,11 +197,5 @@ public class PartyFragment extends Fragment implements ChildEventListener {
     @Override
     public void onCancelled(DatabaseError databaseError) {
 
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 }

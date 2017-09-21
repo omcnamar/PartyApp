@@ -67,7 +67,7 @@ public class AddPartyActivityPresenter implements AddPartyActivityContract.prese
             StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
             StorageReference mountainImagesRef = storageRef.child("images/" + idString + ".jpg");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 5, baos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
             UploadTask uploadTask = mountainImagesRef.putBytes(data);
             uploadTask.addOnFailureListener(new OnFailureListener() {
