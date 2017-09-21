@@ -87,7 +87,7 @@
                     android:gravity="center">
 
                     <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnPriceIndicator"
+                        android:id="@+id/btnLike"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:elevation="3dp"

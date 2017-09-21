@@ -89,6 +89,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
             p.setEndTime(events.get(i).getEnd().getUtc());
             p.setCapacity(events.get(i).getCapacity());
             p.setImageURL(events.get(i).getLogo().getUrl());
+            p.setLiked(false);
             parties.add(p);
 
         }

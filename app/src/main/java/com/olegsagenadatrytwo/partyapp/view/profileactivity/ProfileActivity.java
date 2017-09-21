@@ -8,17 +8,20 @@ import android.view.View;
 
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.FirstFragment;
+import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.MyPartiesFragment;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.SecondFragment;
-import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.ThirdFragment;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    @BindView(R.id.tabs)
+    TabLayout tabs;
+    @BindView(R.id.pager)
+    ViewPager pager;
     private PagerAdapter myAdapter;
-    private TabLayout tbTabs;
-    private ViewPager pager;
 
 
     @Override
@@ -27,20 +30,18 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.profile_activity);
         ButterKnife.bind(this);
         myAdapter = new PagerAdapter(getSupportFragmentManager());
-        pager =  (ViewPager) findViewById(R.id.pager);
-        setupAdapter(pager);
-        tbTabs = (TabLayout) findViewById(R.id.tabs);
-        tbTabs.setupWithViewPager(pager);
+
+        setupAdapter(pager, myAdapter);
+        tabs.setupWithViewPager(pager);
 
 
     }
 
-    public void setupAdapter(ViewPager viewPager){
-        PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
+    public void setupAdapter(ViewPager viewPager, PagerAdapter adapter) {
 
         adapter.addFragment(new FirstFragment(), "Saved");
         adapter.addFragment(new SecondFragment(), "Invites");
-        adapter.addFragment(new ThirdFragment(), "Host");
+        adapter.addFragment(new MyPartiesFragment(), "Parties");
         viewPager.setAdapter(adapter);
 
     }
