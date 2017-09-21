@@ -27,7 +27,6 @@ import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
-import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 
@@ -177,14 +176,14 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.action_map:
-                //if there is no current user send the user to log in
-                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    Intent addPartyIntent = new Intent(this, AddPartyActivity.class);
-                    startActivity(addPartyIntent);
-                } else {
-                    Intent logInIntent = new Intent(this, LoginActivity.class);
-                    startActivity(logInIntent);
-                }
+//                //if there is no current user send the user to log in
+//                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+//                    Intent addPartyIntent = new Intent(this, AddPartyActivity.class);
+//                    startActivity(addPartyIntent);
+//                } else {
+//                    Intent logInIntent = new Intent(this, LoginActivity.class);
+//                    startActivity(logInIntent);
+//                }
                 // TODO: 9/17/17 implement the Map View
                 Toast.makeText(this, "Map", Toast.LENGTH_SHORT).show();
                 break;
