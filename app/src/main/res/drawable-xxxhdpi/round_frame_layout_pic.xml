@@ -11,8 +11,8 @@
         android:bottom="2dp"/>
 
     <size
-        android:width="140dp"
-        android:height="140dp"/>
+        android:width="100dp"
+        android:height="100dp"/>
 
     <corners android:bottomRightRadius="100dp"
         android:bottomLeftRadius="100dp"

@@ -15,6 +15,7 @@
         android:elevation="6dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivPartyHost"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:src="@drawable/ic_person_black_48dp"

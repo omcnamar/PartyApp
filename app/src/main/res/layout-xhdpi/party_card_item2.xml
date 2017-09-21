@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
     android:paddingTop="30dp"
     android:orientation="vertical">
 
@@ -12,12 +11,13 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="5dp"
         android:layout_gravity="center|top"
         android:background="@drawable/round_frame_layout_pic"
         android:elevation="6dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivPartyHost"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/partylogo"
@@ -29,10 +29,10 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="75dp"
-        android:layout_marginLeft="75dp"
-        android:layout_marginRight="75dp"
-        android:layout_marginTop="75dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="50dp"
         android:background="@drawable/round_frame_layout"
         android:orientation="vertical">
 
@@ -40,13 +40,13 @@
         <com.olegsagenadatrytwo.partyapp.customviews.ImageViewRoundedCorners
             android:id="@+id/ivPartyHeader"
             android:layout_width="match_parent"
-            android:layout_height="130dp"/>
+            android:layout_height="160dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="120dp"
             android:background="@drawable/event_layout"
-            android:layout_marginTop="100dp"
             android:orientation="vertical"
             android:paddingLeft="5dp"
             android:paddingRight="10dp">
@@ -66,8 +66,7 @@
                     android:maxLines="1"
                     android:text="House Party"
                     android:textColor="@android:color/white"
-                    android:textSize="40sp"
-                    />
+                    android:textSize="40sp" />
 
                 <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
                     android:id="@+id/tvPartyDistance"
@@ -75,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:text="X miles away"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white" />
 
                 <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
                     android:id="@+id/tvPartyDescription"
@@ -84,7 +83,7 @@
                     android:maxLines="2"
                     android:text="Lorem impsum dolor sit, adispiscing elit, sed dc"
                     android:textColor="@android:color/white"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
@@ -93,9 +92,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:paddingBottom="10dp"
-                android:gravity="center">
+                android:paddingBottom="10dp">
 
 
                 <android.support.v7.widget.AppCompatButton
