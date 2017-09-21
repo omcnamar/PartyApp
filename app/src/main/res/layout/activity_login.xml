@@ -12,6 +12,12 @@
     android:padding="20dp"
     tools:context="com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity">
 
+    <include
+        android:id="@+id/toolbar2"
+        layout="@layout/toolbar2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"/>
+
     <ImageView
         android:id="@+id/ivParty"
         android:layout_width="match_parent"
