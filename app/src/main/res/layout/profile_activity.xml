@@ -1,152 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorLightGray"
+    tools:context="com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity">
 
+    <ImageButton
+        android:id="@+id/action_backbutton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@color/colorCustomToolbar"
+        android:layout_gravity="left"
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|top"
-        android:background="@drawable/round_frame_layout_pic"
-        android:elevation="6dp">
+        android:orderInCategory="200"
+        android:src="@drawable/ic_keyboard_arrow_left_black_48dp" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@mipmap/ic_launcher"
-            app:civ_border_color="#999999"
-            app:civ_border_width="3dp" />
-
-    </FrameLayout>
-
-    <RelativeLayout
+    <!--<Button-->
+        <!--android:id="@+id/btnback"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--/>-->
+    <!--<include-->
+        <!--android:id="@+id/toolbar2"-->
+        <!--layout="@layout/toolbar2"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/toolbar_height" />-->
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="75dp"
-        android:background="@drawable/round_frame_layout"
-        android:elevation="5dp">
+        android:orientation="vertical"
+        app:cardBackgroundColor="@color/colorLightGray"
+        >
 
 
-        <ImageView
-            android:id="@+id/ivPartyHeader"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:background="@drawable/round_frame_layout_pic"
+            android:elevation="6dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@mipmap/ic_launcher"
+                app:civ_border_color="#999999"
+                app:civ_border_width="3dp" />
+
+        </FrameLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="200dp"
-            android:background="@drawable/event_layout"
-            android:orientation="vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="20dp">
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:layout_marginTop="75dp"
+            android:background="@drawable/round_frame_layout"
+            android:elevation="5dp">
 
-            <LinearLayout
-                android:id="@+id/llInfo"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="15dp"
-                android:paddingTop="10dp">
-
-                <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
-                    android:id="@+id/auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="Party Organizer"
-                    android:textColor="@android:color/white"
-                    android:textSize="40sp" />
-
-                <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
-                    android:id="@+id/tvPartyDistance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="X miles away"
-                    android:textColor="@android:color/white" />
-
-                <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
-                    android:id="@+id/tvPartyDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:text="Lorem impsum dolor sit, adispiscing elit, sed dc"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
-
-
-            <android.support.v7.widget.ButtonBarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="50dp"
-                android:layout_marginTop="100dp"
-                android:orientation="horizontal">
+                android:layout_marginTop="80dp"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
 
                 <LinearLayout
+                    android:id="@+id/llInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center">
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnPriceIndicator"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_button_cheap"
-                        android:elevation="3dp"
-                        android:text="$" />
+                    <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
+                        android:id="@+id/auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="Party Organizer"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="40sp" />
+
+                    <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
+                        android:id="@+id/tvPartyDistance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:text="Party Location"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="20sp" />
+
+                    <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
+                        android:id="@+id/tvPartyRatings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:text="*****"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="20sp" />
+
+                    <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
+                        android:id="@+id/tvPartyDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="2"
+                        android:text="Lorem impsum dolor sit, adispiscing elit, sed dc"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="20sp" />
 
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/llDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center">
+                    android:layout_below="@+id/llInfo"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
 
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnShareParty"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_button" />
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/tabs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorCustomToolbar"
+                        app:tabGravity="fill"
+
+                        app:tabMode="fixed" />
+
+                    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:tools="http://schemas.android.com/tools"
+                        android:id="@+id/pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:context="net.voidynullness.android.tabitytabs.TabLayoutActivity">
+
+                    </android.support.v4.view.ViewPager>
+
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center">
 
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnPublicOrPrivate"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_button" />
+            </RelativeLayout>
 
-                </LinearLayout>
-
-            </android.support.v7.widget.ButtonBarLayout>
 
         </RelativeLayout>
 
-
-    </RelativeLayout>
-
-</android.support.design.widget.CoordinatorLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

@@ -1,140 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity">
 
 
-    <RelativeLayout
+    <include
+        android:id="@+id/toolbar2"
+        layout="@layout/toolbar2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="75dp"
-        android:background="@drawable/round_frame_layout"
-        android:elevation="5dp">
+        android:layout_height="@dimen/toolbar_height"/>
 
+    <include
+        android:id="@+id/profile_layout"
+        layout="@layout/profile_fragment_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-        <ImageView
-            android:id="@+id/ivPartyHeader"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="249dp"
-            android:background="@drawable/event_layout"
-            android:orientation="vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="20dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true">
-
-            <LinearLayout
-                android:id="@+id/llInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="15dp"
-                android:paddingTop="10dp">
-
-                <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
-                    android:id="@+id/auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Party Organizer"
-                    android:textColor="@android:color/white"
-                    android:maxLines="1"
-                    android:textSize="40sp"
-                    />
-
-                <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
-                    android:id="@+id/tvPartyDistance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="X miles away"
-                    android:textColor="@android:color/white" />
-
-                <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
-                    android:id="@+id/tvPartyDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:text="Lorem impsum dolor sit, adispiscing elit, sed dc"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
-
-            <android.support.v7.widget.CardView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:cardview="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                cardview:cardCornerRadius="2dp"
-                cardview:cardElevation="3dp"
-                cardview:cardUseCompatPadding="true"
-                android:id="@+id/cardView">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                  
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="12dp"
-                        android:maxLines="3"
-                        android:padding="8dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                        android:textColor="#444"
-                        android:textSize="18dp"
-                        android:textStyle="bold"/>
-
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
-
-            <ImageView
-                android:id="@+id/thumbnail"
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:scaleType="centerCrop"
-
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="41dp" />
-
-        </RelativeLayout>
-
-
-    </RelativeLayout>
-
-
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|top"
-        android:background="@drawable/round_frame_layout_pic"
-        android:elevation="6dp">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@mipmap/ic_launcher"
-            app:civ_border_color="#999999"
-            app:civ_border_width="3dp" />
-
-    </FrameLayout>
-
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>

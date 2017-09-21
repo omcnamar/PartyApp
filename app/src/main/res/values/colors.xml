@@ -9,4 +9,7 @@
     <color name="colorGreen">#3af107</color>
     <color name="colorCustomToolbar">#00ffffff</color>
     <color name="gray">#444440</color>
+    <color name="colorLightGray">#eae0e0</color>
+    <color name="colorBlack">#0d0c0c</color>
+
 </resources>

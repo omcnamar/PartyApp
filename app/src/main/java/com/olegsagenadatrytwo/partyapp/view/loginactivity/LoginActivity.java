@@ -10,7 +10,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -66,8 +65,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
     SignInButton loginWithGoogle;
     @BindView(R.id.btnTwitter)
     TwitterLoginButton btnTwitter;
-    @BindView(R.id.toolbar2)
-    LinearLayout toolbar2;
     @BindView(R.id.btnRegister)
     Button btnRegister;
     private CallbackManager callbackManager;
@@ -149,6 +146,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
                 //updateUI(null);
             }
         });
+
     }
 
     private void setupFacebookStuff() {

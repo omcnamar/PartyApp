@@ -29,6 +29,7 @@ import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
+import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 
 import java.util.List;
 import java.util.UUID;
@@ -193,8 +194,14 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 Toast.makeText(this, "Location", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_profile:
-                Intent loginIntent = new Intent(this, LoginActivity.class);
-                startActivity(loginIntent);
+                if(FirebaseAuth.getInstance().getCurrentUser() == null){
+                    Intent loginIntent = new Intent(this, LoginActivity.class);
+                    startActivity(loginIntent);
+
+                }else {
+                    Intent loginIntent = new Intent(this, ProfileActivity.class);
+                    startActivity(loginIntent);
+                }
                 // TODO: 9/17/17 need to implement back button for profile class
                 break;
 

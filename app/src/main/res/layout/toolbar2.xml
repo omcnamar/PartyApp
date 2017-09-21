@@ -7,4 +7,39 @@
     android:paddingTop="10dp"
     android:background="@color/colorCustomToolbar"
     android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/action_backbutton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorCustomToolbar"
+        android:layout_gravity="left"
+        android:layout_weight="3"
+        android:orderInCategory="200"
+        android:src="@drawable/ic_keyboard_arrow_left_black_48dp" />
+
+
+    <TextView
+        android:id="@+id/action_location"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:hint=""
+        android:textSize="30dp"
+        android:textColor="@android:color/black"
+
+        />
+
+
+    <ImageButton
+        android:id="@+id/action_profileSettings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorCustomToolbar"
+        android:layout_weight="3"
+        android:src="@drawable/ic_settings_black_48dp"
+        android:title="@string/action_profile" />
+
+
 </LinearLayout>

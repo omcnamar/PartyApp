@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -24,7 +25,8 @@
         android:roundIcon="@drawable/partylogo"
         android:supportsRtl="true"
         android:theme="@style/LoginThem">
-        <activity android:name=".view.splashactivity.SplashActivity"
+        <activity
+            android:name=".view.splashactivity.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,11 +36,10 @@
         </activity>
         <activity
             android:name=".view.homeactivity.HomeActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".view.loginactivity.LoginActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -60,12 +61,14 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.registeractivity.RegisterActivity"
-            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".view.registeractivity.RegisterActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.details_activity.DetailsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".view.addpartyactivity.AddPartyActivity"></activity>
+        <activity android:name=".view.addpartyactivity.AddPartyActivity" />
+        <activity android:name=".view.profileactivity.ProfileActivity" ></activity>
     </application>
 
 </manifest>
