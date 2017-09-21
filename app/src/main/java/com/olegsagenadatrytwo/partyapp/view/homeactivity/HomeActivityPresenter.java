@@ -82,7 +82,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
         List<Party> parties = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             Party p = new Party();
-            p.setId(UUID.randomUUID());
+            p.setId(UUID.randomUUID().toString());
             p.setPartyName(events.get(i).getName().getText());
             p.setDescription(events.get(i).getDescription().getText());
             p.setStartTime(events.get(i).getStart().getUtc());

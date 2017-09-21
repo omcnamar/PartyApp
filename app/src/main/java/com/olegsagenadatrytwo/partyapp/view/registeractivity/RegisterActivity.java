@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.olegsagenadatrytwo.partyapp.R;
-import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Profile;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivityContract;
 
@@ -110,12 +109,8 @@ public class RegisterActivity extends AppCompatActivity implements LoginActivity
                                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                                         DatabaseReference profileReference = database.getReference("profiles");
 
-                                        Party party = new Party();
-                                        party.setPartyName("Name of the party");
-
                                         Profile profile = new Profile();
                                         profile.setUserName(userName);
-                                        profile.getParties().add(party);
                                         profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(profile);
 
 
