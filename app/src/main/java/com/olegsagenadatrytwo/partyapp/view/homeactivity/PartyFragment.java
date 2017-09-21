@@ -2,12 +2,13 @@ package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -16,6 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -73,7 +75,18 @@ public class PartyFragment extends Fragment {
         if(party != null) {
             tvPartyName.setText(party.getPartyName());
             tvDescription.setText(party.getDescription());
-            //Glide.with(getActivity()).load(event.getLogo().getUrl()).into(ivLogo);
+
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.placeholder(R.drawable.partylogo);
+            requestOptions.error(R.drawable.partylogo);
+            requestOptions.fallback(R.drawable.partylogo);
+            requestOptions.centerCrop();
+
+            Glide.with(getActivity())
+                    .load(R.drawable.partylogo)
+                    .apply(requestOptions)
+                    .into(ivLogo);
+
         }
 
 
@@ -106,5 +119,6 @@ public class PartyFragment extends Fragment {
         });
         return v;
     }
+
 
 }
