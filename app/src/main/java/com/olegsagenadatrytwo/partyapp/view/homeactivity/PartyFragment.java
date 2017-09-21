@@ -42,17 +42,18 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
     public static final String TAG = "PartyFragment";
     private static final String PARTY_ID = "party_id";
 
-    CircleImageView ivPartyHost;
 
     AppCompatImageButton btnLike;
     AppCompatImageButton btnShareParty;
     AppCompatImageButton btnPublicOrPrivate;
 
+    ImageView ivLogo;
+    AutoResizeTextView tvPartyType;
+    AutoResizeTextView tvDescription;
+    CircleImageView ivPartyHost;
+
     private List<Party> parties;
     private Party party;
-    private AutoResizeTextView tvPartyType;
-    private AutoResizeTextView tvDescription;
-    private ImageViewRoundedCorners ivLogo;
     private DatabaseReference partiesReference;
     private Context context;
 
@@ -107,6 +108,11 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         btnLike.setOnClickListener(this);
         btnPublicOrPrivate.setOnClickListener(this);
         btnShareParty.setOnClickListener(this);
+
+        ivLogo = v.findViewById(R.id.ivPartyHeader);
+        tvPartyType = v.findViewById(R.id.tvPartyType);
+        tvDescription = v.findViewById(R.id.tvPartyDescription);
+        ivPartyHost = v.findViewById(R.id.ivPartyHost);
 
         //if the party is not null than set the ImageViews and TextViews according to the Event
         if (party != null) {
@@ -173,6 +179,7 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
 
     @Override
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
         final Party partyChanged = dataSnapshot.getValue(Party.class);
         partyChanged.setId(dataSnapshot.getKey());
 
