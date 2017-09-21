@@ -1,19 +1,26 @@
 package com.olegsagenadatrytwo.partyapp.view.profileactivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.olegsagenadatrytwo.partyapp.R;
+import com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView;
+import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
+import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.FirstFragment;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.MyPartiesFragment;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.SecondFragment;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -21,8 +28,12 @@ public class ProfileActivity extends AppCompatActivity {
     TabLayout tabs;
     @BindView(R.id.pager)
     ViewPager pager;
+    @BindView(R.id.displayName)
+    AutoResizeTextView displayName;
+    @BindView(R.id.civProfilePicture)
+    CircleImageView civProfilePicture;
     private PagerAdapter myAdapter;
-
+    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +44,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         setupAdapter(pager, myAdapter);
         tabs.setupWithViewPager(pager);
-
+        userName =  FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        displayName.setText(userName.toString());
+        Picasso.with(this).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(civProfilePicture);
 
     }
 
@@ -51,13 +64,23 @@ public class ProfileActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    @OnClick({R.id.action_backbutton})
+    @OnClick({R.id.action_backbutton,R.id.action_add_party})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.action_backbutton:
                 onBackPressed();
                 break;
-
+            case R.id.action_add_party:
+                //if there is no current user send the user to log in
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    Intent addPartyIntent = new Intent(this, AddPartyActivity.class);
+                    startActivity(addPartyIntent);
+                } else {
+                    Intent logInIntent = new Intent(this, LoginActivity.class);
+                    startActivity(logInIntent);
+                }
+                break;
         }
     }
+
 }

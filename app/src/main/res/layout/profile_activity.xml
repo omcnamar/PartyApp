@@ -7,65 +7,40 @@
     android:background="@color/colorLightGray"
     tools:context="com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar2"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height" />
-   <!-- <ImageButton
-        android:id="@+id/action_backbutton"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:background="@color/colorCustomToolbar"
-        android:layout_gravity="left"
-
-        android:orderInCategory="200"
-        android:src="@drawable/ic_keyboard_arrow_left_black_48dp" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/btnback"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--/>-->
-    <!--<include-->
-        <!--android:id="@+id/toolbar2"-->
-        <!--layout="@layout/toolbar2"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="@dimen/toolbar_height" />-->
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:cardBackgroundColor="@color/colorLightGray"
-        >
-
-
+        app:cardBackgroundColor="@color/colorLightGray">
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height" />
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|top"
             android:background="@drawable/round_frame_layout_pic"
-            android:elevation="6dp">
-
+            android:elevation="6dp"
+            android:layout_marginTop="70dp">
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:src="@mipmap/ic_launcher"
                 app:civ_border_color="#999999"
-                app:civ_border_width="3dp" />
-
+                app:civ_border_width="3dp"
+                android:id="@+id/civProfilePicture"/>
         </FrameLayout>
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
-            android:layout_marginTop="75dp"
+            android:layout_marginTop="145dp"
             android:background="@drawable/round_frame_layout"
             android:elevation="5dp">
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -74,7 +49,6 @@
                 android:orientation="vertical"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp">
-
                 <LinearLayout
                     android:id="@+id/llInfo"
                     android:layout_width="match_parent"
@@ -83,7 +57,7 @@
                     android:padding="5dp">
 
                     <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
-                        android:id="@+id/auto"
+                        android:id="@+id/displayName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -98,6 +72,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:maxLines="2"
+                        android:layout_marginTop="10dp"
                         android:text="Party Location"
                         android:textColor="@color/colorPrimary"
                         android:textSize="20sp" />
@@ -106,30 +81,18 @@
                         android:id="@+id/tvPartyRatings"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
+                        android:gravity="center_horizontal|center_vertical"
                         android:maxLines="2"
+                        android:layout_marginTop="20dp"
                         android:text="*****"
                         android:textColor="@color/colorPrimary"
                         android:textSize="20sp" />
-
-                    <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
-                        android:id="@+id/tvPartyDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:maxLines="2"
-                        android:text="Lorem impsum dolor sit, adispiscing elit, sed dc"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="20sp" />
-
                     <android.support.design.widget.TabLayout
                         android:id="@+id/tabs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/colorCustomToolbar" />
                 </LinearLayout>
-
-
-
                 <android.support.design.widget.CoordinatorLayout
                     android:id="@+id/llDetails"
                     android:layout_width="match_parent"
@@ -137,22 +100,13 @@
                     android:layout_below="@+id/llInfo"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal">
-
-
                     <android.support.v4.view.ViewPager
                         android:id="@+id/pager"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-
                 </android.support.design.widget.CoordinatorLayout>
-
-
             </RelativeLayout>
-
-
         </RelativeLayout>
-
     </android.support.v7.widget.CardView>
 </LinearLayout>
