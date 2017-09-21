@@ -3,7 +3,6 @@ package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 import com.olegsagenadatrytwo.partyapp.BasePresenter;
 import com.olegsagenadatrytwo.partyapp.BaseView;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
-import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
 
 import java.util.List;
 
@@ -19,6 +18,6 @@ public interface HomeActivityContract {
 
     interface presenter extends BasePresenter<view> {
 
-        void fetchEventbriteEvents();
+        void rxJavaEventbrite();
     }
 }

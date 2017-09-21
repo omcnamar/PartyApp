@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,6 +26,7 @@ import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
+import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 
@@ -48,6 +50,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     HomeActivityPresenter presenter;
 
     private static final String PARTY_ID = "party_id";
+    @BindView(R.id.pbLoading)
+    ProgressBar pbLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +61,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         DaggerHomeActivityComponent.create().inject(this);
         presenter.attachView(this);
         presenter.setContext(this);
-        presenter.fetchEventbriteEvents();
 
+        presenter.rxJavaEventbrite();
     }
 
     @Override
@@ -69,7 +73,6 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     @Override
     public void eventsLoadedUpdateUI(final List<Party> parties) {
-
         final FragmentStatePagerAdapter adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             //each view of the view pager is an Instance of the PartyFragment
             @Override
@@ -85,6 +88,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 return parties.size();
             }
         };
+        pbLoading.setVisibility(View.GONE);
+        viewPager.setPageTransformer(true, new DepthPageTransformer());
         //set Adapter for ViewPager
         viewPager.setAdapter(adapter);
 
