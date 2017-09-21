@@ -12,6 +12,7 @@
     android:padding="20dp"
     tools:context="com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity">
 
+
     <ImageView
         android:id="@+id/ivParty"
         android:layout_width="match_parent"

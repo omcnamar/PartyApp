@@ -29,9 +29,9 @@ import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
+import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -61,7 +61,6 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         DaggerHomeActivityComponent.create().inject(this);
         presenter.attachView(this);
         presenter.setContext(this);
-
         presenter.rxJavaEventbrite();
     }
 
@@ -100,7 +99,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildAdded: ");
                 final Party party = dataSnapshot.getValue(Party.class);
-                party.setId(UUID.fromString(dataSnapshot.getKey()));
+                party.setId(dataSnapshot.getKey());
 
                 //get reference to storage
                 FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -129,7 +128,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 final Party party = dataSnapshot.getValue(Party.class);
-                party.setId(UUID.fromString(dataSnapshot.getKey()));
+                party.setId(dataSnapshot.getKey());
 
                 //get reference to storage
                 FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -193,8 +192,15 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 Toast.makeText(this, "Location", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_profile:
-                Intent loginIntent = new Intent(this, LoginActivity.class);
-                startActivity(loginIntent);
+//                Intent loginIntent = new Intent(this, LoginActivity.class);
+//                startActivity(loginIntent);
+                if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    /*startActivity(new Intent(this, MyPartiesActivity.class));*/
+                    startActivity(new Intent(this, ProfileActivity.class));
+                }else {
+                    Intent logInIntent = new Intent(this, LoginActivity.class);
+                    startActivity(logInIntent);
+                }
                 // TODO: 9/17/17 need to implement back button for profile class
                 break;
 
