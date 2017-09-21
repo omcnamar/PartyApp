@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
+import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 
@@ -38,9 +40,12 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     @BindView(R.id.party_view_pager)
     ViewPager viewPager;
 
-    @Inject HomeActivityPresenter presenter;
+    @Inject
+    HomeActivityPresenter presenter;
 
     private static final String PARTY_ID = "party_id";
+    @BindView(R.id.pbLoading)
+    ProgressBar pbLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +55,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         DaggerHomeActivityComponent.create().inject(this);
         presenter.attachView(this);
         presenter.setContext(this);
-        presenter.fetchEventbriteEvents();
 
+        presenter.rxJavaEventbrite();
     }
 
     @Override
@@ -62,7 +67,6 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     @Override
     public void eventsLoadedUpdateUI(final List<Party> parties) {
-
         final FragmentStatePagerAdapter adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             //each view of the view pager is an Instance of the PartyFragment
             @Override
@@ -78,6 +82,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 return parties.size();
             }
         };
+        pbLoading.setVisibility(View.GONE);
+        viewPager.setPageTransformer(true, new DepthPageTransformer());
         //set Adapter for ViewPager
         viewPager.setAdapter(adapter);
 
@@ -89,20 +95,20 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
                 List<Party> existingParties = PartyLabSingleTon.getInstance(getApplication()).getEvents();
 
-                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    Party party =  snapshot.getValue(Party.class);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Party party = snapshot.getValue(Party.class);
                     party.setId(UUID.fromString(snapshot.getKey()));
                     boolean changed = false;
                     //determine if the party is in the current list
                     for (int i = 0; i < existingParties.size(); i++) {
-                        if(party.getId().toString().equals(existingParties.get(i).getId().toString())){
+                        if (party.getId().toString().equals(existingParties.get(i).getId().toString())) {
                             //update party
                             existingParties.set(i, party);
                             changed = true;
                         }
                     }
                     //if party was not in the current list add it to it
-                    if(!changed){
+                    if (!changed) {
                         Log.d(TAG, "onDataChange: " + "adding " + party.getId());
                         existingParties.add(party);
                     }
@@ -124,10 +130,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         switch (view.getId()) {
             case R.id.action_map:
                 //if there is no current user send the user to log in
-                if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                     Intent addPartyIntent = new Intent(this, AddPartyActivity.class);
                     startActivity(addPartyIntent);
-                }else{
+                } else {
                     Intent logInIntent = new Intent(this, LoginActivity.class);
                     startActivity(logInIntent);
                 }
