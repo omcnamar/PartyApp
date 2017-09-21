@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
@@ -28,23 +28,27 @@ import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import java.util.UUID;
 
-public class PartyFragment extends Fragment implements ChildEventListener{
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class PartyFragment extends Fragment implements ChildEventListener {
 
     public static final String TAG = "PartyFragment";
     private static final String PARTY_ID = "party_id";
+
+    ImageView ivLogo;
+    AutoResizeTextView tvPartyType;
+    AutoResizeTextView tvDescription;
+    CircleImageView ivPartyHost;
+
     private List<Party> parties;
     private Party party;
-    private AutoResizeTextView tvPartyName;
-    private AutoResizeTextView tvDescription;
-    private ImageView ivLogo;
     private DatabaseReference partiesReference;
     private Context context;
 
-    public static PartyFragment newInstance(UUID id) {
+    public static PartyFragment newInstance(String id) {
         Bundle args = new Bundle();
-        args.putSerializable(PARTY_ID, id);
+        args.putString(PARTY_ID, id);
         PartyFragment fragment = new PartyFragment();
         fragment.setArguments(args);
         return fragment;
@@ -55,7 +59,7 @@ public class PartyFragment extends Fragment implements ChildEventListener{
         super.onCreate(savedInstanceState);
 
         //get the id of the event that were are trying to display
-        UUID id = (UUID) getArguments().getSerializable(PARTY_ID);
+        String id = getArguments().getString(PARTY_ID);
         //get the singleTon that holds the list of the events
         PartyLabSingleTon partySingleton = PartyLabSingleTon.getInstance(getActivity());
         //get the list of the events from the singleton
@@ -71,9 +75,9 @@ public class PartyFragment extends Fragment implements ChildEventListener{
     }
 
     //this method will return the Event from the list of events based on id of the event passed
-    public Party getParty(UUID id) {
+    public Party getParty(String id) {
         for (int i = 0; i < parties.size(); i++) {
-            if (parties.get(i).getId() == id) {
+            if (parties.get(i).getId().equals(id)) {
                 return parties.get(i);
             }
         }
@@ -82,47 +86,64 @@ public class PartyFragment extends Fragment implements ChildEventListener{
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        View v        = inflater.inflate(R.layout.party_card_item2, container, false);
-        tvPartyName   = v.findViewById(R.id.tvPartyType);
+        View v = inflater.inflate(R.layout.party_card_item2, container, false);
+
+        ivLogo = v.findViewById(R.id.ivPartyHeader);
+        tvPartyType = v.findViewById(R.id.tvPartyType);
         tvDescription = v.findViewById(R.id.tvPartyDescription);
-        ivLogo        = v.findViewById(R.id.ivPartyHeader);
+        ivPartyHost = v.findViewById(R.id.ivPartyHost);
 
         //if the party is not null than set the ImageViews and TextViews according to the Event
         if (party != null) {
-            tvPartyName.setText(party.getPartyName());
+            tvPartyType.setText(party.getPartyName());
             tvDescription.setText(party.getDescription());
-            loadPartyImageGlide();
+            loadPartyImage(party.getImageURL(), ivLogo); // Header Image
+            loadPartyImage(null, ivPartyHost); // Host Image
         }
         return v;
     }
 
-    private void loadPartyImagePicasso() {
+    private void loadPartyImagePicasso(String url, ImageView imageView) {
         Log.d(TAG, "loadPartyImagePicasso: ");
-        if(party.getImageURL() != null){
-            Picasso.with(context)
-                    .load(party.getImageURL())
-                    .into(ivLogo);
+        if (party.getImageURL() != null) {
+            Picasso.with(getActivity())
+                    .load(url)
+                    .placeholder(R.drawable.partylogo)
+                    .centerCrop()
+                    .into(imageView);
         }
-
     }
 
-    private void loadPartyImageGlide() {
+    private void loadPartyImage(String url, ImageView imageView) {
 
         Log.d(TAG, "loadPartyImageGlide: ");
-        if(party.getImageURL() != null) {
-            if(context != null) {
+        // Sets properties for Glide images
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.centerCrop();
+
+        if (url == null){
+
+            Glide.with(context)
+                    .load(R.drawable.partylogo)
+                    .apply(requestOptions)
+                    .into(imageView);
+
+        } else {
+
+            if (context != null) {
                 Log.d(TAG, "loadPartyImageGlide: " + "getActivity() was not null");
+
                 Glide.with(context)
-                        .load(party.getImageURL())
-                        .into(ivLogo);
-            }else{
+                        .load(url)
+                        .apply(requestOptions)
+                        .into(imageView);
+            } else {
                 Log.d(TAG, "loadPartyImageGlide: " + "getActivity() was null gonna try picasso");
-                loadPartyImagePicasso();
+                loadPartyImagePicasso(url, imageView);
             }
-        }else {
-            Log.d("test", "loadPartyImageGlide: " + ivLogo);
-            ivLogo.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.partylogo));
+
         }
+
     }
 
     @Override
@@ -132,11 +153,12 @@ public class PartyFragment extends Fragment implements ChildEventListener{
 
     @Override
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
         final Party partyChanged = dataSnapshot.getValue(Party.class);
-        partyChanged.setId(UUID.fromString(dataSnapshot.getKey()));
+        partyChanged.setId(dataSnapshot.getKey());
 
         //if the party that was changed is the one on the screen update the changes live
-        if(partyChanged.getId().toString().equals(party.getId().toString())) {
+        if(partyChanged.getId().equals(party.getId())) {
             //get reference to storage
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
@@ -146,15 +168,16 @@ public class PartyFragment extends Fragment implements ChildEventListener{
                 @Override
                 public void onSuccess(Uri uri) {
                     party.setImageURL(uri.toString());
-                    tvPartyName.setText(partyChanged.getPartyName());
+                    tvPartyType.setText(partyChanged.getPartyName());
                     tvDescription.setText(partyChanged.getDescription());
-                    loadPartyImageGlide();
+                    loadPartyImage(partyChanged.getImageURL(), ivLogo); // Header Image
+                    loadPartyImage(null, ivPartyHost); // Host Image
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     // Handle any errors
-                    tvPartyName.setText(partyChanged.getPartyName());
+                    tvPartyType.setText(partyChanged.getPartyName());
                     tvDescription.setText(partyChanged.getDescription());
                 }
             });

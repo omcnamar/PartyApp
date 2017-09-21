@@ -1,4 +1,4 @@
-package com.olegsagenadatrytwo.partyapp.view.addpartyactivity;
+package com.olegsagenadatrytwo.partyapp.view.editpartyactivity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,18 +17,20 @@ import com.google.firebase.storage.UploadTask;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 
 import java.io.ByteArrayOutputStream;
-import java.util.UUID;
 
-public class AddPartyActivityPresenter implements AddPartyActivityContract.presenter {
+/**
+ * Created by omcna on 9/21/2017.
+ */
 
-    private static final String TAG = "AdActivityPresenter";
-    private AddPartyActivityContract.view view;
+public class EditPartyActivityPresenter implements EditPartyActivityContract.presenter {
+
+    public static final String TAG = "EditPartyPres";
+    private FirebaseDatabase database;
+    private EditPartyActivityContract.view view;
     private Context context;
 
-    private FirebaseDatabase database;
-
     @Override
-    public void attachView(AddPartyActivityContract.view view) {
+    public void attachView(EditPartyActivityContract.view view) {
         this.view = view;
     }
 
@@ -48,24 +50,22 @@ public class AddPartyActivityPresenter implements AddPartyActivityContract.prese
     }
 
     @Override
-    public void addNewParty(final Party party, Bitmap bitmap) {
+    public void editParty(Party party, Bitmap bitmap) {
 
-        //add new UUID to the party
-        UUID id = UUID.randomUUID();
-        String idString = id.toString();
-        //add the party to the user
+        Log.d(TAG, "editParty: " + party.getId());
+        //Edit the party to the user
         final DatabaseReference profileReference = database.getReference("profiles");
-        profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(idString).setValue(party);
+        profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(party.getId()).setValue(party);
 
-        //add the party to all parties
+        //edit the party to all parties
         DatabaseReference partyReference = database.getReference("parties");
-        partyReference.child(idString).setValue(party);
+        partyReference.child(party.getId()).setValue(party);
 
         //add the image of the party to the firebase
         if(bitmap != null) {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
-            StorageReference mountainImagesRef = storageRef.child("images/" + idString + ".jpg");
+            StorageReference mountainImagesRef = storageRef.child("images/" + party.getId() + ".jpg");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
@@ -88,6 +88,6 @@ public class AddPartyActivityPresenter implements AddPartyActivityContract.prese
         }
 
 
-        view.partySaved(true);
+        view.partyEdited(true);
     }
 }
