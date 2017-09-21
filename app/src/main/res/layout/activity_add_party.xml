@@ -70,7 +70,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textColorHint="@color/colorWhite">
+                        android:textColorHint="@color/colorAccent">
 
                         <EditText
                             android:id="@+id/etPartyName"
@@ -79,8 +79,8 @@
                             android:ems="10"
                             android:hint="Party Name"
                             android:inputType="text"
-                            android:textColor="@color/colorWhite"
-                            android:textColorHint="@color/colorWhite"/>
+                            android:textColor="@color/colorAccent"
+                            android:textColorHint="@color/colorAccent"/>
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -88,7 +88,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textColorHint="@color/colorWhite">
+                        android:textColorHint="@color/colorAccent">
 
                         <EditText
                             android:id="@+id/etPartyAddress"
@@ -97,8 +97,8 @@
                             android:ems="10"
                             android:hint="Address"
                             android:inputType="textPostalAddress"
-                            android:textColor="@color/colorWhite"
-                            android:textColorHint="@color/colorWhite"/>
+                            android:textColor="@color/colorAccent"
+                            android:textColorHint="@color/colorAccent"/>
 
 
                     </android.support.design.widget.TextInputLayout>
@@ -108,7 +108,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textColorHint="@color/colorWhite">
+                        android:textColorHint="@color/colorAccent">
 
                         <EditText
                             android:id="@+id/etPartyDescription"
@@ -117,8 +117,8 @@
                             android:ems="10"
                             android:hint="Description"
                             android:inputType="text"
-                            android:textColor="@color/colorWhite"
-                            android:textColorHint="@color/colorWhite"/>
+                            android:textColor="@color/colorAccent"
+                            android:textColorHint="@color/colorAccent"/>
 
 
                     </android.support.design.widget.TextInputLayout>
@@ -141,7 +141,7 @@
                     android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
                     android:layout_weight="1"
-                    android:textColorHint="@color/colorWhite">
+                    android:textColorHint="@color/colorAccent">
 
                     <EditText
                         android:id="@+id/etDate"
@@ -150,8 +150,8 @@
                         android:ems="10"
                         android:hint="Date"
                         android:inputType="date"
-                        android:textColor="@color/colorWhite"
-                        android:textColorHint="@color/colorWhite"
+                        android:textColor="@color/colorAccent"
+                        android:textColorHint="@color/colorAccent"
                         />
                 </android.support.design.widget.TextInputLayout>
 
@@ -161,8 +161,7 @@
                     android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
                     android:layout_weight="1"
-                    android:textColorHint="@color/colorWhite">
-
+                    android:textColorHint="@color/colorAccent">
                     <EditText
                         android:id="@+id/etStartTime"
                         android:layout_width="match_parent"
@@ -170,18 +169,37 @@
                         android:ems="10"
                         android:hint="Start Time"
                         android:inputType="time"
-                        android:textColor="@color/colorWhite"
-                        android:textColorHint="@color/colorWhite"
+                        android:textColor="@color/colorAccent"
+                        android:textColorHint="@color/colorAccent"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tvEndDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_weight="1"
+                    android:textColorHint="@color/colorAccent">
+
+                    <EditText
+                        android:id="@+id/etEndDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="End Date"
+                        android:inputType="date"
+                        android:textColor="@color/colorAccent"
+                        android:textColorHint="@color/colorAccent"
                         />
                 </android.support.design.widget.TextInputLayout>
-
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/tvEndTime"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
                     android:layout_weight="1"
-                    android:textColorHint="@color/colorWhite">
+                    android:textColorHint="@color/colorAccent">
 
                     <EditText
                         android:id="@+id/etEndTime"
@@ -190,8 +208,8 @@
                         android:ems="10"
                         android:hint="End Time"
                         android:inputType="time"
-                        android:textColor="@color/colorWhite"
-                        android:textColorHint="@color/colorWhite"
+                        android:textColor="@color/colorAccent"
+                        android:textColorHint="@color/colorAccent"
                         />
                 </android.support.design.widget.TextInputLayout>
 
@@ -200,7 +218,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:textColorHint="@color/colorWhite">
+                    android:textColorHint="@color/colorAccent">
 
                     <EditText
                         android:id="@+id/etMinAge"
@@ -209,8 +227,8 @@
                         android:ems="10"
                         android:hint="Min Age"
                         android:inputType="number"
-                        android:textColor="@color/colorWhite"
-                        android:textColorHint="@color/colorWhite"/>
+                        android:textColor="@color/colorAccent"
+                        android:textColorHint="@color/colorAccent"/>
 
 
                 </android.support.design.widget.TextInputLayout>
@@ -220,7 +238,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:textColorHint="@color/colorWhite">
+                    android:textColorHint="@color/colorAccent">
 
                     <EditText
                         android:id="@+id/etCapacity"
@@ -229,8 +247,8 @@
                         android:ems="10"
                         android:hint="Capacity"
                         android:inputType="number"
-                        android:textColor="@color/colorWhite"
-                        android:textColorHint="@color/colorWhite"/>
+                        android:textColor="@color/colorAccent"
+                        android:textColorHint="@color/colorAccent"/>
 
 
                 </android.support.design.widget.TextInputLayout>
@@ -241,11 +259,11 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="40dp"
                     android:layout_weight="1"
-                    android:background="@drawable/round_submit_new_party_button"
+                    android:background="@drawable/rounded_login_button"
                     android:onClick="addParty"
                     android:text="Submit"
-                    android:textColor="@android:color/white"
-                    android:textColorHint="@color/colorWhite"/>
+                    android:textColor="@color/colorAccent"
+                    android:textColorHint="@color/colorAccent"/>
 
             </LinearLayout>
 
