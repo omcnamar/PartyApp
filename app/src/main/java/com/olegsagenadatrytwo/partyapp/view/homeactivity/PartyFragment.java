@@ -33,7 +33,6 @@ import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,12 +44,7 @@ public class PartyFragment extends Fragment implements ChildEventListener {
 
     public static final String TAG = "PartyFragment";
     private static final String PARTY_ID = "party_id";
-    @BindView(R.id.ivPartyHeader)
-    ImageView ivLogo;
-    @BindView(R.id.tvPartyType)
-    AutoResizeTextView tvPartyType;
-    @BindView(R.id.tvPartyDescription)
-    AutoResizeTextView tvDescription;
+
     @BindView(R.id.ivPartyHost)
     CircleImageView ivPartyHost;
 
@@ -64,12 +58,15 @@ public class PartyFragment extends Fragment implements ChildEventListener {
 
     private List<Party> parties;
     private Party party;
+    private AutoResizeTextView tvPartyName;
+    private AutoResizeTextView tvDescription;
+    private ImageView ivLogo;
     private DatabaseReference partiesReference;
     private Context context;
 
-    public static PartyFragment newInstance(UUID id) {
+    public static PartyFragment newInstance(String id) {
         Bundle args = new Bundle();
-        args.putSerializable(PARTY_ID, id);
+        args.putString(PARTY_ID, id);
         PartyFragment fragment = new PartyFragment();
         fragment.setArguments(args);
         return fragment;
@@ -80,7 +77,7 @@ public class PartyFragment extends Fragment implements ChildEventListener {
         super.onCreate(savedInstanceState);
 
         //get the id of the event that were are trying to display
-        UUID id = (UUID) getArguments().getSerializable(PARTY_ID);
+        String id = getArguments().getString(PARTY_ID);
         //get the singleTon that holds the list of the events
         PartyLabSingleTon partySingleton = PartyLabSingleTon.getInstance(getActivity());
         //get the list of the events from the singleton
@@ -96,9 +93,9 @@ public class PartyFragment extends Fragment implements ChildEventListener {
     }
 
     //this method will return the Event from the list of events based on id of the event passed
-    public Party getParty(UUID id) {
+    public Party getParty(String id) {
         for (int i = 0; i < parties.size(); i++) {
-            if (parties.get(i).getId() == id) {
+            if (parties.get(i).getId().equals(id)) {
                 return parties.get(i);
             }
         }
@@ -171,10 +168,10 @@ public class PartyFragment extends Fragment implements ChildEventListener {
     @Override
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
         final Party partyChanged = dataSnapshot.getValue(Party.class);
-        partyChanged.setId(UUID.fromString(dataSnapshot.getKey()));
+        partyChanged.setId(dataSnapshot.getKey());
 
         //if the party that was changed is the one on the screen update the changes live
-        if (partyChanged.getId().toString().equals(party.getId().toString())) {
+        if(partyChanged.getId().equals(party.getId())) {
             //get reference to storage
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");

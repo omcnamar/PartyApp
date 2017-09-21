@@ -1,9 +1,10 @@
 package com.olegsagenadatrytwo.partyapp.model.custompojos;
 
-import java.util.UUID;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Party {
-    private UUID id;
+public class Party implements Parcelable{
+    private String id;
     private String ownerId;
     private String partyName;
     private String description;
@@ -21,6 +22,34 @@ public class Party {
 
     public Party() {
     }
+
+    protected Party(Parcel in) {
+        id = in.readString();
+        ownerId = in.readString();
+        partyName = in.readString();
+        description = in.readString();
+        address = in.readString();
+        date = in.readString();
+        startTime = in.readString();
+        endDate = in.readString();
+        endTime = in.readString();
+        ageRequired = in.readString();
+        capacity = in.readInt();
+        imageURL = in.readString();
+        currentAttendance = in.readInt();
+    }
+
+    public static final Creator<Party> CREATOR = new Creator<Party>() {
+        @Override
+        public Party createFromParcel(Parcel in) {
+            return new Party(in);
+        }
+
+        @Override
+        public Party[] newArray(int size) {
+            return new Party[size];
+        }
+    };
 
     @Override
     public String toString() {
@@ -85,11 +114,11 @@ public class Party {
         this.imageURL = imageURL;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -179,5 +208,27 @@ public class Party {
 
     public void setCurrentAttendance(int currentAttendance) {
         this.currentAttendance = currentAttendance;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(ownerId);
+        parcel.writeString(partyName);
+        parcel.writeString(description);
+        parcel.writeString(address);
+        parcel.writeString(date);
+        parcel.writeString(startTime);
+        parcel.writeString(endDate);
+        parcel.writeString(endTime);
+        parcel.writeString(ageRequired);
+        parcel.writeInt(capacity);
+        parcel.writeString(imageURL);
+        parcel.writeInt(currentAttendance);
     }
 }
