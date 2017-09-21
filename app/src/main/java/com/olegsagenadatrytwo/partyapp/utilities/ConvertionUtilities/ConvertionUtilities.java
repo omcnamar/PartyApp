@@ -29,6 +29,9 @@ public class ConvertionUtilities {
     public static final double convertKilometersToMeters(double kilometers){
         return kilometers * 1000;
     }
+    public static final int convertMinutesToMillisec(int minutes){
+        return minutes * 60 * 1000;
+    }
 
     public static Bitmap convertToMutable(final Context context, final Bitmap imgIn) {
         final int width = imgIn.getWidth(), height = imgIn.getHeight();

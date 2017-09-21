@@ -25,11 +25,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
+import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.HomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
+import com.olegsagenadatrytwo.partyapp.view.map_fragment.MapsActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,6 +48,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     @BindView(R.id.party_view_pager)
     ViewPager viewPager;
+    ArrayList<Party> partiesList;
 
     @Inject
     HomeActivityPresenter presenter;
@@ -73,6 +77,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     @Override
     public void eventsLoadedUpdateUI(final List<Party> parties) {
+        partiesList = (ArrayList<Party>)parties;
         final FragmentStatePagerAdapter adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             //each view of the view pager is an Instance of the PartyFragment
             @Override
@@ -184,10 +189,14 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                     startActivity(addPartyIntent);
                 } else {
                     Intent logInIntent = new Intent(this, LoginActivity.class);
+
                     startActivity(logInIntent);
                 }
                 // TODO: 9/17/17 implement the Map View
-                Toast.makeText(this, "Map", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MapsActivity.class);
+                intent.putParcelableArrayListExtra("parties", partiesList);
+                startActivity(intent);
+
                 break;
             case R.id.action_location:
                 Toast.makeText(this, "Location", Toast.LENGTH_SHORT).show();

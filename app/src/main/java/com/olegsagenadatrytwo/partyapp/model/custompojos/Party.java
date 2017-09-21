@@ -1,8 +1,11 @@
 package com.olegsagenadatrytwo.partyapp.model.custompojos;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.UUID;
 
-public class Party {
+public class Party implements Parcelable{
     private UUID id;
     private String ownerId;
     private String partyName;
@@ -20,6 +23,33 @@ public class Party {
 
     public Party() {
     }
+
+    protected Party(Parcel in) {
+        ownerId = in.readString();
+        partyName = in.readString();
+        description = in.readString();
+        address = in.readString();
+        date = in.readString();
+        startTime = in.readString();
+        endDate = in.readString();
+        endTime = in.readString();
+        ageRequired = in.readString();
+        capacity = in.readInt();
+        imageURL = in.readString();
+        currentAttendance = in.readInt();
+    }
+
+    public static final Creator<Party> CREATOR = new Creator<Party>() {
+        @Override
+        public Party createFromParcel(Parcel in) {
+            return new Party(in);
+        }
+
+        @Override
+        public Party[] newArray(int size) {
+            return new Party[size];
+        }
+    };
 
     @Override
     public String toString() {
@@ -168,5 +198,26 @@ public class Party {
 
     public void setCurrentAttendance(int currentAttendance) {
         this.currentAttendance = currentAttendance;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(ownerId);
+        parcel.writeString(partyName);
+        parcel.writeString(description);
+        parcel.writeString(address);
+        parcel.writeString(date);
+        parcel.writeString(startTime);
+        parcel.writeString(endDate);
+        parcel.writeString(endTime);
+        parcel.writeString(ageRequired);
+        parcel.writeInt(capacity);
+        parcel.writeString(imageURL);
+        parcel.writeInt(currentAttendance);
     }
 }

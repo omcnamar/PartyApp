@@ -1,8 +1,54 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.olegsagenadatrytwo.partyapp.view.map_fragment.MapsActivity" />
+    tools:context=".view.map_fragment.MapsActivity" >
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.olegsagenadatrytwo.partyapp.view.map_fragment.MapsActivity" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <SeekBar
+            android:id="@+id/sbSetDistance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="10"
+            android:progress="1"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="10dp"
+            >
+            <EditText
+                android:padding="10dp"
+                android:background="@layout/zip_code_et"
+                android:gravity="center"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/etZipCode"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                />
+            <Button
+                android:background="@layout/zip_code_btn"
+                android:onClick="changeCurrentLocationToRequestedZip"
+                android:id="@+id/btnChangeZipCode"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="Zip Code"
+                android:textColor="@color/colorAccent"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

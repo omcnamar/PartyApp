@@ -2,6 +2,7 @@ package com.olegsagenadatrytwo.partyapp.utilities.location;
 
 import android.location.Address;
 import android.location.Location;
+import android.util.Log;
 
 
 import com.google.android.gms.maps.model.LatLng;
@@ -165,6 +166,64 @@ public class LocationUtilities {
         address.setLocality(city + ", " + state);
         address.setPostalCode(zipCode);
         return address;
+    }
+
+
+    public static CustomLocationObject getGeographicalLocationBasedOffZip(String zipCode, String passedProvider){
+        CustomLocationObject returnedLocation = new CustomLocationObject();
+        if(zipCode.length() != 5){
+            Log.d("TAG", "getGeographicalLocationBasedOffZip: Zip Code Length not valid");
+        } else if(!(zipCode.matches("-?\\d+(\\.\\d+)?"))) {
+            Log.d("TAG", "getGeographicalLocationBasedOffZip: Zip Code Is not a number");
+        } else {
+            final HttpUrl url = new HttpUrl.Builder()
+                    .scheme("https")
+                    .host("maps.googleapis.com")
+                    .addPathSegment("maps")
+                    .addPathSegment("api")
+                    .addPathSegment("geocode")
+                    .addPathSegment("json")
+                    .addQueryParameter("address", zipCode)
+                    .addQueryParameter("key", GOOGLE_GEO_API_KEY)
+                    .build();
+            Log.d("TAG", "getGeographicalLocationBasedOffZip: url = " + url.toString());
+            Thread latLngThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        String jsonResponse = JsonUtilities.getJsonResponse(new URL(url.toString()));
+                        Gson gson = new Gson();
+                        returnedGeoProfile = gson.fromJson(jsonResponse, GeocodingProfile.class);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            latLngThread.start();
+            try {
+                latLngThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Location location = new Location(passedProvider);
+            Log.d("TAG", "getGeographicalLocationBasedOffZip: " + returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLat());
+            location.setLatitude(returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLat());
+            location.setLongitude(returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLng());
+            returnedLocation.setLocation(location);
+            returnedLocation = setGeographicalLocation(returnedLocation.getLocation());
+            Log.d("TAG", "getGeographicalLocationBasedOffZip: " + returnedLocation.getLatitude_longitude().toString());
+
+        }
+        return returnedLocation;
+    }
+
+    public static Address parseStringToAddress(String passedString){
+        Address address = new Address(Locale.US);
+        address.setAddressLine(1,passedString);
+        address.setLocality("");
+        address.setPostalCode("");
+        return address;
+
     }
 
 

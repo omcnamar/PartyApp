@@ -66,6 +66,21 @@
             android:name=".view.details_activity.DetailsActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".view.addpartyactivity.AddPartyActivity"></activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".view.map_fragment.MapsActivity"
+            >
+            <intent-filter>
+
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
