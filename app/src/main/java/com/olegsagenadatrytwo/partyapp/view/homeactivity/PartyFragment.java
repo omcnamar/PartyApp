@@ -29,7 +29,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView;
-import com.olegsagenadatrytwo.partyapp.customviews.ImageViewRoundedCorners;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.squareup.picasso.Picasso;
 
@@ -237,7 +236,7 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                 if(party.isLiked()){
                     party.setLiked(false);
                     btnLike.setImageDrawable(unlike);
-                    unlike.reverseTransition(100);
+                    unlike.reverseTransition(500);
                     btnLike.startAnimation(animation);
                     btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike_48dp));
                 } else {

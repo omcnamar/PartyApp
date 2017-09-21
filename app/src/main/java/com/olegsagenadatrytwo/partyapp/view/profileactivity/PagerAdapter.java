@@ -11,16 +11,27 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitle = new ArrayList<>();
+
     public PagerAdapter(FragmentManager fm) {
         super(fm);
     }
+
     public void addFragment (Fragment fragment,String title){
         mFragmentList.add(fragment);
         mFragmentTitle.add(title);
     }
     @Override
     public Fragment getItem(int position) {
-        return mFragmentList.get(position);
+        switch (position) {
+            case 0:
+                return mFragmentList.get(position);
+            case 1:
+                return mFragmentList.get(position);
+            case 2:
+                return mFragmentList.get(position);
+            default:
+                return null;
+        }
     }
 
     @Override
