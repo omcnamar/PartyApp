@@ -101,7 +101,7 @@
                 android:orientation="horizontal">
 
 
-                <android.support.v7.widget.AppCompatButton
+                <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/btnLike"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -109,9 +109,9 @@
                     android:layout_weight="1"
                     android:background="@drawable/round_button"
                     android:elevation="3dp"
-                    android:text="$"/>
+                    android:src="@drawable/ic_unlike_48dp"/>
 
-                <android.support.v7.widget.AppCompatButton
+                <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/btnShareParty"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -119,7 +119,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/round_button"/>
 
-                <android.support.v7.widget.AppCompatButton
+                <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/btnPublicOrPrivate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
