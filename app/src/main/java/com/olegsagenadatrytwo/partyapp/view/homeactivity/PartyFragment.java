@@ -122,7 +122,7 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
             if (party.isLiked()){
                 btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
             } else {
-                btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike_48dp));
+                btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike));
             }
         }
         return v;
@@ -238,7 +238,7 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                     btnLike.setImageDrawable(unlike);
                     unlike.reverseTransition(500);
                     btnLike.startAnimation(animation);
-                    btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike_48dp));
+                    btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike));
                 } else {
                     party.setLiked(true);
                     btnLike.setImageDrawable(like);
