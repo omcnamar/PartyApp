@@ -1,32 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="100dp">
 
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|top"
+        android:background="@drawable/round_frame_layout_pic"
+        android:elevation="6dp">
 
-    <RelativeLayout
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivPartyHost"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/ic_person_black_48dp"
+            app:civ_border_color="#999999"
+            app:civ_border_width="3dp" />
+
+    </FrameLayout>
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
+        android:layout_marginBottom="100dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
         android:layout_marginTop="75dp"
         android:background="@drawable/round_frame_layout"
-        android:elevation="5dp">
+        android:orientation="vertical">
 
 
-        <ImageView
+        <com.olegsagenadatrytwo.partyapp.customviews.ImageViewRoundedCorners
             android:id="@+id/ivPartyHeader"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="300dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
             android:layout_marginTop="200dp"
             android:background="@drawable/event_layout"
             android:orientation="vertical"
@@ -43,14 +58,13 @@
                 android:paddingTop="10dp">
 
                 <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
-                    android:id="@+id/auto"
+                    android:id="@+id/tvPartyType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
                     android:text="House Party"
                     android:textColor="@android:color/white"
-                    android:maxLines="1"
-                    android:textSize="40sp"
-                    />
+                    android:textSize="40sp" />
 
                 <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
                     android:id="@+id/tvPartyDistance"
@@ -72,82 +86,42 @@
             </LinearLayout>
 
 
-            <android.support.v7.widget.ButtonBarLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="50dp"
-                android:layout_marginTop="100dp"
-                android:orientation="horizontal">
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center">
 
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnLike"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:elevation="3dp"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_button_cheap"
-                        android:text="$" />
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/btnLike"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/round_button"
+                    android:elevation="3dp"
+                    android:src="@drawable/ic_unlike_48dp" />
 
-                </LinearLayout>
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/btnShareParty"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/round_button" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center">
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/btnPublicOrPrivate"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/round_button" />
 
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnShareParty"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_button" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center">
-
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnPublicOrPrivate"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_button" />
-
-                </LinearLayout>
-
-            </android.support.v7.widget.ButtonBarLayout>
+            </LinearLayout>
 
         </RelativeLayout>
 
-
-    </RelativeLayout>
-
-
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|top"
-        android:background="@drawable/round_frame_layout_pic"
-        android:elevation="6dp">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@mipmap/ic_launcher"
-            app:civ_border_color="#999999"
-            app:civ_border_width="3dp" />
 
     </FrameLayout>
 
