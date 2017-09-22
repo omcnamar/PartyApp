@@ -12,6 +12,7 @@
     android:padding="20dp"
     tools:context="com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity">
 
+
     <ImageView
         android:id="@+id/ivParty"
         android:layout_width="match_parent"
@@ -63,7 +64,12 @@
         android:layout_marginBottom="16dp"
         android:textColor="@color/colorWhite"
         android:textStyle="bold"/>
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFF"
+        android:gravity="center"
+        android:text="--------------------------------------- OR ---------------------------------------"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -97,18 +103,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/fb_login_button"
                 android:src="@drawable/com_facebook_button_icon"
-                android:background="@drawable/rounded_corners_facebook"
-                />
-            <!--<com.facebook.login.widget.LoginButton-->
-                <!--xmlns:facebook="http://schemas.android.com/apk/res-auto"-->
-                <!--facebook:com_facebook_login_text="FACEBOOK"-->
-                <!--android:id="@+id/fb_login_button"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:gravity="center_horizontal"-->
-
-                <!--/>-->
-
+                android:background="@drawable/rounded_corners_facebook" />
 
         </LinearLayout>
 

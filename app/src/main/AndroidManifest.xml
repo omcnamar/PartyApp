@@ -64,6 +64,18 @@
             android:screenOrientation="portrait"></activity>
         <activity
             android:name=".view.details_activity.DetailsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".view.addpartyactivity.AddPartyActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".view.editpartyactivity.EditPartyActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".view.profileactivity.ProfileActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"/>
             android:screenOrientation="portrait" />
         <activity android:name=".view.addpartyactivity.AddPartyActivity"></activity>
 

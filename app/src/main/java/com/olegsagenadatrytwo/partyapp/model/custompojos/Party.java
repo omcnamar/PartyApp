@@ -76,7 +76,6 @@ public class Party implements Parcelable{
                 ", ageRequired='" + ageRequired + '\'' +
                 ", capacity=" + capacity +
                 ", currentAttendance=" + currentAttendance +
-                ", isLiked=" + isLiked +
                 '}';
     }
 
@@ -107,8 +106,6 @@ public class Party implements Parcelable{
 
         return eq;
     }
-
-
 
     public boolean isLiked() {
         return isLiked;
