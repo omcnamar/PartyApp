@@ -79,11 +79,13 @@ public class ProfileActivity extends AppCompatActivity {
         pager.beginFakeDrag();
         setupAdapter(pager, myAdapter);
         tabs.setupWithViewPager(pager);
-        userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-        if(!userName.toString().equals(""))
-            displayName.setText(userName.toString());
-        else
-            displayName.setText("New user");
+        userName = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        if(userName != null) {
+            if (!userName.equals(""))
+                displayName.setText(userName);
+            else
+                displayName.setText("New user");
+        }
 
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
