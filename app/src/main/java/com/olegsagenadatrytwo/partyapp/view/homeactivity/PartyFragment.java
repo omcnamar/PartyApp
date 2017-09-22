@@ -173,12 +173,13 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
 
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
+        Log.d("ggg", "onSuccess: Fragment: " +  "on child added before image: ");
     }
 
     @Override
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
+        Log.d("ggg", "onSuccess: Fragment: " +  "on child changed before image: ");
         final Party partyChanged = dataSnapshot.getValue(Party.class);
         partyChanged.setId(dataSnapshot.getKey());
 
@@ -192,10 +193,13 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
             storageRef.child("images/" + partyChanged.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
+                    Log.d("ggg", "onSuccess: " +  "on child changed image success: ");
                     party.setImageURL(uri.toString());
                     tvPartyType.setText(partyChanged.getPartyName());
                     tvDescription.setText(partyChanged.getDescription());
-                    loadPartyImage(partyChanged.getImageURL(), ivLogo); // Header Image
+                    party.setPartyName(partyChanged.getPartyName());
+                    party.setDescription(partyChanged.getDescription());
+                    loadPartyImage(uri.toString(), ivLogo); // Header Image
                     loadPartyImage(null, ivPartyHost); // Host Image
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -204,6 +208,8 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                     // Handle any errors
                     tvPartyType.setText(partyChanged.getPartyName());
                     tvDescription.setText(partyChanged.getDescription());
+                    party.setPartyName(partyChanged.getPartyName());
+                    party.setDescription(partyChanged.getDescription());
                 }
             });
         }
@@ -211,7 +217,15 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
 
     @Override
     public void onChildRemoved(DataSnapshot dataSnapshot) {
+        final Party partyChanged = dataSnapshot.getValue(Party.class);
+        partyChanged.setId(dataSnapshot.getKey());
 
+        if(party.getId().equals(partyChanged.getId())){
+            tvPartyType.setText("This party was just deleted");
+            tvDescription.setText("");
+            ivLogo.setImageBitmap(null);
+            ivPartyHost.setImageBitmap(null);
+        }
     }
 
     @Override

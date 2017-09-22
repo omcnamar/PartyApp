@@ -140,6 +140,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 final Party party = dataSnapshot.getValue(Party.class);
                 party.setId(dataSnapshot.getKey());
 
+                Log.d("ggg", "onSuccess: Home: " +  "on child added before image: ");
                 //get reference to storage
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
@@ -148,20 +149,26 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
+                        Log.d("ggg", "onSuccess: " +  "on child added image success: ");
                         party.setImageURL(uri.toString());
-                        List<Party> parties = PartyLabSingleTon.getInstance(getApplicationContext()).getEvents();
+                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
+                        List<Party> parties = partyLabSingleTon.getEvents();
                         parties.add(party);
+                        partyLabSingleTon.setEvents(parties);
                         adapter.notifyDataSetChanged();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         // Handle any errors
-                        List<Party> parties = PartyLabSingleTon.getInstance(getApplicationContext()).getEvents();
+                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
+                        List<Party> parties = partyLabSingleTon.getEvents();
                         parties.add(party);
+                        partyLabSingleTon.setEvents(parties);
                         adapter.notifyDataSetChanged();
                     }
                 });
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -173,32 +180,44 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
 
+                Log.d("ggg", "onSuccess: Home: " +  "on child changed before image: ");
                 //download image
                 storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
                         party.setImageURL(uri.toString());
-                        List<Party> parties = PartyLabSingleTon.getInstance(getApplicationContext()).getEvents();
+                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
+                        List<Party> parties = partyLabSingleTon.getEvents();
                         int i = parties.indexOf(party);
                         parties.set(i, party);
+                        partyLabSingleTon.setEvents(parties);
                         adapter.notifyDataSetChanged();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         // Handle any errors
-                        List<Party> parties = PartyLabSingleTon.getInstance(getApplicationContext()).getEvents();
+                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
+                        List<Party> parties = partyLabSingleTon.getEvents();
                         int i = parties.indexOf(party);
                         parties.set(i, party);
+                        partyLabSingleTon.setEvents(parties);
                         adapter.notifyDataSetChanged();
                     }
                 });
+                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onChildRemoved: ");
-
+                final Party party = dataSnapshot.getValue(Party.class);
+                party.setId(dataSnapshot.getKey());
+                PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
+                List<Party> parties = partyLabSingleTon.getEvents();
+                int i = parties.indexOf(party);
+                parties.remove(i);
+                partyLabSingleTon.setEvents(parties);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
