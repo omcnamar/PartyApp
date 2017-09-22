@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -37,8 +38,13 @@ public class ProfileActivity extends AppCompatActivity {
     CircleImageView civProfilePicture;
     @BindView(R.id.ibSave)
     ImageButton ibSave;
+    @BindView(R.id.ibEdit)
+    ImageButton ibEdit;
+    @BindView(R.id.etName)
+    EditText etName;
     private PagerAdapter myAdapter;
     private String userName;
+    private boolean flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.profile_activity);
         ButterKnife.bind(this);
         myAdapter = new PagerAdapter(getSupportFragmentManager());
-
+        flag = false;
         setupAdapter(pager, myAdapter);
         tabs.setupWithViewPager(pager);
         userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
@@ -69,7 +75,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    @OnClick({R.id.action_backbutton, R.id.action_add_party, R.id.action_profileSettings,R.id.ibEdit})
+    @OnClick({R.id.action_backbutton, R.id.action_add_party, R.id.action_profileSettings, R.id.ibEdit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.action_backbutton:
@@ -86,7 +92,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.action_profileSettings:
-                if (FirebaseAuth.getInstance().getCurrentUser() != null){
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                     FirebaseAuth.getInstance().signOut();
                     Toast.makeText(this, "Logged out!", Toast.LENGTH_SHORT).show();
                     Intent homeIntent = new Intent(this, HomeActivity.class);
@@ -94,7 +100,19 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.ibEdit:
-                ibSave.setVisibility(View.VISIBLE);
+                if (flag) {
+                    ibEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_mode_edit_black_48dp));
+                    ibSave.setVisibility(View.GONE);
+                    etName.setVisibility(View.GONE);
+                    displayName.setVisibility(View.VISIBLE);
+                    flag = false;
+                } else {
+                    flag = true;
+                    ibSave.setVisibility(View.VISIBLE);
+                    etName.setVisibility(View.VISIBLE);
+                    displayName.setVisibility(View.GONE);
+                    ibEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_cancel_black_48dp));
+                }
                 break;
         }
     }
