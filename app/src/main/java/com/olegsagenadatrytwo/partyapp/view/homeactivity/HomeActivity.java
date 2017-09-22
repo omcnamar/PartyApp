@@ -331,7 +331,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    
+
 
                 } else {
 

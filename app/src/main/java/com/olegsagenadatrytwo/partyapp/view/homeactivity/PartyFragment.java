@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -55,6 +56,8 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
     private Party party;
     private DatabaseReference partiesReference;
     private Context context;
+
+    TextView tvDistance;
 
     public static PartyFragment newInstance(String id) {
         Bundle args = new Bundle();
@@ -108,6 +111,8 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         btnPublicOrPrivate.setOnClickListener(this);
         btnShareParty.setOnClickListener(this);
 
+        tvDistance = v.findViewById(R.id.tvPartyDistance);
+
         ivLogo = v.findViewById(R.id.ivPartyHeader);
         tvPartyType = v.findViewById(R.id.tvPartyType);
         tvDescription = v.findViewById(R.id.tvPartyDescription);
@@ -117,6 +122,12 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         if (party != null) {
             tvPartyType.setText(party.getPartyName());
             tvDescription.setText(party.getDescription());
+            double distance = Double.parseDouble(party.getDistance().replace(",", "").replaceAll("[^\\d.]", ""));
+            if(distance <=10000000) {
+                tvDistance.setText(String.valueOf(distance) + " miles away");
+            } else {
+                tvDistance.setText("Unknown distance");
+            }
             loadPartyImage(party.getImageURL(), ivLogo); // Header Image
             loadPartyImage(null, ivPartyHost); // Host Image
             if (party.isLiked()){
