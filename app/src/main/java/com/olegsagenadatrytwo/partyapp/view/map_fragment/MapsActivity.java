@@ -279,8 +279,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public ArrayList<Address> initTestValues(ArrayList<Address> passedList){
         for(Party party : partyList){
             Log.d("TAG", "initTestValues: " + party.getAddress());
-            //Address addr = LocationUtilities.parseStringToAddress(party.getAddress());
-            //passedList.add(addr);
+            Address addr = LocationUtilities.parseStringToAddress(party.getAddress());
+            passedList.add(addr);
         }
         passedList.add(LocationUtilities.setupAddress("2909 Austell Rd SW #100", "Marietta", "GA", "30008"));
         passedList.add(LocationUtilities.setupAddress("2215 D and B Dr SE", "Marietta", "GA", "30008"));

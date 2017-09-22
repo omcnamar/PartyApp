@@ -3,10 +3,8 @@ package com.olegsagenadatrytwo.partyapp.model.custompojos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.UUID;
-
 public class Party implements Parcelable{
-    private UUID id;
+    private String id;
     private String ownerId;
     private String partyName;
     private String description;
@@ -18,6 +16,16 @@ public class Party implements Parcelable{
     private String ageRequired;
     private int capacity;
     private String imageURL;
+    private boolean isLiked;
+    private String distance;
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
 
     private int currentAttendance;
 
@@ -25,6 +33,7 @@ public class Party implements Parcelable{
     }
 
     protected Party(Parcel in) {
+        id = in.readString();
         ownerId = in.readString();
         partyName = in.readString();
         description = in.readString();
@@ -37,6 +46,7 @@ public class Party implements Parcelable{
         capacity = in.readInt();
         imageURL = in.readString();
         currentAttendance = in.readInt();
+        distance = in.readString();
     }
 
     public static final Creator<Party> CREATOR = new Creator<Party>() {
@@ -66,6 +76,7 @@ public class Party implements Parcelable{
                 ", ageRequired='" + ageRequired + '\'' +
                 ", capacity=" + capacity +
                 ", currentAttendance=" + currentAttendance +
+                ", isLiked=" + isLiked +
                 '}';
     }
 
@@ -82,7 +93,8 @@ public class Party implements Parcelable{
         this.ageRequired = party.getAgeRequired();
         this.capacity = party.getCapacity();
         this.currentAttendance = party.getCurrentAttendance();
-    }
+        this.isLiked = party.isLiked();
+}
 
     @Override
     public boolean equals(Object obj) {
@@ -96,6 +108,16 @@ public class Party implements Parcelable{
         return eq;
     }
 
+
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
+
     public String getImageURL() {
         return imageURL;
     }
@@ -104,11 +126,11 @@ public class Party implements Parcelable{
         this.imageURL = imageURL;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -207,6 +229,7 @@ public class Party implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
         parcel.writeString(ownerId);
         parcel.writeString(partyName);
         parcel.writeString(description);
@@ -219,5 +242,8 @@ public class Party implements Parcelable{
         parcel.writeInt(capacity);
         parcel.writeString(imageURL);
         parcel.writeInt(currentAttendance);
+        parcel.writeString(distance);
     }
+
+
 }
