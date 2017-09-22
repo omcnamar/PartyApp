@@ -123,12 +123,14 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         if (party != null) {
             tvPartyType.setText(party.getPartyName());
             tvDescription.setText(party.getDescription());
-//            double distance = Double.parseDouble(party.getDistance().replace(",", "").replaceAll("[^\\d.]", ""));
-//            if(distance <=10000000) {
-//                tvDistance.setText(String.valueOf(distance) + " miles away");
-//            } else {
-//                tvDistance.setText("Unknown distance");
-//            }
+            if(party.getDistance() != null) {
+                double distance = Double.parseDouble(party.getDistance().replace(",", "").replaceAll("[^\\d.]", ""));
+                if(distance <=10000000) {
+                    tvDistance.setText(String.valueOf(distance) + " miles away");
+                }
+            }else {
+                tvDistance.setText("Unknown distance");
+            }
             loadPartyImage(party.getImageURL(), ivLogo); // Header Image
             Log.d("qqqq", "onCreateView: Party Fragment" +  party.getImageURL());
 
@@ -229,7 +231,7 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                         party.setPartyName(partyChanged.getPartyName());
                         party.setDescription(partyChanged.getDescription());
                         loadPartyImage(uri.toString(), ivLogo); // Header Image
-                        loadPartyImage(null, ivPartyHost); // Host Image
+                        //loadPartyImage(null, ivPartyHost); // Host Image
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

@@ -99,8 +99,8 @@
 
                 <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/btnLike"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_margin="5dp"
                     android:background="@drawable/round_button"
                     android:elevation="3dp"
@@ -108,8 +108,8 @@
 
                 <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/btnShareParty"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:actionProviderClass="android.widget.ShareActionProvider"
                     app:srcCompat="@drawable/ic_share"
                     android:layout_margin="5dp"
@@ -117,8 +117,8 @@
 
                 <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/btnPublicOrPrivate"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_margin="5dp"
                     android:background="@drawable/round_button" />
 

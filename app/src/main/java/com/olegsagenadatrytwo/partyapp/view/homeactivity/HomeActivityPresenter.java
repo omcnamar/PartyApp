@@ -4,9 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.support.v7.widget.ShareActionProvider;
 
-import com.olegsagenadatrytwo.partyapp.eventbus.LocalEvent;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
@@ -16,6 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.olegsagenadatrytwo.partyapp.eventbus.LocalEvent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.Event;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
@@ -45,7 +44,6 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
     // Query Eventbrite with this
     @NonNull
     RetrofitHelper.ApiService apiService;
-    private ShareActionProvider mShareActionProvider;
     private Context context;
     // Collects subscriptions to un subscribe later
     @NonNull
@@ -171,7 +169,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                                         party.setImageURL(uri.toString());
                                         PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
                                         List<Party> parties = partyLabSingleTon.getEvents();
-                                        int i = parties.indexOf(party);
+                                        int i = parties.indexOf(party.getId());
                                         parties.set(i, party);
                                         partyLabSingleTon.setEvents(parties);
                                         view.eventsLoadedUpdateUI(parties);
@@ -220,7 +218,6 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
 
     @Override
     public void getLocaleRetrofit(String zip) {
-
         apiService = new RetrofitHelper().getLocaleService();
         retrofit2.Call<GeocodingProfile> getLocale = apiService.queryGetLocale("postal_code:"+zip);
         getLocale.enqueue(new Callback<GeocodingProfile>() {

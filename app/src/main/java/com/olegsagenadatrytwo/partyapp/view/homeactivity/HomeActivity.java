@@ -1,7 +1,7 @@
 package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
-import android.app.Dialog;
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -24,7 +24,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,7 +32,6 @@ import com.olegsagenadatrytwo.partyapp.eventbus.LocalEvent;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.utilities.viewpager_utils.DepthPageTransformer;
-import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 import com.olegsagenadatrytwo.partyapp.view.map_fragment.MapsActivity;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;

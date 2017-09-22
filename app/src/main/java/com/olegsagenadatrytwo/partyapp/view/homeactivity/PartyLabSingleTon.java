@@ -10,6 +10,7 @@ import java.util.List;
 
 public class PartyLabSingleTon {
 
+    private static final String TAG = "PartyST";
     private Context context;
     private static PartyLabSingleTon partyLab;
     private static List<Party> events = new ArrayList<>();
@@ -39,18 +40,20 @@ public class PartyLabSingleTon {
 
     //this method will set the list of events
     void setEvents(List<Party> events) {
-//        if(events.isEmpty()){
-//            Log.d(TAG + " DISTANCE", "getInstance: Is Empty" );
-//        } else {
-//            try {
-//                events = LocationUtilities.setPartyDistances(events, context);
-//                for(Party p : events){
-//                    Log.d(TAG + " DISTANCE", "getInstance: " + p.getDistance());
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        /*if(events.isEmpty()){
+            Log.d(TAG + " DISTANCE", "getInstance: Is Empty" );
+        } else {
+            try {
+                events = LocationUtilities.setPartyDistances(events, context);
+                //events = LocationUtilities.setPartyLatLng(events, context);
+                for(Party p : events){
+                    //p.setLatlng(LocationUtilities.getPartyLocationLatLng(p));
+                    Log.d(TAG + " DISTANCE", "getInstance: " + p.getDistance());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }*/
         this.events = events;
     }
 }

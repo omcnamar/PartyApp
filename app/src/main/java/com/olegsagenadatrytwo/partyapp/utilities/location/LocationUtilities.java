@@ -82,9 +82,9 @@ public class LocationUtilities {
      public static List<Party> setPartyDistances(List<Party> passedPartyList, Context context) throws IOException {
          int error = 0;
          for(Party beingEvalParty : passedPartyList){
-            if(beingEvalParty.getAddress() != null && beingEvalParty.getDistance() == null) {
+            if(beingEvalParty.getAddress() != null) {
                 beingEvalParty.setDistance(getDistanceFromDeviceLocation(beingEvalParty, context));
-                savePartyEdit(beingEvalParty);
+                //savePartyEdit(beingEvalParty);
                 Log.d(TAG, "setPartyDistances: setting new distance");
             } else {
                 beingEvalParty.setDistance("100,000,00" + error);
@@ -318,7 +318,6 @@ public class LocationUtilities {
         return address;
 
     }
-
 
 }
 

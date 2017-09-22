@@ -31,14 +31,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 
-import java.io.IOException;
 import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.olegsagenadatrytwo.partyapp.utilities.location.LocationUtilities.getDistanceFromDeviceLocation;
 
 public class AddPartyActivity extends AppCompatActivity implements AddPartyActivityContract.view {
 
@@ -189,7 +186,6 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
         }
     }
 
-
     //method to add a party to the dataBase
     public void addParty(View view) {
 
@@ -249,11 +245,6 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
             party.setEndTime(mEtEndTime.getText().toString());
             party.setAgeRequired(mEtMinAge.getText().toString());
             party.setCapacity(Integer.parseInt(mEtCapacity.getText().toString()));
-            try {
-                party.setDistance(getDistanceFromDeviceLocation(party, this));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             presenter.addNewParty(party, bitmap);
 
         }
