@@ -95,9 +95,12 @@ public class LocationUtilities {
              @Override
              public int compare(Party party1, Party party2)
              {
-                 Double d1 = Double.parseDouble(party1.getDistance().replace(",",""));
-                 Double d2 = Double.parseDouble(party2.getDistance().replace(",",""));
-                 return  d1.compareTo(d2);
+                 if(party1 != null && party2 != null) {
+                     Double d1 = Double.parseDouble(party1.getDistance().replace(",", ""));
+                     Double d2 = Double.parseDouble(party2.getDistance().replace(",", ""));
+                     return d1.compareTo(d2);
+                 }
+                 return 0;
              }
          });
 
