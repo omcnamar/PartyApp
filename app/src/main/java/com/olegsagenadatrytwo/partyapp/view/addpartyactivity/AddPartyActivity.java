@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 
@@ -237,6 +238,8 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
         }
         if (valid) {
             Party party = new Party();
+            party.setOwnerId(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
             party.setPartyName(mEtPartyName.getText().toString());
             party.setAddress(mEtPartyAddress.getText().toString());
             party.setDescription(mEtPartyDescription.getText().toString());

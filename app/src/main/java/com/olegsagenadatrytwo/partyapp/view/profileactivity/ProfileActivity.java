@@ -122,10 +122,10 @@ public class ProfileActivity extends AppCompatActivity implements PopupMenu.OnMe
     }
 
     public void setupAdapter(ViewPager viewPager, PagerAdapter adapter) {
-
+        adapter.addFragment(new MyPartiesFragment(), "Parties");
         adapter.addFragment(new FirstFragment(), "Saved");
         adapter.addFragment(new SecondFragment(), "Invites");
-        adapter.addFragment(new MyPartiesFragment(), "Parties");
+
         viewPager.setAdapter(adapter);
 
     }

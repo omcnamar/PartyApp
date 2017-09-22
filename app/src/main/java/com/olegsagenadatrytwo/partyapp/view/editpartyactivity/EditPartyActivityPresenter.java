@@ -50,23 +50,17 @@ public class EditPartyActivityPresenter implements EditPartyActivityContract.pre
     }
 
     @Override
-    public void editParty(Party party, Bitmap bitmap) {
+    public void editParty(final Party party, Bitmap bitmap) {
 
         Log.d(TAG, "editParty: " + party.getId());
-        //Edit the party to the user
-        final DatabaseReference profileReference = database.getReference("profiles");
-        profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(party.getId()).setValue(party);
-
-        //edit the party to all parties
-        DatabaseReference partyReference = database.getReference("parties");
-        partyReference.child(party.getId()).setValue(party);
 
         //add the image of the party to the firebase
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
+        StorageReference mountainImagesRef = storageRef.child("images/" + party.getId() + ".jpg");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         if(bitmap != null) {
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
-            StorageReference mountainImagesRef = storageRef.child("images/" + party.getId() + ".jpg");
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
             UploadTask uploadTask = mountainImagesRef.putBytes(data);
@@ -74,6 +68,14 @@ public class EditPartyActivityPresenter implements EditPartyActivityContract.pre
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     // Handle unsuccessful uploads
+                    //Edit the party to the user
+                    final DatabaseReference profileReference = database.getReference("profiles");
+                    profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(party.getId()).setValue(party);
+
+                    //edit the party to all parties
+                    DatabaseReference partyReference = database.getReference("parties");
+                    partyReference.child(party.getId()).setValue(party);
+                    view.partyEdited(true);
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -83,11 +85,27 @@ public class EditPartyActivityPresenter implements EditPartyActivityContract.pre
                     Log.d(TAG, "onSuccess: " + downloadUrl);
                     //sendMsg("" + downloadUrl, 2);
                     //Log.d("downloadUrl-->", "" + downloadUrl);
+
+                    //Edit the party to the user
+                    final DatabaseReference profileReference = database.getReference("profiles");
+                    profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(party.getId()).setValue(party);
+
+                    //edit the party to all parties
+                    DatabaseReference partyReference = database.getReference("parties");
+                    partyReference.child(party.getId()).setValue(party);
+                    view.partyEdited(true);
                 }
             });
+        }else{
+            //Edit the party to the user
+            final DatabaseReference profileReference = database.getReference("profiles");
+            profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(party.getId()).setValue(party);
+
+            //edit the party to all parties
+            DatabaseReference partyReference = database.getReference("parties");
+            partyReference.child(party.getId()).setValue(party);
+            view.partyEdited(true);
         }
 
-
-        view.partyEdited(true);
     }
 }

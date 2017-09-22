@@ -1,10 +1,21 @@
 package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.support.v7.widget.ShareActionProvider;
 
 import com.olegsagenadatrytwo.partyapp.eventbus.LocalEvent;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.Event;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
@@ -36,7 +47,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
     RetrofitHelper.ApiService apiService;
     private ShareActionProvider mShareActionProvider;
     private Context context;
-    // Collects subscriptions to unsubscribe later
+    // Collects subscriptions to un subscribe later
     @NonNull
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -61,6 +72,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
     @Override
     public void rxJavaEventbrite() {
 
+        Log.d("wwwww", ": presenter get parties");
         apiService = new RetrofitHelper().getEventBriteService();
         compositeDisposable.add(apiService.queryEventList("")
                 .subscribeOn(Schedulers.io())
@@ -74,13 +86,134 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                 })
                 .subscribe(new Consumer<List<Event>>() {
                     @Override
-                    public void accept(List<Event> events) throws Exception {
+                    public void accept(final List<Event> events) throws Exception {
 
-                        //get the singleton class that will hold the event list
                         PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
                         List<Party> parties = convertEventsToParties(events);
                         partyLabSingleTon.setEvents(parties);
-                        view.eventsLoadedUpdateUI(parties);
+                        //add the listener to change the list when its changed
+                        DatabaseReference partiesReference = FirebaseDatabase.getInstance().getReference("parties");
+//                        partiesReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                //get the singleton class that will hold the event list
+//                                PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
+//                                List<Party> parties = convertEventsToParties(events);
+//                                partyLabSingleTon.setEvents(parties);
+//                                Log.d("wwwww", "onDataChange: ");
+//                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                                    Party party = snapshot.getValue(Party.class);
+//                                    Log.d("wwwww", "onDataChange: " + party.getPartyName());
+//                                    party.setId(snapshot.getKey());
+//                                    parties.add(party);
+//                                }
+//                                partyLabSingleTon.setEvents(parties);
+//                                view.eventsLoadedUpdateUI(parties);
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(DatabaseError databaseError) {
+//
+//                            }
+//                        });
+                        partiesReference.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                Log.d("wwwww", "onChildAdded: ");
+                                final Party party = dataSnapshot.getValue(Party.class);
+                                party.setId(dataSnapshot.getKey());
+
+                                Log.d("wwwww", "onSuccess: Home: " +  "on child added before image: ");
+                                //get reference to storage
+                                FirebaseStorage storage = FirebaseStorage.getInstance();
+                                StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
+
+                                //download image
+                                storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        Log.d("wwwww", "onSuccess: " +  "on child added image success: ");
+                                        party.setImageURL(uri.toString());
+                                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
+                                        List<Party> parties = partyLabSingleTon.getEvents();
+                                        parties.add(party);
+                                        partyLabSingleTon.setEvents(parties);
+                                        view.eventsLoadedUpdateUI(parties);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        // Handle any errors
+                                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
+                                        List<Party> parties = partyLabSingleTon.getEvents();
+                                        parties.add(party);
+                                        partyLabSingleTon.setEvents(parties);
+                                        view.eventsLoadedUpdateUI(parties);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                                final Party party = dataSnapshot.getValue(Party.class);
+                                party.setId(dataSnapshot.getKey());
+
+                                //get reference to storage
+                                FirebaseStorage storage = FirebaseStorage.getInstance();
+                                StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
+
+                                Log.d("ggg", "onSuccess: Home: " +  "on child changed before image: ");
+                                //download image
+                                storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        Log.d("ggg", "onSuccess: Home: " +  "on child changed image: success");
+                                        party.setImageURL(uri.toString());
+                                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
+                                        List<Party> parties = partyLabSingleTon.getEvents();
+                                        int i = parties.indexOf(party);
+                                        parties.set(i, party);
+                                        partyLabSingleTon.setEvents(parties);
+                                        view.eventsLoadedUpdateUI(parties);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        Log.d("ggg", "onSuccess: Home: " +  "on child changed image: faild");
+
+                                        // Handle any errors
+                                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
+                                        List<Party> parties = partyLabSingleTon.getEvents();
+                                        int i = parties.indexOf(party);
+                                        parties.set(i, party);
+                                        partyLabSingleTon.setEvents(parties);
+                                        view.eventsLoadedUpdateUI(parties);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                                final Party party = dataSnapshot.getValue(Party.class);
+                                party.setId(dataSnapshot.getKey());
+                                PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
+                                List<Party> parties = partyLabSingleTon.getEvents();
+                                int i = parties.indexOf(party);
+                                parties.remove(i);
+                                partyLabSingleTon.setEvents(parties);
+                                view.eventsLoadedUpdateUI(parties);
+                            }
+
+                            @Override
+                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                                Log.d(TAG, "onChildMoved: ");
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d(TAG, "onCancelled: ");
+                            }
+                        });
                     }
                 }));
     }

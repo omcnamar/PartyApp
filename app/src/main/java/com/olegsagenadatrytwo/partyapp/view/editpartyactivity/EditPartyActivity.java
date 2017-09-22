@@ -370,7 +370,8 @@ public class EditPartyActivity extends AppCompatActivity implements EditPartyAct
     @Override
     public void partyEdited(Boolean saved) {
         if (saved) {
-            Toast.makeText(this, "Saved Successfull", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Saved Successful", Toast.LENGTH_SHORT).show();
+            onBackPressed();
         } else {
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
         }
