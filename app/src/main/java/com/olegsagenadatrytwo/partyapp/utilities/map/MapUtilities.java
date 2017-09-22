@@ -60,7 +60,6 @@ public class MapUtilities {
     public static MarkerOptions initializeNewMarker(MarkerOptions markerOptions, String title, CustomLocationObject locationObject, String markerColor) {
         markerOptions = setMarkerTitle(markerOptions, title);
         markerOptions = setMarkerLocation(markerOptions, locationObject);
-        Log.d(TAG_MARKER_LOCATION_SET, "initializeNewMarker: " + markerOptions.getPosition().toString());
         markerOptions = setMarkerColor(markerOptions, markerColor, null);
         return markerOptions;
     }
