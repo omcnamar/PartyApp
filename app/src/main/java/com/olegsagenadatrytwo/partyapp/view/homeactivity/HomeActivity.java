@@ -159,6 +159,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onChildRemoved: ");
+
             }
 
             @Override
