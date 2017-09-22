@@ -54,6 +54,8 @@ public class Constant {
     public static final int MARKER_LENGTH_DEFAULT = 50;
     public static final int MARKER_WIDTH_DEFAULT = 50;
 
+    public static final int MY_PERMISSIONS_REQUEST_READ_LOCATION = 402;
+
 
 
 }
