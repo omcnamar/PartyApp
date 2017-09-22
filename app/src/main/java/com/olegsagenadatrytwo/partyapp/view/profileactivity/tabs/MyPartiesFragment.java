@@ -19,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
-import com.olegsagenadatrytwo.partyapp.view.mypartiesactivity.MyPartiesAdapter;
+import com.olegsagenadatrytwo.partyapp.view.profileactivity.MyPartiesAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
