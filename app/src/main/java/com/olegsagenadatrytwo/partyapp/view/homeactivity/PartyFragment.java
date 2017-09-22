@@ -1,14 +1,19 @@
 package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
 import android.content.Context;
+import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -31,10 +36,15 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class PartyFragment extends Fragment implements ChildEventListener {
+public class PartyFragment extends Fragment implements ChildEventListener, View.OnClickListener {
 
     public static final String TAG = "PartyFragment";
     private static final String PARTY_ID = "party_id";
+
+
+    AppCompatImageButton btnLike;
+    AppCompatImageButton btnShareParty;
+    AppCompatImageButton btnPublicOrPrivate;
 
     ImageView ivLogo;
     AutoResizeTextView tvPartyType;
@@ -87,6 +97,16 @@ public class PartyFragment extends Fragment implements ChildEventListener {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.party_card_item2, container, false);
+        ivPartyHost = v.findViewById(R.id.ivPartyHost);
+        btnLike = v.findViewById(R.id.btnLike);
+        btnShareParty = v.findViewById(R.id.btnShareParty);
+        btnPublicOrPrivate = v.findViewById(R.id.btnPublicOrPrivate);
+        tvPartyType = v.findViewById(R.id.tvPartyType);
+        tvDescription= v.findViewById(R.id.tvPartyDescription);
+        ivLogo = v.findViewById(R.id.ivPartyHeader);
+        btnLike.setOnClickListener(this);
+        btnPublicOrPrivate.setOnClickListener(this);
+        btnShareParty.setOnClickListener(this);
 
         ivLogo = v.findViewById(R.id.ivPartyHeader);
         tvPartyType = v.findViewById(R.id.tvPartyType);
@@ -99,6 +119,11 @@ public class PartyFragment extends Fragment implements ChildEventListener {
             tvDescription.setText(party.getDescription());
             loadPartyImage(party.getImageURL(), ivLogo); // Header Image
             loadPartyImage(null, ivPartyHost); // Host Image
+            if (party.isLiked()){
+                btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
+            } else {
+                btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike));
+            }
         }
         return v;
     }
@@ -121,7 +146,7 @@ public class PartyFragment extends Fragment implements ChildEventListener {
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.centerCrop();
 
-        if (url == null){
+        if (url == null) {
 
             Glide.with(context)
                     .load(R.drawable.partylogo)
@@ -197,5 +222,37 @@ public class PartyFragment extends Fragment implements ChildEventListener {
     @Override
     public void onCancelled(DatabaseError databaseError) {
 
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        final Animation animation = AnimationUtils.loadAnimation(context, R.anim.bounce);
+        TransitionDrawable like = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.like);
+        TransitionDrawable unlike = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.unlike);
+
+        switch (view.getId()) {
+            case R.id.btnLike:
+                if(party.isLiked()){
+                    party.setLiked(false);
+                    btnLike.setImageDrawable(unlike);
+                    unlike.reverseTransition(500);
+                    btnLike.startAnimation(animation);
+                    btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike));
+                } else {
+                    party.setLiked(true);
+                    btnLike.setImageDrawable(like);
+                    like.reverseTransition(1000);
+                    btnLike.startAnimation(animation);
+                }
+
+                break;
+            case R.id.btnShareParty:
+                btnShareParty.startAnimation(animation);
+                break;
+            case R.id.btnPublicOrPrivate:
+                btnPublicOrPrivate.startAnimation(animation);
+                break;
+        }
     }
 }

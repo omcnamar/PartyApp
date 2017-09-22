@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -64,6 +65,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
     SignInButton loginWithGoogle;
     @BindView(R.id.btnTwitter)
     TwitterLoginButton btnTwitter;
+    @BindView(R.id.btnRegister)
+    Button btnRegister;
     private CallbackManager callbackManager;
 
     private LoginActivityPresenter mPresenter;
@@ -130,7 +133,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
         });
         //Twitter
         btnTwitter.setText("");
-            btnTwitter.setCallback(new Callback<TwitterSession>() {
+        btnTwitter.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
                 Log.d(TAG, "twitterLogin:success" + result);
@@ -143,13 +146,15 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
                 //updateUI(null);
             }
         });
+
     }
+
     private void setupFacebookStuff() {
         // This should normally be on your application class
         FacebookSdk.sdkInitialize(getApplicationContext());
         mAccessTokenTracker = new AccessTokenTracker() {
             @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,AccessToken currentAccessToken) {
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
             }
         };
         mLoginManager = LoginManager.getInstance();
@@ -175,9 +180,9 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
     }
 
     private void handleFacebookLogin() {
-        if (AccessToken.getCurrentAccessToken() != null){
+        if (AccessToken.getCurrentAccessToken() != null) {
             mLoginManager.logOut();
-        }else{
+        } else {
             mAccessTokenTracker.startTracking();
             mLoginManager.logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile"));
         }
@@ -274,6 +279,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
         mPresenter.removeView();
         mPresenter.removeAuthStateListener();
     }
+
     @Override
     public void googleApiClientReady(GoogleApiClient googleApiClient) {
         this.mGoogleApiClient = googleApiClient;

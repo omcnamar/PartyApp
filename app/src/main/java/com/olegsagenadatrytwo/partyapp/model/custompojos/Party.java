@@ -16,6 +16,7 @@ public class Party implements Parcelable{
     private String ageRequired;
     private int capacity;
     private String imageURL;
+    private boolean isLiked;
 
     private int currentAttendance;
 
@@ -65,6 +66,7 @@ public class Party implements Parcelable{
                 ", ageRequired='" + ageRequired + '\'' +
                 ", capacity=" + capacity +
                 ", currentAttendance=" + currentAttendance +
+                ", isLiked=" + isLiked +
                 '}';
     }
 
@@ -81,7 +83,8 @@ public class Party implements Parcelable{
         this.ageRequired = party.getAgeRequired();
         this.capacity = party.getCapacity();
         this.currentAttendance = party.getCurrentAttendance();
-    }
+        this.isLiked = party.isLiked();
+}
 
     @Override
     public boolean equals(Object obj) {
@@ -93,6 +96,14 @@ public class Party implements Parcelable{
         }
 
         return eq;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 
     public String getImageURL() {

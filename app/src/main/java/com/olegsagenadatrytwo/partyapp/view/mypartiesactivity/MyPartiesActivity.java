@@ -42,7 +42,7 @@ public class MyPartiesActivity extends AppCompatActivity implements MyPartiesAct
         DaggerMyPartiesActivityComponent.create().inject(this);
 
         //initialize recycler vies movie stuff
-        rvMyParties = (RecyclerView) findViewById(R.id.rvMyParties);
+        rvMyParties = findViewById(R.id.rvMyParties);
         layoutManager = new LinearLayoutManager(this);
         itemAnimator = new DefaultItemAnimator();
         rvMyParties.setLayoutManager(layoutManager);

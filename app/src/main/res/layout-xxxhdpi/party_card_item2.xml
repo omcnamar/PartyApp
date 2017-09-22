@@ -96,23 +96,24 @@
                 android:gravity="center">
 
 
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btnPriceIndicator"
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/btnLike"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_margin="5dp"
                     android:background="@drawable/round_button"
                     android:elevation="3dp"
-                    android:text="$" />
+                    android:src="@drawable/ic_unlike" />
 
-                <android.support.v7.widget.AppCompatButton
+                <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/btnShareParty"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_margin="5dp"
                     android:background="@drawable/round_button" />
 
-                <android.support.v7.widget.AppCompatButton
+                <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/btnPublicOrPrivate"
                     android:layout_width="80dp"
                     android:layout_height="80dp"

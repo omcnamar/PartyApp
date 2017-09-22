@@ -9,9 +9,9 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar"
+        layout="@layout/toolbar2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
@@ -149,7 +149,7 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="Date"
-                        android:inputType="date"
+                        android:focusable="false"
                         android:textColor="@color/colorAccent"
                         android:textColorHint="@color/colorAccent"
                         />
@@ -162,16 +162,16 @@
                     android:layout_centerHorizontal="true"
                     android:layout_weight="1"
                     android:textColorHint="@color/colorAccent">
+
                     <EditText
                         android:id="@+id/etStartTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="Start Time"
-                        android:inputType="time"
+                        android:focusable="false"
                         android:textColor="@color/colorAccent"
-                        android:textColorHint="@color/colorAccent"
-                        />
+                        android:textColorHint="@color/colorAccent" />
 
                 </android.support.design.widget.TextInputLayout>
                 <android.support.design.widget.TextInputLayout
@@ -187,11 +187,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
+                        android:focusable="false"
                         android:hint="End Date"
-                        android:inputType="date"
                         android:textColor="@color/colorAccent"
-                        android:textColorHint="@color/colorAccent"
-                        />
+                        android:textColorHint="@color/colorAccent" />
                 </android.support.design.widget.TextInputLayout>
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/tvEndTime"
@@ -207,7 +206,7 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="End Time"
-                        android:inputType="time"
+                        android:focusable="false"
                         android:textColor="@color/colorAccent"
                         android:textColorHint="@color/colorAccent"
                         />
@@ -252,7 +251,6 @@
 
 
                 </android.support.design.widget.TextInputLayout>
-
                 <Button
                     android:id="@+id/btnSubmitParty"
                     android:layout_width="fill_parent"

@@ -2,14 +2,21 @@ package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -27,9 +34,8 @@ import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
-import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
-import com.olegsagenadatrytwo.partyapp.view.mypartiesactivity.MyPartiesActivity;
+import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 
 import java.util.List;
 
@@ -52,6 +58,12 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     private static final String PARTY_ID = "party_id";
     @BindView(R.id.pbLoading)
     ProgressBar pbLoading;
+    @BindView(R.id.flMap)
+    FrameLayout flMap;
+    @BindView(R.id.ivMapBackgroundFrame)
+    ImageView ivMapBackgroundFrame;
+
+    Window window;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +74,33 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         presenter.attachView(this);
         presenter.setContext(this);
         presenter.rxJavaEventbrite();
+
+        // Check if we're running on Android 5.0 or higher
+        if (Build.VERSION.SDK_INT >= 21) {
+            // Call some material design APIs here
+            updateStatusBar();
+        } else {
+            // Implement this feature without material design
+        }
+        updateMapSnapshot();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void updateStatusBar() {
+        window = this.getWindow();
+        // clear FLAG_TRANSLUCENT_STATUS flag:
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+    }
+
+    private void updateMapSnapshot() {
+        // TODO: 9/21/2017 Everytime you go to the mapview
+        // TODO: a snapshot is taken before you exit and that will be the new background
+        // TODO: 9/21/2017 if user has no saved snapshot load default else load snapshot
+        ivMapBackgroundFrame.setImageResource(R.drawable.default_map_background);
+        ivMapBackgroundFrame.setAlpha(0.2f);
     }
 
     @Override
@@ -178,14 +217,14 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.action_map:
-                //if there is no current user send the user to log in
-                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    Intent addPartyIntent = new Intent(this, AddPartyActivity.class);
-                    startActivity(addPartyIntent);
-                } else {
-                    Intent logInIntent = new Intent(this, LoginActivity.class);
-                    startActivity(logInIntent);
-                }
+//                //if there is no current user send the user to log in
+//                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+//                    Intent addPartyIntent = new Intent(this, AddPartyActivity.class);
+//                    startActivity(addPartyIntent);
+//                } else {
+//                    Intent logInIntent = new Intent(this, LoginActivity.class);
+//                    startActivity(logInIntent);
+//                }
                 // TODO: 9/17/17 implement the Map View
                 Toast.makeText(this, "Map", Toast.LENGTH_SHORT).show();
                 break;
@@ -195,10 +234,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
             case R.id.action_profile:
 //                Intent loginIntent = new Intent(this, LoginActivity.class);
 //                startActivity(loginIntent);
-                if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    Intent myParietes = new Intent(this, MyPartiesActivity.class);
-                    startActivity(myParietes);
-                }else {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    /*startActivity(new Intent(this, MyPartiesActivity.class));*/
+                    startActivity(new Intent(this, ProfileActivity.class));
+                } else {
                     Intent logInIntent = new Intent(this, LoginActivity.class);
                     startActivity(logInIntent);
                 }
