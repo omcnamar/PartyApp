@@ -9,18 +9,8 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -46,8 +36,6 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
-import java.util.Arrays;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -59,29 +47,24 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
     AutoCompleteTextView mEtUserName;
     @BindView(R.id.etPassword)
     EditText mEtPassword;
-    @BindView(R.id.fb_login_button)
-    ImageButton mFbLoginButton;
+//    @BindView(R.id.fb_login_button)
+//    ImageButton mFbLoginButton;
     @BindView(R.id.login_with_google)
     SignInButton loginWithGoogle;
     @BindView(R.id.btnTwitter)
     TwitterLoginButton btnTwitter;
     @BindView(R.id.btnRegister)
     Button btnRegister;
-    private CallbackManager callbackManager;
 
     private LoginActivityPresenter mPresenter;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
-    AccessTokenTracker mAccessTokenTracker;
-    LoginManager mLoginManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
         TwitterConfig config = new TwitterConfig.Builder(this)
                 .logger(new DefaultLogger(Log.DEBUG))
                 .twitterAuthConfig(new TwitterAuthConfig(getString(R.string.twitterCONSUMER_KEY), getString(R.string.twitterCONSUMER_SECRET)))
@@ -91,7 +74,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
         setContentView(R.layout.activity_login);
         Log.d(TAG, "onCreate: ");
         ButterKnife.bind(this);
-
         //initialize presenter
         mAuth = FirebaseAuth.getInstance();
         mPresenter = new LoginActivityPresenter();
@@ -110,7 +92,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
                 }
             }
         };
-        loginWithGoogle.setSize(SignInButton.SIZE_ICON_ONLY);
+        loginWithGoogle.setSize(SignInButton.SIZE_WIDE);
         loginWithGoogle.setColorScheme(SignInButton.COLOR_LIGHT);
         mPresenter.loginWithGoogleSetUp(this, mAuth);
         loginWithGoogle.setOnClickListener(new View.OnClickListener() {
@@ -123,16 +105,13 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
                 }
             }
         });
-        //facebook
-        setupFacebookStuff();
-        mFbLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleFacebookLogin();
-            }
-        });
+
         //Twitter
-        btnTwitter.setText("");
+        btnTwitter.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.tw__ic_logo_default), null, null, null);
+        btnTwitter.setTextSize(15);
+        btnTwitter.setText("Sign in with Twitter");
+        btnTwitter.setPadding(30, 20, 20, 20);
+        btnTwitter.setTextColor(getResources().getColor(R.color.tw__composer_white));
         btnTwitter.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
@@ -146,46 +125,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
                 //updateUI(null);
             }
         });
-
-    }
-
-    private void setupFacebookStuff() {
-        // This should normally be on your application class
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        mAccessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-            }
-        };
-        mLoginManager = LoginManager.getInstance();
-        callbackManager = CallbackManager.Factory.create();
-
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void handleFacebookLogin() {
-        if (AccessToken.getCurrentAccessToken() != null) {
-            mLoginManager.logOut();
-        } else {
-            mAccessTokenTracker.startTracking();
-            mLoginManager.logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile"));
-        }
 
     }
 
@@ -203,12 +142,12 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
                 mPresenter.firebaseAuthWithGoogle(account, this);
-                Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Authentication successful.", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Login Unsuccessful", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show();
             }
         } else {
-            callbackManager.onActivityResult(requestCode, resultCode, data);
+            //callbackManager.onActivityResult(requestCode, resultCode, data);
             // Pass the activity result to the Twitter login button.
             btnTwitter.onActivityResult(requestCode, resultCode, data);
         }
@@ -227,7 +166,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
                             Log.d(TAG, "signInWithCredential:success");
                             user = mAuth.getCurrentUser();
                             toToSecondActivity();
-                            Toast.makeText(LoginActivity.this, "Authentication successful", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
                         } else {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
@@ -259,9 +198,9 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
     @Override
     public void signInResult(boolean response) {
         if (response) {
-            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Authentication successful.", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show();
         }
     }
 

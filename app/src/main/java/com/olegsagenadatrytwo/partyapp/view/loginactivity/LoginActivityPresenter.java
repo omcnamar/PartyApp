@@ -113,36 +113,6 @@ public class LoginActivityPresenter implements LoginActivityContract.Presenter, 
         mAuth.addAuthStateListener(mAuthListener);
     }
 
-//    @Override
-//    public void logInWithFacebookSetUp(LoginButton loginButton, CallbackManager callbackManager, final LoginActivity loginActivity) {
-//        this.callbackManager = callbackManager;
-//        // Callback registration
-//        LoginManager.getInstance().registerCallback(callbackManager,
-//                new FacebookCallback<LoginResult>() {
-//                    @Override
-//                    public void onSuccess(LoginResult loginResult) {
-//                        // App code
-//                        Log.d(TAG, "onSuccess: " + "manager");
-//                        handleFacebookAccessToken(loginResult.getAccessToken(), loginActivity);
-//                        goToSecondActivity(loginActivity);
-//                    }
-//
-//                    @Override
-//                    public void onCancel() {
-//                        // App code
-//                        Log.d(TAG, "onCancel: " + "manager");
-//                        Toast.makeText(loginActivity, "failed cancel", Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                    @Override
-//                    public void onError(FacebookException exception) {
-//                        // App code
-//                        Log.d(TAG, "onError: " + "manager");
-//                        Toast.makeText(loginActivity, "failed error", Toast.LENGTH_SHORT).show();
-//
-//                    }
-//                });
-//    }
     private void goToSecondActivity(LoginActivity loginActivity) {
         Intent intent = new Intent(loginActivity, HomeActivity.class);
         loginActivity.startActivity(intent);
@@ -187,28 +157,6 @@ public class LoginActivityPresenter implements LoginActivityContract.Presenter, 
                 });
     }
 
-//    private void handleFacebookAccessToken(AccessToken token, final LoginActivity loginActivity) {
-//        Log.d(TAG, "handleFacebookAccessToken:" + token);
-//
-//        final AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-//        mAuth.signInWithCredential(credential)
-//                .addOnCompleteListener(loginActivity, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            // Sign in success, update UI with the signed-in user's information
-//                            Log.d(TAG, "signInWithCredential:success");
-//                            user = mAuth.getCurrentUser();
-//                            //updateUI(user);
-//                        } else {
-//                            // If sign in fails, display a message to the user.
-//                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-//                            Toast.makeText(context, "Authentication failed.", Toast.LENGTH_SHORT).show();
-//                            //updateUI(null);
-//                        }
-//                    }
-//                });
-//    }
     @Override
     public void removeAuthStateListener() {
         if (mAuthListener != null) {
