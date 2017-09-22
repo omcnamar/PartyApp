@@ -19,7 +19,7 @@ public class Constant {
     public static final String GEOLOCATION_BASE_URL = "";
     public static final String GOOGLEMAPS_BASE_URL = "";
     //API Keys
-    public static final String GOOGLE_GEO_API_KEY = "AIzaSyBy4spNfpqrr8awZ3c1MmmtbHipkHU_2Ss";
+    public static final String GOOGLE_GEO_API_KEY = "AIzaSyBjAJD64HgIglsVxviCvYYMb8w04ysTxTg";
     //Misc inforamtion
     public static final double RADIUS_OF_EARTH= 637;//radius of earth in Km
     public static final double METERS_TO_MILES_RATIO = 0.000621371;

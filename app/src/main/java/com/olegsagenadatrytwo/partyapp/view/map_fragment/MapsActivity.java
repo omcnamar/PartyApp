@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import static com.olegsagenadatrytwo.partyapp.Constant.COLOR_BLUE;
 import static com.olegsagenadatrytwo.partyapp.Constant.LOCATIOM_UPDATE_MILES;
 import static com.olegsagenadatrytwo.partyapp.Constant.LOCATION_UPDATE_MINUTES;
+import static com.olegsagenadatrytwo.partyapp.Constant.TAG_DISTANCE_RETURNS;
 import static com.olegsagenadatrytwo.partyapp.Constant.TAG_LOCATION_INFO;
 import static com.olegsagenadatrytwo.partyapp.Constant.ZOOM_LEVEL_EIGHT;
 import static com.olegsagenadatrytwo.partyapp.Constant.ZOOM_LEVEL_FIVE;
@@ -191,10 +192,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 //Test distance values
                 //String driveDistance = LocationUtilities.getDrivingDistance(currentLocation, addrLocation);
-                //String crowDistance = LocationUtilities.getDistanceAsTheCrowFlies(currentLocation, addrLocation);
-                //Log.d(TAG_DISTANCE_RETURNS, "onMapReady: Distance:  Driving Distance = " + driveDistance + "|||   As crow flies = " + crowDistance);
-
-                mMap.addMarker(markerAddrLocation);
+                String crowDistance = LocationUtilities.getDistanceAsTheCrowFlies(currentLocation, addrLocation);
+                Log.d(TAG_DISTANCE_RETURNS, "onMapReady: Distance:  Driving Distance = " + "na" + "|||   As crow flies = " + crowDistance);
+                if(markerAddrLocation.getPosition() != null) {
+                    mMap.addMarker(markerAddrLocation);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

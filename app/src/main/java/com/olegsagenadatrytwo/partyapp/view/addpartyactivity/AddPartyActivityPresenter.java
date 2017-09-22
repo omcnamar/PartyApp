@@ -81,6 +81,9 @@ public class AddPartyActivityPresenter implements AddPartyActivityContract.prese
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     Log.d(TAG, "onSuccess: " + downloadUrl);
+                    if(downloadUrl != null) {
+                        party.setImageURL(downloadUrl.toString());
+                    }
                     //add the party to the user
                     final DatabaseReference profileReference = database.getReference("profiles");
                     profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(idString).setValue(party);
