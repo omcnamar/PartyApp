@@ -3,10 +3,8 @@ package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -23,24 +21,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
-import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.HomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
-import com.olegsagenadatrytwo.partyapp.utilities.location.LocationUtilities;
 import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
-import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 import com.olegsagenadatrytwo.partyapp.view.map_fragment.MapsActivity;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 
@@ -75,6 +61,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     ImageView ivMapBackgroundFrame;
     ArrayList<Party> partiesList;
     Window window;
+
+    private FragmentStatePagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,127 +110,32 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     @Override
     public void eventsLoadedUpdateUI(final List<Party> parties) {
         partiesList = (ArrayList<Party>)parties;
-        final FragmentStatePagerAdapter adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-            //each view of the view pager is an Instance of the PartyFragment
 
-            @Override
-            public Fragment getItem(int position) {
-                //get the Event from the list of the events
-                Party party = parties.get(position);
-                //return an instance of the PartyFragment which is initialized with with the id of the event
-                return PartyFragment.newInstance(party.getId());
-            }
+        Log.d("wwwww", "eventsLoadedUpdateUI: ");
+        if(adapter == null) {
+            adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+                //each view of the view pager is an Instance of the PartyFragment
 
-            @Override
-            public int getCount() {
-                return parties.size();
-            }
-        };
-        pbLoading.setVisibility(View.GONE);
-        viewPager.setPageTransformer(true, new DepthPageTransformer());
-        //set Adapter for ViewPager
-        viewPager.setAdapter(adapter);
+                @Override
+                public Fragment getItem(int position) {
+                    //get the Event from the list of the events
+                    Party party = parties.get(position);
+                    //return an instance of the PartyFragment which is initialized with with the id of the event
+                    return PartyFragment.newInstance(party.getId());
+                }
 
-        //add the listener to change the list when its changed
-        DatabaseReference partiesReference = FirebaseDatabase.getInstance().getReference("parties");
-        partiesReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildAdded: ");
-                final Party party = dataSnapshot.getValue(Party.class);
-                party.setId(dataSnapshot.getKey());
-
-                Log.d("ggg", "onSuccess: Home: " +  "on child added before image: ");
-                //get reference to storage
-                FirebaseStorage storage = FirebaseStorage.getInstance();
-                StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
-
-                //download image
-                storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Log.d("ggg", "onSuccess: " +  "on child added image success: ");
-                        party.setImageURL(uri.toString());
-                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
-                        List<Party> parties = partyLabSingleTon.getEvents();
-                        parties.add(party);
-                        partyLabSingleTon.setEvents(parties);
-                        adapter.notifyDataSetChanged();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
-                        List<Party> parties = partyLabSingleTon.getEvents();
-                        parties.add(party);
-                        partyLabSingleTon.setEvents(parties);
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                final Party party = dataSnapshot.getValue(Party.class);
-                party.setId(dataSnapshot.getKey());
-
-                //get reference to storage
-                FirebaseStorage storage = FirebaseStorage.getInstance();
-                StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
-
-                Log.d("ggg", "onSuccess: Home: " +  "on child changed before image: ");
-                //download image
-                storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        party.setImageURL(uri.toString());
-                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
-                        List<Party> parties = partyLabSingleTon.getEvents();
-                        int i = parties.indexOf(party);
-                        parties.set(i, party);
-                        partyLabSingleTon.setEvents(parties);
-                        adapter.notifyDataSetChanged();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
-                        List<Party> parties = partyLabSingleTon.getEvents();
-                        int i = parties.indexOf(party);
-                        parties.set(i, party);
-                        partyLabSingleTon.setEvents(parties);
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                final Party party = dataSnapshot.getValue(Party.class);
-                party.setId(dataSnapshot.getKey());
-                PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
-                List<Party> parties = partyLabSingleTon.getEvents();
-                int i = parties.indexOf(party);
-                parties.remove(i);
-                partyLabSingleTon.setEvents(parties);
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildMoved: ");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: ");
-            }
-        });
+                @Override
+                public int getCount() {
+                    return parties.size();
+                }
+            };
+            pbLoading.setVisibility(View.GONE);
+            viewPager.setPageTransformer(true, new DepthPageTransformer());
+            //set Adapter for ViewPager
+            viewPager.setAdapter(adapter);
+        }else{
+            viewPager.setAdapter(adapter);
+        }
     }
 
     @OnClick({R.id.action_map, R.id.action_location, R.id.action_profile})

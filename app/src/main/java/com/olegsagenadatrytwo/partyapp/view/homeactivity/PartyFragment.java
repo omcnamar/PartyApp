@@ -122,14 +122,31 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         if (party != null) {
             tvPartyType.setText(party.getPartyName());
             tvDescription.setText(party.getDescription());
-            double distance = Double.parseDouble(party.getDistance().replace(",", "").replaceAll("[^\\d.]", ""));
-            if(distance <=10000000) {
-                tvDistance.setText(String.valueOf(distance) + " miles away");
-            } else {
-                tvDistance.setText("Unknown distance");
-            }
+//            double distance = Double.parseDouble(party.getDistance().replace(",", "").replaceAll("[^\\d.]", ""));
+//            if(distance <=10000000) {
+//                tvDistance.setText(String.valueOf(distance) + " miles away");
+//            } else {
+//                tvDistance.setText("Unknown distance");
+//            }
             loadPartyImage(party.getImageURL(), ivLogo); // Header Image
-            loadPartyImage(null, ivPartyHost); // Host Image
+            Log.d("qqqq", "onCreateView: Party Fragment" +  party.getImageURL());
+
+            //get reference to storage
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
+
+            //download host image
+            storageRef.child("images/" + party.getOwnerId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    loadPartyImage(uri.toString(), ivPartyHost); // Host Image
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    loadPartyImage(null, ivPartyHost); // Host Image
+                }
+            });
             if (party.isLiked()){
                 btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
             } else {
@@ -184,7 +201,6 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
 
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-        Log.d("ggg", "onSuccess: Fragment: " +  "on child added before image: ");
     }
 
     @Override
@@ -194,35 +210,37 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         final Party partyChanged = dataSnapshot.getValue(Party.class);
         partyChanged.setId(dataSnapshot.getKey());
 
-        //if the party that was changed is the one on the screen update the changes live
-        if(partyChanged.getId().equals(party.getId())) {
-            //get reference to storage
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
+        if(party != null) {
+            //if the party that was changed is the one on the screen update the changes live
+            if (partyChanged.getId().equals(party.getId())) {
+                //get reference to storage
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
 
-            //download image
-            storageRef.child("images/" + partyChanged.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Log.d("ggg", "onSuccess: " +  "on child changed image success: ");
-                    party.setImageURL(uri.toString());
-                    tvPartyType.setText(partyChanged.getPartyName());
-                    tvDescription.setText(partyChanged.getDescription());
-                    party.setPartyName(partyChanged.getPartyName());
-                    party.setDescription(partyChanged.getDescription());
-                    loadPartyImage(uri.toString(), ivLogo); // Header Image
-                    loadPartyImage(null, ivPartyHost); // Host Image
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                    tvPartyType.setText(partyChanged.getPartyName());
-                    tvDescription.setText(partyChanged.getDescription());
-                    party.setPartyName(partyChanged.getPartyName());
-                    party.setDescription(partyChanged.getDescription());
-                }
-            });
+                //download image
+                storageRef.child("images/" + partyChanged.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.d("ggg", "onSuccess: " + "on child changed image success: ");
+                        party.setImageURL(uri.toString());
+                        tvPartyType.setText(partyChanged.getPartyName());
+                        tvDescription.setText(partyChanged.getDescription());
+                        party.setPartyName(partyChanged.getPartyName());
+                        party.setDescription(partyChanged.getDescription());
+                        loadPartyImage(uri.toString(), ivLogo); // Header Image
+                        loadPartyImage(null, ivPartyHost); // Host Image
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                        tvPartyType.setText(partyChanged.getPartyName());
+                        tvDescription.setText(partyChanged.getDescription());
+                        party.setPartyName(partyChanged.getPartyName());
+                        party.setDescription(partyChanged.getDescription());
+                    }
+                });
+            }
         }
     }
 
@@ -231,11 +249,13 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         final Party partyChanged = dataSnapshot.getValue(Party.class);
         partyChanged.setId(dataSnapshot.getKey());
 
-        if(party.getId().equals(partyChanged.getId())){
-            tvPartyType.setText("This party was just deleted");
-            tvDescription.setText("");
-            ivLogo.setImageBitmap(null);
-            ivPartyHost.setImageBitmap(null);
+        if(party != null) {
+            if (party.getId().equals(partyChanged.getId())) {
+                tvPartyType.setText("This party was just deleted");
+                tvDescription.setText("");
+                ivLogo.setImageBitmap(null);
+                ivPartyHost.setImageBitmap(null);
+            }
         }
     }
 
