@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,8 @@ public class ProfileActivity extends AppCompatActivity {
     AutoResizeTextView displayName;
     @BindView(R.id.civProfilePicture)
     CircleImageView civProfilePicture;
+    @BindView(R.id.ibSave)
+    ImageButton ibSave;
     private PagerAdapter myAdapter;
     private String userName;
 
@@ -66,7 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    @OnClick({R.id.action_backbutton, R.id.action_add_party, R.id.action_profileSettings})
+    @OnClick({R.id.action_backbutton, R.id.action_add_party, R.id.action_profileSettings,R.id.ibEdit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.action_backbutton:
@@ -89,7 +92,9 @@ public class ProfileActivity extends AppCompatActivity {
                     Intent homeIntent = new Intent(this, HomeActivity.class);
                     startActivity(homeIntent);
                 }
-
+                break;
+            case R.id.ibEdit:
+                ibSave.setVisibility(View.VISIBLE);
                 break;
         }
     }

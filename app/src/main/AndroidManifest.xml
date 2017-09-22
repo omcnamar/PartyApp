@@ -73,9 +73,7 @@
         <activity
             android:name=".view.addpartyactivity.AddPartyActivity"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name=".view.mypartiesactivity.MyPartiesActivity"
-            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".view.editpartyactivity.EditPartyActivity"
             android:screenOrientation="portrait"/>
