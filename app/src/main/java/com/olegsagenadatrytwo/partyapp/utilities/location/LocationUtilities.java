@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.olegsagenadatrytwo.partyapp.model.custom_map.CustomLocationObject;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.GeocodingProfile;
+import com.olegsagenadatrytwo.partyapp.utilities.ConvertionUtilities.ConvertionUtilities;
 import com.olegsagenadatrytwo.partyapp.utilities.json.JsonUtilities;
 
 import org.json.JSONArray;
@@ -28,6 +29,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 
 import okhttp3.HttpUrl;
@@ -41,6 +43,7 @@ import static com.olegsagenadatrytwo.partyapp.Constant.RADIUS_OF_EARTH;
  */
 
 public class LocationUtilities {
+    static int apiFailureDistanceFailSafe = 1;
     //                                                    //
     //   setGeograchicalLocation                          //
     //      Receives a location which info is used to set //
@@ -61,13 +64,6 @@ public class LocationUtilities {
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         locationProvider = locationManager.getBestProvider(new Criteria(), false);
         if (ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return null;
         }
         Location physicalDeviceLocation = locationManager.getLastKnownLocation(locationProvider);
@@ -78,10 +74,10 @@ public class LocationUtilities {
          CustomLocationObject currentDeviceLocObject = getPhysicalDeviceLocation(context);
          Address passedPartyAddress = parseStringToAddress(passedParty.getAddress());
          CustomLocationObject passedPartyLocation = getLatitudeLongitudeOfAddress(new CustomLocationObject(), passedPartyAddress, locationProvider);
-         return getDrivingDistance(currentDeviceLocObject,passedPartyLocation);
+         return getDistanceAsTheCrowFlies(currentDeviceLocObject,passedPartyLocation);
      }
 
-     public static final ArrayList<Party> setPartyDistances(ArrayList<Party> passedPartyList, Context context) throws IOException {
+     public static List<Party> setPartyDistances(List<Party> passedPartyList, Context context) throws IOException {
          int error = 0;
          for(Party beingEvalParty : passedPartyList){
             if(beingEvalParty.getAddress() != null) {
@@ -95,9 +91,9 @@ public class LocationUtilities {
              @Override
              public int compare(Party party1, Party party2)
              {
-                 if(party1 != null && party2 != null) {
-                     Double d1 = Double.parseDouble(party1.getDistance().replace(",", ""));
-                     Double d2 = Double.parseDouble(party2.getDistance().replace(",", ""));
+                 if(party1.getDistance() != null && party2.getDistance() != null) {
+                     Double d1 = Double.parseDouble(party1.getDistance().replace(",", "").replaceAll("[^\\d.]", ""));
+                     Double d2 = Double.parseDouble(party2.getDistance().replace(",", "").replaceAll("[^\\d.]", ""));
                      return d1.compareTo(d2);
                  }
                  return 0;
@@ -171,18 +167,28 @@ public class LocationUtilities {
      //          2 locations in KM                         //
     //****************************************************//
      public static String getDistanceAsTheCrowFlies(CustomLocationObject currentLocation, CustomLocationObject requestedLocation){
-         double dLatitude = Math.toRadians(requestedLocation.getLatitude() - currentLocation.getLatitude());
-         double dLongitude = Math.toRadians(requestedLocation.getLongitude() - currentLocation.getLongitude());
+         if(requestedLocation.getLatitude() != null) {
+             double lat1 = currentLocation.getLatitude();
+             double lat2 = requestedLocation.getLatitude();
+             double lng1 = currentLocation.getLongitude();
+             double lng2 = requestedLocation.getLongitude();
+             double earthRadius = 6371000; //meters
+             double dLat = Math.toRadians(lat2 - lat1);
+             double dLng = Math.toRadians(lng2 - lng1);
+             double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                     Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                             Math.sin(dLng / 2) * Math.sin(dLng / 2);
+             double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+             float dist = (float) (earthRadius * c);
 
-         double a = Math.pow(Math.sin(dLatitude/2),2)
-                 + Math.cos(Math.toRadians(currentLocation.getLatitude()))
-                 + Math.cos(Math.toRadians(requestedLocation.getLatitude()))
-                 * Math.pow(Math.sin(dLongitude/2),2);
-         double c = 2 * Math.asin(Math.sqrt(a));
-
-         return String.valueOf(RADIUS_OF_EARTH * c );
-
+             return String.format("%.2f", ConvertionUtilities.convertMetersToMiles(dist));
+         } else {
+             return String.valueOf(apiFailureDistanceFailSafe++);
+         }
      }
+
+
+
         //                                                    //
        //   getLatitudeLongitudeOfAddress                    //
       //      Sets the custom Location Object latitude and  //
@@ -201,6 +207,7 @@ public class LocationUtilities {
                 .addQueryParameter("address", address)
                 .addQueryParameter("key", GOOGLE_GEO_API_KEY)
                 .build();
+        Log.d("TAG", "getLatitudeLongitudeOfAddress: " + url.toString());
         Thread latLngThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -220,10 +227,12 @@ public class LocationUtilities {
             e.printStackTrace();
         }
         Location location = new Location(provider);
-        location.setLatitude(returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLat());
-        location.setLongitude(returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLng());
-        passedLocationObject.setLocation(location);
-        passedLocationObject = setGeographicalLocation(passedLocationObject.getLocation());
+        if(returnedGeoProfile.getResults().size() > 0) {
+            location.setLatitude(returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLat());
+            location.setLongitude(returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLng());
+            passedLocationObject.setLocation(location);
+            passedLocationObject = setGeographicalLocation(passedLocationObject.getLocation());
+        }
         return passedLocationObject;
     }
         //                                                    //
@@ -277,12 +286,14 @@ public class LocationUtilities {
                 e.printStackTrace();
             }
             Location location = new Location(passedProvider);
-            Log.d("TAG", "getGeographicalLocationBasedOffZip: " + returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLat());
-            location.setLatitude(returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLat());
-            location.setLongitude(returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLng());
-            returnedLocation.setLocation(location);
-            returnedLocation = setGeographicalLocation(returnedLocation.getLocation());
-            Log.d("TAG", "getGeographicalLocationBasedOffZip: " + returnedLocation.getLatitude_longitude().toString());
+            if(returnedGeoProfile.getResults().size() > 0) {
+                Log.d("TAG", "getGeographicalLocationBasedOffZip: " + returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLat());
+                location.setLatitude(returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLat());
+                location.setLongitude(returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLng());
+                returnedLocation.setLocation(location);
+                returnedLocation = setGeographicalLocation(returnedLocation.getLocation());
+                Log.d("TAG", "getGeographicalLocationBasedOffZip: " + returnedLocation.getLatitude_longitude().toString());
+            }
 
         }
         return returnedLocation;
