@@ -39,6 +39,8 @@ import static com.olegsagenadatrytwo.partyapp.Constant.COLOR_ROSE;
 import static com.olegsagenadatrytwo.partyapp.Constant.COLOR_VIOLET;
 import static com.olegsagenadatrytwo.partyapp.Constant.COLOR_YELLOW;
 import static com.olegsagenadatrytwo.partyapp.Constant.DEFAULT_TITLE;
+import static com.olegsagenadatrytwo.partyapp.Constant.MARKER_LENGTH_DEFAULT;
+import static com.olegsagenadatrytwo.partyapp.Constant.MARKER_WIDTH_DEFAULT;
 import static com.olegsagenadatrytwo.partyapp.Constant.TAG_IMAGE_MARKER_SET;
 import static com.olegsagenadatrytwo.partyapp.Constant.TAG_MARKER_COLOR_SET;
 import static com.olegsagenadatrytwo.partyapp.Constant.TAG_MARKER_LOCATION_SET;
@@ -251,7 +253,7 @@ public class MapUtilities {
           bitmap = ConvertionUtilities.convertToMutable(context, bitmap);
         }
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(
-            bitmap, 40, 40, false);
+            bitmap, MARKER_WIDTH_DEFAULT, MARKER_LENGTH_DEFAULT, false);
         return resizedBitmap;
 }
 

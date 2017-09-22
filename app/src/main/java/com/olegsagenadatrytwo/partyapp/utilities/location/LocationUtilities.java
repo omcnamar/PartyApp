@@ -1,12 +1,20 @@
 package com.olegsagenadatrytwo.partyapp.utilities.location;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationManager;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.olegsagenadatrytwo.partyapp.model.custom_map.CustomLocationObject;
+import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.GeocodingProfile;
 import com.olegsagenadatrytwo.partyapp.utilities.json.JsonUtilities;
 
@@ -18,6 +26,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Locale;
 
 import okhttp3.HttpUrl;
@@ -31,18 +43,74 @@ import static com.olegsagenadatrytwo.partyapp.Constant.RADIUS_OF_EARTH;
  */
 
 public class LocationUtilities {
-        //                                                    //
-       //   setGeograchicalLocation                          //
-      //      Receives a location which info is used to set //
-     //          geographical data in the custom object    //
+    //                                                    //
+    //   setGeograchicalLocation                          //
+    //      Receives a location which info is used to set //
+    //          geographical data in the custom object    //
     //****************************************************//
-     public static CustomLocationObject setGeographicalLocation(Location location){
-         CustomLocationObject returnCustomLocation = new CustomLocationObject();
-         returnCustomLocation.setLatitude(location.getLatitude());
-         returnCustomLocation.setLongitude(location.getLongitude());
-         returnCustomLocation.setLatitude_longitude(new LatLng(location.getLatitude(),location.getLongitude()));
-         return returnCustomLocation;
+    public static CustomLocationObject setGeographicalLocation(Location location) {
+        CustomLocationObject returnCustomLocation = new CustomLocationObject();
+        returnCustomLocation.setLatitude(location.getLatitude());
+        returnCustomLocation.setLongitude(location.getLongitude());
+        returnCustomLocation.setLatitude_longitude(new LatLng(location.getLatitude(), location.getLongitude()));
+        return returnCustomLocation;
+    }
+    static String locationProvider;
+    public static final CustomLocationObject getPhysicalDeviceLocation(Context context) {
+        LocationManager locationManager;
+
+
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        locationProvider = locationManager.getBestProvider(new Criteria(), false);
+        if (ActivityCompat.checkSelfPermission(context , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return null;
+        }
+        Location physicalDeviceLocation = locationManager.getLastKnownLocation(locationProvider);
+        return setGeographicalLocation(physicalDeviceLocation);
      }
+
+     public static final String getDistanceFromDeviceLocation(Party passedParty, Context context ) throws IOException {
+         CustomLocationObject currentDeviceLocObject = getPhysicalDeviceLocation(context);
+         Address passedPartyAddress = parseStringToAddress(passedParty.getAddress());
+         CustomLocationObject passedPartyLocation = getLatitudeLongitudeOfAddress(new CustomLocationObject(), passedPartyAddress, locationProvider);
+         return getDrivingDistance(currentDeviceLocObject,passedPartyLocation);
+     }
+
+     public static final ArrayList<Party> setPartyDistances(ArrayList<Party> passedPartyList, Context context) throws IOException {
+         int error = 0;
+         for(Party beingEvalParty : passedPartyList){
+            if(beingEvalParty.getAddress() != null) {
+                beingEvalParty.setDistance(getDistanceFromDeviceLocation(beingEvalParty, context));
+            } else {
+                beingEvalParty.setDistance("100,000,00" + error);
+                error = error + 2;
+            }
+         }
+         Collections.sort(passedPartyList, new Comparator<Party>() {
+             @Override
+             public int compare(Party party1, Party party2)
+             {
+                 Double d1 = Double.parseDouble(party1.getDistance().replace(",",""));
+                 Double d2 = Double.parseDouble(party2.getDistance().replace(",",""));
+                 return  d1.compareTo(d2);
+             }
+         });
+
+         return passedPartyList;
+     }
+
+
+
+
+
+
         //                                                    //
        //   getDrivingDistance                               //
       //      Returns the Driving by road distance between  //
@@ -91,7 +159,10 @@ public class LocationUtilities {
          } catch (InterruptedException e) {
              e.printStackTrace();
          }
-         return returnDistance;
+         String distance = returnDistance;
+         returnDistance = null;
+         return distance;
+
      }
         //                                                    //
        //   getDistanceAsTheCrowFlies                        //
@@ -165,6 +236,64 @@ public class LocationUtilities {
         address.setLocality(city + ", " + state);
         address.setPostalCode(zipCode);
         return address;
+    }
+
+
+    public static CustomLocationObject getGeographicalLocationBasedOffZip(String zipCode, String passedProvider){
+        CustomLocationObject returnedLocation = new CustomLocationObject();
+        if(zipCode.length() != 5){
+            Log.d("TAG", "getGeographicalLocationBasedOffZip: Zip Code Length not valid");
+        } else if(!(zipCode.matches("-?\\d+(\\.\\d+)?"))) {
+            Log.d("TAG", "getGeographicalLocationBasedOffZip: Zip Code Is not a number");
+        } else {
+            final HttpUrl url = new HttpUrl.Builder()
+                    .scheme("https")
+                    .host("maps.googleapis.com")
+                    .addPathSegment("maps")
+                    .addPathSegment("api")
+                    .addPathSegment("geocode")
+                    .addPathSegment("json")
+                    .addQueryParameter("address", zipCode)
+                    .addQueryParameter("key", GOOGLE_GEO_API_KEY)
+                    .build();
+            Log.d("TAG", "getGeographicalLocationBasedOffZip: url = " + url.toString());
+            Thread latLngThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        String jsonResponse = JsonUtilities.getJsonResponse(new URL(url.toString()));
+                        Gson gson = new Gson();
+                        returnedGeoProfile = gson.fromJson(jsonResponse, GeocodingProfile.class);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            latLngThread.start();
+            try {
+                latLngThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Location location = new Location(passedProvider);
+            Log.d("TAG", "getGeographicalLocationBasedOffZip: " + returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLat());
+            location.setLatitude(returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLat());
+            location.setLongitude(returnedGeoProfile.getResults().get(0).getGeometry().getLocation().getLng());
+            returnedLocation.setLocation(location);
+            returnedLocation = setGeographicalLocation(returnedLocation.getLocation());
+            Log.d("TAG", "getGeographicalLocationBasedOffZip: " + returnedLocation.getLatitude_longitude().toString());
+
+        }
+        return returnedLocation;
+    }
+
+    public static Address parseStringToAddress(String passedString){
+        Address address = new Address(Locale.US);
+        address.setAddressLine(1,passedString);
+        address.setLocality("");
+        address.setPostalCode("");
+        return address;
+
     }
 
 
