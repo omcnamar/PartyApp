@@ -35,15 +35,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
-import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.HomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
-import com.olegsagenadatrytwo.partyapp.utilities.location.LocationUtilities;
 import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
-import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 import com.olegsagenadatrytwo.partyapp.view.map_fragment.MapsActivity;
+import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,13 +77,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        runtimePermission();
         ButterKnife.bind(this);
         DaggerHomeActivityComponent.create().inject(this);
         presenter.attachView(this);
         presenter.setContext(this);
-        presenter.rxJavaEventbrite();
-
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= 21) {
             // Call some material design APIs here
@@ -94,6 +88,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         } else {
             // Implement this feature without material design
         }
+        runtimePermission();
         updateMapSnapshot();
     }
 
@@ -316,6 +311,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 // app-defined int constant. The callback method gets the
                 // result of the request.
             }
+        }else{
+            presenter.rxJavaEventbrite();
         }
 
     }
@@ -331,13 +328,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    
-
-                } else {
-
+                    presenter.rxJavaEventbrite();
 
                 }
-                return;
+
             }
 
             // other 'case' lines to check for other

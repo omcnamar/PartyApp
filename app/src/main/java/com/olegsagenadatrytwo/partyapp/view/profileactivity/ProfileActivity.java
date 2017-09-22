@@ -58,7 +58,7 @@ public class ProfileActivity extends AppCompatActivity {
         setupAdapter(pager, myAdapter);
         tabs.setupWithViewPager(pager);
         userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-        displayName.setText(userName.toString());
+        displayName.setText(userName);
         Picasso.with(this).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(civProfilePicture);
 
     }

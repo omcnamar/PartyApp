@@ -39,12 +39,6 @@ public class PartyLabSingleTon {
 
     //this method will return the list of events
     List<Party> getEvents() {
-
-
-
-
-
-
         return events;
     }
 
@@ -54,7 +48,7 @@ public class PartyLabSingleTon {
             Log.d(TAG + " DISTANCE", "getInstance: Is Empty" );
         } else {
             try {
-                events = LocationUtilities.setPartyDistances((ArrayList<Party>)events, context);
+                events = LocationUtilities.setPartyDistances(events, context);
                 for(Party p : events){
                     Log.d(TAG + " DISTANCE", "getInstance: " + p.getDistance());
                 }
