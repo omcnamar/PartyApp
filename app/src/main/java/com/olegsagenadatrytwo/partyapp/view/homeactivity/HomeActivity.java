@@ -34,11 +34,13 @@ import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
+import com.olegsagenadatrytwo.partyapp.utilities.location.LocationUtilities;
 import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 import com.olegsagenadatrytwo.partyapp.view.map_fragment.MapsActivity;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +56,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     @BindView(R.id.party_view_pager)
     ViewPager viewPager;
-    ArrayList<Party> partiesList;
+
 
     @Inject
     HomeActivityPresenter presenter;
@@ -66,7 +68,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     FrameLayout flMap;
     @BindView(R.id.ivMapBackgroundFrame)
     ImageView ivMapBackgroundFrame;
-
+    ArrayList<Party> partiesList;
     Window window;
     @BindView(R.id.toolbar)
     LinearLayout toolbar;
@@ -117,8 +119,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     @Override
     public void eventsLoadedUpdateUI(final List<Party> parties) {
+        partiesList = (ArrayList<Party>)parties;
         final FragmentStatePagerAdapter adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             //each view of the view pager is an Instance of the PartyFragment
+
             @Override
             public Fragment getItem(int position) {
                 //get the Event from the list of the events
@@ -174,6 +178,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                         adapter.notifyDataSetChanged();
                     }
                 });
+               
                 adapter.notifyDataSetChanged();
             }
 
