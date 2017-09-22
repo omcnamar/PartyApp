@@ -35,9 +35,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
+import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.HomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
+import com.olegsagenadatrytwo.partyapp.utilities.location.LocationUtilities;
 import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
+import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 import com.olegsagenadatrytwo.partyapp.view.map_fragment.MapsActivity;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 
