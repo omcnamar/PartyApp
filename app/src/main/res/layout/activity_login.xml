@@ -18,11 +18,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|center_vertical"
-        android:layout_weight="4"
+        android:layout_weight="4.5"
         android:gravity="center_horizontal"
         android:padding="50dp"
         android:src="@drawable/party" />
-
     <AutoCompleteTextView
         android:id="@+id/etUserName"
         android:layout_width="match_parent"
@@ -56,14 +55,15 @@
         android:id="@+id/btnLogIn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="16dp"
         android:layout_weight="6"
         android:background="@drawable/rounded_login_button"
         android:onClick="authenticateUser"
-        android:text="Log In"
         android:padding="16dp"
-        android:layout_marginBottom="16dp"
+        android:text="Log In"
         android:textColor="@color/colorWhite"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/login_with_google"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="fill_parent"
                 android:gravity="center_horizontal"/>
 
         </LinearLayout>
