@@ -1,11 +1,14 @@
 package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
@@ -32,11 +35,16 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
+import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.HomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
+import com.olegsagenadatrytwo.partyapp.utilities.location.LocationUtilities;
 import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
+import com.olegsagenadatrytwo.partyapp.view.map_fragment.MapsActivity;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,12 +53,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.olegsagenadatrytwo.partyapp.Constant.MY_PERMISSIONS_REQUEST_READ_LOCATION;
+
 public class HomeActivity extends AppCompatActivity implements HomeActivityContract.view {
 
     private static final String TAG = "HomeActivity";
 
     @BindView(R.id.party_view_pager)
     ViewPager viewPager;
+
 
     @Inject
     HomeActivityPresenter presenter;
@@ -62,13 +73,14 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     FrameLayout flMap;
     @BindView(R.id.ivMapBackgroundFrame)
     ImageView ivMapBackgroundFrame;
-
+    ArrayList<Party> partiesList;
     Window window;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        runtimePermission();
         ButterKnife.bind(this);
         DaggerHomeActivityComponent.create().inject(this);
         presenter.attachView(this);
@@ -111,8 +123,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     @Override
     public void eventsLoadedUpdateUI(final List<Party> parties) {
+        partiesList = (ArrayList<Party>)parties;
         final FragmentStatePagerAdapter adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             //each view of the view pager is an Instance of the PartyFragment
+
             @Override
             public Fragment getItem(int position) {
                 //get the Event from the list of the events
@@ -140,6 +154,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 final Party party = dataSnapshot.getValue(Party.class);
                 party.setId(dataSnapshot.getKey());
 
+                Log.d("ggg", "onSuccess: Home: " +  "on child added before image: ");
                 //get reference to storage
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
@@ -148,20 +163,27 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
+                        Log.d("ggg", "onSuccess: " +  "on child added image success: ");
                         party.setImageURL(uri.toString());
-                        List<Party> parties = PartyLabSingleTon.getInstance(getApplicationContext()).getEvents();
+                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
+                        List<Party> parties = partyLabSingleTon.getEvents();
                         parties.add(party);
+                        partyLabSingleTon.setEvents(parties);
                         adapter.notifyDataSetChanged();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         // Handle any errors
-                        List<Party> parties = PartyLabSingleTon.getInstance(getApplicationContext()).getEvents();
+                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
+                        List<Party> parties = partyLabSingleTon.getEvents();
                         parties.add(party);
+                        partyLabSingleTon.setEvents(parties);
                         adapter.notifyDataSetChanged();
                     }
                 });
+
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -173,32 +195,44 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
 
+                Log.d("ggg", "onSuccess: Home: " +  "on child changed before image: ");
                 //download image
                 storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
                         party.setImageURL(uri.toString());
-                        List<Party> parties = PartyLabSingleTon.getInstance(getApplicationContext()).getEvents();
+                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
+                        List<Party> parties = partyLabSingleTon.getEvents();
                         int i = parties.indexOf(party);
                         parties.set(i, party);
+                        partyLabSingleTon.setEvents(parties);
                         adapter.notifyDataSetChanged();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         // Handle any errors
-                        List<Party> parties = PartyLabSingleTon.getInstance(getApplicationContext()).getEvents();
+                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
+                        List<Party> parties = partyLabSingleTon.getEvents();
                         int i = parties.indexOf(party);
                         parties.set(i, party);
+                        partyLabSingleTon.setEvents(parties);
                         adapter.notifyDataSetChanged();
                     }
                 });
+                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onChildRemoved: ");
-
+                final Party party = dataSnapshot.getValue(Party.class);
+                party.setId(dataSnapshot.getKey());
+                PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
+                List<Party> parties = partyLabSingleTon.getEvents();
+                int i = parties.indexOf(party);
+                parties.remove(i);
+                partyLabSingleTon.setEvents(parties);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -226,7 +260,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 //                    startActivity(logInIntent);
 //                }
                 // TODO: 9/17/17 implement the Map View
-                Toast.makeText(this, "Map", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MapsActivity.class);
+                intent.putParcelableArrayListExtra("parties", partiesList);
+                startActivity(intent);
+
                 break;
             case R.id.action_location:
                 Toast.makeText(this, "Location", Toast.LENGTH_SHORT).show();
@@ -248,5 +285,63 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     }
 
     public void goToLocation(View view) {
+    }
+
+    //                       //
+    //  Runtime Permission   //
+    //=======================//
+    public void runtimePermission() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_READ_LOCATION);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+
+    }
+
+    //                       //
+    //  Permission Result    //
+    //=======================//
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+
+                } else {
+
+
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 }

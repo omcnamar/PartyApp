@@ -17,6 +17,15 @@ public class Party implements Parcelable{
     private int capacity;
     private String imageURL;
     private boolean isLiked;
+    private String distance;
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
 
     private int currentAttendance;
 
@@ -37,6 +46,7 @@ public class Party implements Parcelable{
         capacity = in.readInt();
         imageURL = in.readString();
         currentAttendance = in.readInt();
+        distance = in.readString();
     }
 
     public static final Creator<Party> CREATOR = new Creator<Party>() {
@@ -66,7 +76,6 @@ public class Party implements Parcelable{
                 ", ageRequired='" + ageRequired + '\'' +
                 ", capacity=" + capacity +
                 ", currentAttendance=" + currentAttendance +
-                ", isLiked=" + isLiked +
                 '}';
     }
 
@@ -230,5 +239,8 @@ public class Party implements Parcelable{
         parcel.writeInt(capacity);
         parcel.writeString(imageURL);
         parcel.writeInt(currentAttendance);
+        parcel.writeString(distance);
     }
+
+
 }

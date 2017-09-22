@@ -52,14 +52,7 @@ public class AddPartyActivityPresenter implements AddPartyActivityContract.prese
 
         //add new UUID to the party
         UUID id = UUID.randomUUID();
-        String idString = id.toString();
-        //add the party to the user
-        final DatabaseReference profileReference = database.getReference("profiles");
-        profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(idString).setValue(party);
-
-        //add the party to all parties
-        DatabaseReference partyReference = database.getReference("parties");
-        partyReference.child(idString).setValue(party);
+        final String idString = id.toString();
 
         //add the image of the party to the firebase
         if(bitmap != null) {
@@ -74,6 +67,13 @@ public class AddPartyActivityPresenter implements AddPartyActivityContract.prese
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     // Handle unsuccessful uploads
+                    //add the party to the user
+                    final DatabaseReference profileReference = database.getReference("profiles");
+                    profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(idString).setValue(party);
+
+                    //add the party to all parties
+                    DatabaseReference partyReference = database.getReference("parties");
+                    partyReference.child(idString).setValue(party);
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -81,10 +81,18 @@ public class AddPartyActivityPresenter implements AddPartyActivityContract.prese
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     Log.d(TAG, "onSuccess: " + downloadUrl);
+                    //add the party to the user
+                    final DatabaseReference profileReference = database.getReference("profiles");
+                    profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(idString).setValue(party);
+
+                    //add the party to all parties
+                    DatabaseReference partyReference = database.getReference("parties");
+                    partyReference.child(idString).setValue(party);
                     //sendMsg("" + downloadUrl, 2);
                     //Log.d("downloadUrl-->", "" + downloadUrl);
                 }
             });
+
         }
 
 

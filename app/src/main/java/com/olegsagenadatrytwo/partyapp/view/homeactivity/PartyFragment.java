@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -55,6 +56,8 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
     private Party party;
     private DatabaseReference partiesReference;
     private Context context;
+
+    TextView tvDistance;
 
     public static PartyFragment newInstance(String id) {
         Bundle args = new Bundle();
@@ -108,6 +111,8 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         btnPublicOrPrivate.setOnClickListener(this);
         btnShareParty.setOnClickListener(this);
 
+        tvDistance = v.findViewById(R.id.tvPartyDistance);
+
         ivLogo = v.findViewById(R.id.ivPartyHeader);
         tvPartyType = v.findViewById(R.id.tvPartyType);
         tvDescription = v.findViewById(R.id.tvPartyDescription);
@@ -117,6 +122,12 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         if (party != null) {
             tvPartyType.setText(party.getPartyName());
             tvDescription.setText(party.getDescription());
+            double distance = Double.parseDouble(party.getDistance().replace(",", "").replaceAll("[^\\d.]", ""));
+            if(distance <=10000000) {
+                tvDistance.setText(String.valueOf(distance) + " miles away");
+            } else {
+                tvDistance.setText("Unknown distance");
+            }
             loadPartyImage(party.getImageURL(), ivLogo); // Header Image
             loadPartyImage(null, ivPartyHost); // Host Image
             if (party.isLiked()){
@@ -173,12 +184,13 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
 
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
+        Log.d("ggg", "onSuccess: Fragment: " +  "on child added before image: ");
     }
 
     @Override
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
+        Log.d("ggg", "onSuccess: Fragment: " +  "on child changed before image: ");
         final Party partyChanged = dataSnapshot.getValue(Party.class);
         partyChanged.setId(dataSnapshot.getKey());
 
@@ -192,10 +204,13 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
             storageRef.child("images/" + partyChanged.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
+                    Log.d("ggg", "onSuccess: " +  "on child changed image success: ");
                     party.setImageURL(uri.toString());
                     tvPartyType.setText(partyChanged.getPartyName());
                     tvDescription.setText(partyChanged.getDescription());
-                    loadPartyImage(partyChanged.getImageURL(), ivLogo); // Header Image
+                    party.setPartyName(partyChanged.getPartyName());
+                    party.setDescription(partyChanged.getDescription());
+                    loadPartyImage(uri.toString(), ivLogo); // Header Image
                     loadPartyImage(null, ivPartyHost); // Host Image
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -204,6 +219,8 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                     // Handle any errors
                     tvPartyType.setText(partyChanged.getPartyName());
                     tvDescription.setText(partyChanged.getDescription());
+                    party.setPartyName(partyChanged.getPartyName());
+                    party.setDescription(partyChanged.getDescription());
                 }
             });
         }
@@ -211,7 +228,15 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
 
     @Override
     public void onChildRemoved(DataSnapshot dataSnapshot) {
+        final Party partyChanged = dataSnapshot.getValue(Party.class);
+        partyChanged.setId(dataSnapshot.getKey());
 
+        if(party.getId().equals(partyChanged.getId())){
+            tvPartyType.setText("This party was just deleted");
+            tvDescription.setText("");
+            ivLogo.setImageBitmap(null);
+            ivPartyHost.setImageBitmap(null);
+        }
     }
 
     @Override

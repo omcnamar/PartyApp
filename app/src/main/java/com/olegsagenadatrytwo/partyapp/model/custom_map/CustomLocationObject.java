@@ -13,6 +13,15 @@ public class CustomLocationObject {
     Double latitude;
     Double longitude;
     LatLng latitude_longitude;
+    String id = "id";
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Address getPhysicalAddress() {
         return physicalAddress;

@@ -91,7 +91,7 @@ public class MyPartiesAdapter extends RecyclerView.Adapter<MyPartiesAdapter.View
         holder.ivDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "delete " + party.getId(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, party.getPartyName() + " was deleted", Toast.LENGTH_SHORT).show();
                 parties.remove(position);
                 notifyDataSetChanged();
 

@@ -21,7 +21,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.olegsagenadatrytwo.partyapp.R;
+import com.olegsagenadatrytwo.partyapp.model.custompojos.Profile;
 import com.olegsagenadatrytwo.partyapp.view.homeactivity.HomeActivity;
 
 public class LoginActivityPresenter implements LoginActivityContract.Presenter, GoogleApiClient.ConnectionCallbacks,
@@ -146,6 +149,15 @@ public class LoginActivityPresenter implements LoginActivityContract.Presenter, 
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             goToSecondActivity(loginActivity);
+
+                            //add user to fire base database with no parties
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference profileReference = database.getReference("profiles");
+
+                            Profile profile = new Profile();
+                            profile.setUserName(user.getEmail());
+                            profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(profile);
+
 
                         } else {
                             // If sign in fails, display a message to the user.

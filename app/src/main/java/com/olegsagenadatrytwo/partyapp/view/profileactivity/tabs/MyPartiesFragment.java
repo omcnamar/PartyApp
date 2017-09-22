@@ -85,11 +85,12 @@ public class MyPartiesFragment extends Fragment {
     public void myPartiesLoadedUpdateUI(List<Party> parties) {
 
         adapter = new MyPartiesAdapter(parties, getContext());
-        rvMyParties.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        if(rvMyParties != null) {
+            rvMyParties.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            pbLoading.setVisibility(View.GONE);
 
-        pbLoading.setVisibility(View.GONE);
-
+        }
     }
 
     @Override

@@ -106,6 +106,8 @@ public class RegisterActivity extends AppCompatActivity implements LoginActivity
                                         signupInputPassword.setText("");
                                         /*After signing up the user logs in*/
                                         mPresenter.signIn(userName, password);
+
+                                        //add user to fire base database with no parties
                                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                                         DatabaseReference profileReference = database.getReference("profiles");
 

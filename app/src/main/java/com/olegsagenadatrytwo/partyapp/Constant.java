@@ -29,6 +29,7 @@ public class Constant {
     public static final String TAG_MARKER_COLOR_SET = "TAG_Marker_Color_Set";
     public static final String TAG_MARKER_LOCATION_SET = "TAG_Marker_Loc_Set";
     public static final String TAG_IMAGE_MARKER_SET = "TAG_Marker_Img_Set";
+    public static final String TAG_DISTANCE_RETURNS = "TAG_Distances";
 
     //Color Names
     public static final String COLOR_RED = "Red";
@@ -44,5 +45,19 @@ public class Constant {
 
     //Default values
     public static final String DEFAULT_TITLE = "New Location";
+
+    //Location Update settings
+    public static final int LOCATION_UPDATE_MINUTES = 5;
+    public static final int LOCATIOM_UPDATE_MILES = 10;
+
+    //Markers length and width
+    public static final int MARKER_LENGTH_DEFAULT = 50;
+    public static final int MARKER_WIDTH_DEFAULT = 50;
+
+    public static final int MY_PERMISSIONS_REQUEST_READ_LOCATION = 402;
+
+
+
+
 
 }

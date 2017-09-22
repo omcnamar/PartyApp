@@ -63,6 +63,7 @@ public class RegisterActivityPresenter implements  RegisterActivityContract.Pres
                             view.signInResult(true);
                             Intent homeIntent = new Intent(context, HomeActivity.class);
                             context.startActivity(homeIntent);
+
                         }
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
