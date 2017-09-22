@@ -43,6 +43,17 @@ import static com.olegsagenadatrytwo.partyapp.Constant.COLOR_BLUE;
 import static com.olegsagenadatrytwo.partyapp.Constant.LOCATIOM_UPDATE_MILES;
 import static com.olegsagenadatrytwo.partyapp.Constant.LOCATION_UPDATE_MINUTES;
 import static com.olegsagenadatrytwo.partyapp.Constant.TAG_LOCATION_INFO;
+import static com.olegsagenadatrytwo.partyapp.Constant.ZOOM_LEVEL_EIGHT;
+import static com.olegsagenadatrytwo.partyapp.Constant.ZOOM_LEVEL_FIVE;
+import static com.olegsagenadatrytwo.partyapp.Constant.ZOOM_LEVEL_FOUR;
+import static com.olegsagenadatrytwo.partyapp.Constant.ZOOM_LEVEL_NINE;
+import static com.olegsagenadatrytwo.partyapp.Constant.ZOOM_LEVEL_ONE;
+import static com.olegsagenadatrytwo.partyapp.Constant.ZOOM_LEVEL_SEVEN;
+import static com.olegsagenadatrytwo.partyapp.Constant.ZOOM_LEVEL_SIX;
+import static com.olegsagenadatrytwo.partyapp.Constant.ZOOM_LEVEL_TEN;
+import static com.olegsagenadatrytwo.partyapp.Constant.ZOOM_LEVEL_THREE;
+import static com.olegsagenadatrytwo.partyapp.Constant.ZOOM_LEVEL_TWO;
+import static com.olegsagenadatrytwo.partyapp.Constant.ZOOM_LEVEL_ZERO;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
@@ -130,7 +141,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onStopTrackingTouch(SeekBar seekBar) {
                 milage = progressChange;
                 onMapReady(mMap);
-                Toast.makeText(MapsActivity.this, "" + milage*10 + " Miles out", Toast.LENGTH_LONG).show();
+                Toast.makeText(MapsActivity.this, "" + getZoomMilage((int)milage) + " Miles out", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -205,7 +216,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return false;
             }
         });
-        mMap.animateCamera(MapUtilities.mapDisplayToRequestedDistance(userCustomLocation, ConvertionUtilities.convertMilesToMeters(milage * 10),displaymetrics));
+        mMap.animateCamera(MapUtilities.mapDisplayToRequestedDistance(userCustomLocation, ConvertionUtilities.convertMilesToMeters(getZoomMilage((int)milage)),displaymetrics));
 
     }
 
@@ -282,8 +293,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Address addr = LocationUtilities.parseStringToAddress(party.getAddress());
             passedList.add(addr);
         }
-        passedList.add(LocationUtilities.setupAddress("2909 Austell Rd SW #100", "Marietta", "GA", "30008"));
-        passedList.add(LocationUtilities.setupAddress("2215 D and B Dr SE", "Marietta", "GA", "30008"));
+
         return passedList;
     }
 
@@ -294,6 +304,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (isFocused) {
             etZipCode.requestFocus();
+        }
+    }
+    private int getZoomMilage(int setting){
+        switch(setting){
+            case 0:
+                return ZOOM_LEVEL_ZERO;
+            case 1:
+                return ZOOM_LEVEL_ONE;
+            case 2:
+                return ZOOM_LEVEL_TWO;
+            case 3:
+                return ZOOM_LEVEL_THREE;
+            case 4:
+                return ZOOM_LEVEL_FOUR;
+            case 5:
+                return ZOOM_LEVEL_FIVE;
+            case 6:
+                return ZOOM_LEVEL_SIX;
+            case 7:
+                return ZOOM_LEVEL_SEVEN;
+            case 8:
+                return ZOOM_LEVEL_EIGHT;
+            case 9:
+                return ZOOM_LEVEL_NINE;
+            case 10:
+                return ZOOM_LEVEL_TEN;
+            default:
+                return ZOOM_LEVEL_THREE;
         }
     }
 }

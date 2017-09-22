@@ -56,6 +56,19 @@ public class Constant {
 
     public static final int MY_PERMISSIONS_REQUEST_READ_LOCATION = 402;
 
+    //Zoom Levels
+    public static final int ZOOM_LEVEL_ZERO = 5;
+    public static final int ZOOM_LEVEL_ONE = 10;
+    public static final int ZOOM_LEVEL_TWO = 25;
+    public static final int ZOOM_LEVEL_THREE = 50;
+    public static final int ZOOM_LEVEL_FOUR = 100;
+    public static final int ZOOM_LEVEL_FIVE = 200;
+    public static final int ZOOM_LEVEL_SIX = 500;
+    public static final int ZOOM_LEVEL_SEVEN = 1000;
+    public static final int ZOOM_LEVEL_EIGHT = 1500;
+    public static final int ZOOM_LEVEL_NINE = 3000;
+    public static final int ZOOM_LEVEL_TEN = 6000;
+
 
 
 
