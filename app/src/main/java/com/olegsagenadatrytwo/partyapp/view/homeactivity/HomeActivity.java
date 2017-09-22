@@ -17,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -32,12 +33,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
-import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.HomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
-import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 import com.olegsagenadatrytwo.partyapp.view.map_fragment.MapsActivity;
+import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +68,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     ImageView ivMapBackgroundFrame;
 
     Window window;
+    @BindView(R.id.toolbar)
+    LinearLayout toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +146,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 final Party party = dataSnapshot.getValue(Party.class);
                 party.setId(dataSnapshot.getKey());
 
-                Log.d("ggg", "onSuccess: Home: " +  "on child added before image: ");
+                Log.d("ggg", "onSuccess: Home: " + "on child added before image: ");
                 //get reference to storage
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
@@ -153,7 +155,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Log.d("ggg", "onSuccess: " +  "on child added image success: ");
+                        Log.d("ggg", "onSuccess: " + "on child added image success: ");
                         party.setImageURL(uri.toString());
                         PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(getApplicationContext());
                         List<Party> parties = partyLabSingleTon.getEvents();
@@ -184,7 +186,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
 
-                Log.d("ggg", "onSuccess: Home: " +  "on child changed before image: ");
+                Log.d("ggg", "onSuccess: Home: " + "on child changed before image: ");
                 //download image
                 storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override

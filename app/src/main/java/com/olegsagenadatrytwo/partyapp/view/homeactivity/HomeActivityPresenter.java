@@ -33,6 +33,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
 
     public void attachView(HomeActivityContract.view view) {
         this.view = view;
+        // TODO: 9/22/2017 get current area
     }
 
     public void setContext(Context context) {
