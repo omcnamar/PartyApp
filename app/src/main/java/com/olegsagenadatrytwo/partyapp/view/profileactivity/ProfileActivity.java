@@ -11,8 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
-import android.view.MenuItem;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -38,7 +38,6 @@ import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.FirstFragment;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.MyPartiesFragment;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.SecondFragment;
 import com.olegsagenadatrytwo.partyapp.view.settingsactivity.SettingsActivity;
-import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -164,7 +163,7 @@ public class ProfileActivity extends AppCompatActivity implements PopupMenu.OnMe
                     ibSave.setVisibility(View.VISIBLE);
                     etName.setVisibility(View.VISIBLE);
                     displayName.setVisibility(View.GONE);
-                    ibEdit.setImageDrawable(ContextCompat.getDrawable(R.drawable.ic_cancel_black_48dp));
+                    ibEdit.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cancel_black_48dp));
                     if (!displayName.getText().toString().equals(""))
                         etName.setText(displayName.getText().toString());
                 }
@@ -178,7 +177,7 @@ public class ProfileActivity extends AppCompatActivity implements PopupMenu.OnMe
                         .setPhotoUri(selectedImage)
                         .build();
                 FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates);
-                ibEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_mode_edit_black_48dp));
+                ibEdit.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_mode_edit_black_48dp));
                 displayName.setText(etName.getText().toString());
                 break;
             case R.id.civProfilePicture:

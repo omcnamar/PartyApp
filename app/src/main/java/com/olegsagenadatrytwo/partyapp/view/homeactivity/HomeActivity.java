@@ -91,7 +91,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         DaggerHomeActivityComponent.create().inject(this);
         presenter.attachView(this);
         presenter.setContext(this);
-        presenter.rxJavaEventbrite();
+        //presenter.rxJavaEventbrite();
 
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= 21) {

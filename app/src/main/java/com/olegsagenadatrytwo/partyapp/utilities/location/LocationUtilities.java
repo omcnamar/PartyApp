@@ -11,6 +11,9 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.olegsagenadatrytwo.partyapp.model.custom_map.CustomLocationObject;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
@@ -26,7 +29,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -35,7 +37,6 @@ import java.util.Locale;
 import okhttp3.HttpUrl;
 
 import static com.olegsagenadatrytwo.partyapp.Constant.GOOGLE_GEO_API_KEY;
-import static com.olegsagenadatrytwo.partyapp.Constant.RADIUS_OF_EARTH;
 
 
 /**
@@ -43,6 +44,7 @@ import static com.olegsagenadatrytwo.partyapp.Constant.RADIUS_OF_EARTH;
  */
 
 public class LocationUtilities {
+    private static final String TAG = "LocationUtilities";
     static int apiFailureDistanceFailSafe = 1;
     //                                                    //
     //   setGeograchicalLocation                          //
@@ -80,8 +82,10 @@ public class LocationUtilities {
      public static List<Party> setPartyDistances(List<Party> passedPartyList, Context context) throws IOException {
          int error = 0;
          for(Party beingEvalParty : passedPartyList){
-            if(beingEvalParty.getAddress() != null) {
+            if(beingEvalParty.getAddress() != null && beingEvalParty.getDistance() == null) {
                 beingEvalParty.setDistance(getDistanceFromDeviceLocation(beingEvalParty, context));
+                savePartyEdit(beingEvalParty);
+                Log.d(TAG, "setPartyDistances: setting new distance");
             } else {
                 beingEvalParty.setDistance("100,000,00" + error);
                 error = error + 2;
@@ -103,12 +107,19 @@ public class LocationUtilities {
          return passedPartyList;
      }
 
+    private static void savePartyEdit(Party party) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //Edit the party to the user
+        final DatabaseReference profileReference = database.getReference("profiles");
+        profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(party.getId()).setValue(party);
+
+        //edit the party to all parties
+        DatabaseReference partyReference = database.getReference("parties");
+        partyReference.child(party.getId()).setValue(party);
+    }
 
 
-
-
-
-        //                                                    //
+    //                                                    //
        //   getDrivingDistance                               //
       //      Returns the Driving by road distance between  //
      //          2 locations                               //
