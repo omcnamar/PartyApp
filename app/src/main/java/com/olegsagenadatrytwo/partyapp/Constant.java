@@ -16,8 +16,8 @@ public class Constant {
     /**
      * Google geolocation
      */
-    public static final String GEOLOCATION_BASE_URL = "";
-    public static final String GOOGLEMAPS_BASE_URL = "";
+    public static final String GEOCODE_BASE_URL = "https://maps.googleapis.com/";
+    public static final String GEOCODE_PATH = "maps/api/geocode/json?";
     //API Keys
     public static final String GOOGLE_GEO_API_KEY = "AIzaSyBy4spNfpqrr8awZ3c1MmmtbHipkHU_2Ss";
     //Misc inforamtion
@@ -53,7 +53,5 @@ public class Constant {
     //Markers length and width
     public static final int MARKER_LENGTH_DEFAULT = 50;
     public static final int MARKER_WIDTH_DEFAULT = 50;
-
-
 
 }

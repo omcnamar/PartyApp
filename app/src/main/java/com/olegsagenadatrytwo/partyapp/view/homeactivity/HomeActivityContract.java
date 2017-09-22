@@ -19,5 +19,6 @@ public interface HomeActivityContract {
     interface presenter extends BasePresenter<view> {
 
         void rxJavaEventbrite();
+        void getLocaleRetrofit(String zip);
     }
 }

@@ -16,7 +16,7 @@
         android:layout_gravity="left"
         android:layout_weight="3"
         android:orderInCategory="200"
-        android:src="@drawable/ic_keyboard_arrow_left_black_48dp" />
+        app:srcCompat="@drawable/ic_arrow_back_black_48dp" />
 
 
     <TextView
@@ -37,7 +37,7 @@
         android:layout_height="match_parent"
         android:layout_weight="3"
         android:background="@color/colorCustomToolbar"
-        android:src="@drawable/ic_party48dp"
+        app:srcCompat="@drawable/ic_party48dp"
         android:title="@string/action_profile" />
 
     <ImageButton
@@ -46,8 +46,9 @@
         android:layout_height="match_parent"
         android:background="@color/colorCustomToolbar"
         android:layout_weight="3"
-        android:src="@drawable/ic_settings_black_48dp"
-        android:title="@string/action_profile" />
+        app:srcCompat="@drawable/ic_more_vert_black_48dp"
+        android:title="@string/action_profile"
+        android:onClick="showPopup"/>
 
 
 </LinearLayout>

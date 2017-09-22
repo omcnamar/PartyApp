@@ -10,7 +10,6 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.olegsagenadatrytwo.partyapp.model.custom_map.CustomLocationObject;
@@ -27,7 +26,6 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;

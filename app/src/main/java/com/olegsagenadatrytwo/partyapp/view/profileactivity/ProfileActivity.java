@@ -3,12 +3,16 @@ package com.olegsagenadatrytwo.partyapp.view.profileactivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,6 +24,7 @@ import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.FirstFragment;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.MyPartiesFragment;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.SecondFragment;
+import com.olegsagenadatrytwo.partyapp.view.settingsactivity.SettingsActivity;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -27,7 +32,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     @BindView(R.id.tabs)
     TabLayout tabs;
@@ -43,6 +48,10 @@ public class ProfileActivity extends AppCompatActivity {
     ImageButton ibEdit;
     @BindView(R.id.etName)
     EditText etName;
+    @BindView(R.id.action_profileSettings)
+    ImageButton actionProfileSettings;
+    @BindView(R.id.action_location)
+    TextView actionLocation;
     private PagerAdapter myAdapter;
     private String userName;
     private boolean flag;
@@ -52,6 +61,8 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
         ButterKnife.bind(this);
+        actionLocation.setText("Party App");
+        actionLocation.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         myAdapter = new PagerAdapter(getSupportFragmentManager());
         flag = false;
@@ -84,26 +95,18 @@ public class ProfileActivity extends AppCompatActivity {
                 onBackPressed();
                 break;
             case R.id.action_add_party:
-                //if there is no current user send the user to log in
-                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    Intent addPartyIntent = new Intent(this, AddPartyActivity.class);
-                    startActivity(addPartyIntent);
-                } else {
-                    Intent logInIntent = new Intent(this, LoginActivity.class);
-                    startActivity(logInIntent);
-                }
+                addParty();
                 break;
             case R.id.action_profileSettings:
-                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    FirebaseAuth.getInstance().signOut();
-                    Toast.makeText(this, "Logged out!", Toast.LENGTH_SHORT).show();
-                    Intent homeIntent = new Intent(this, HomeActivity.class);
-                    startActivity(homeIntent);
-                }
+                PopupMenu popupMenu = new PopupMenu(ProfileActivity.this, actionProfileSettings);
+                popupMenu.setOnMenuItemClickListener(this);
+                popupMenu.getMenuInflater().inflate(R.menu.menu_actions, popupMenu.getMenu());
+                popupMenu.show();
+
                 break;
             case R.id.ibEdit:
                 if (flag) {
-                    ibEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_mode_edit_black_48dp));
+                    ibEdit.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_mode_edit_black_48dp));
                     ibSave.setVisibility(View.GONE);
                     etName.setVisibility(View.GONE);
                     displayName.setVisibility(View.VISIBLE);
@@ -113,10 +116,42 @@ public class ProfileActivity extends AppCompatActivity {
                     ibSave.setVisibility(View.VISIBLE);
                     etName.setVisibility(View.VISIBLE);
                     displayName.setVisibility(View.GONE);
-                    ibEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_cancel_black_48dp));
+                    ibEdit.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cancel_black_48dp));
                 }
                 break;
         }
     }
 
+    private void addParty() {
+        //if there is no current user send the user to log in
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            Intent addPartyIntent = new Intent(this, AddPartyActivity.class);
+            startActivity(addPartyIntent);
+        } else {
+            Intent logInIntent = new Intent(this, LoginActivity.class);
+            startActivity(logInIntent);
+        }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_party:
+                addParty();
+                return true;
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            case R.id.action_logout:
+                // Sign out
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    FirebaseAuth.getInstance().signOut();
+                    Toast.makeText(this, "Logged out!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this, HomeActivity.class));
+                }
+                return true;
+            default:
+                return false;
+        }
+    }
 }

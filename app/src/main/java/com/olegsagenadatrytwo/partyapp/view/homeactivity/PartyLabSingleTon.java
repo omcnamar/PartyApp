@@ -4,9 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
-import com.olegsagenadatrytwo.partyapp.utilities.location.LocationUtilities;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,14 +51,17 @@ public class PartyLabSingleTon {
         if(events.isEmpty()){
             Log.d(TAG + " DISTANCE", "getInstance: Is Empty" );
         } else {
-            try {
+            for(Party p : events){
+                Log.d(TAG + " DISTANCE", "getInstance: " + p.getDistance());
+            }
+           /* try {
                 events = LocationUtilities.setPartyDistances((ArrayList<Party>)events, context);
                 for(Party p : events){
                     Log.d(TAG + " DISTANCE", "getInstance: " + p.getDistance());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
         this.events = events;
     }

@@ -1,11 +1,13 @@
 package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
@@ -15,11 +17,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,15 +36,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
+import com.olegsagenadatrytwo.partyapp.eventbus.LocalEvent;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
-import com.olegsagenadatrytwo.partyapp.utilities.location.LocationUtilities;
 import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 import com.olegsagenadatrytwo.partyapp.view.map_fragment.MapsActivity;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 
-import java.io.IOException;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,15 +59,11 @@ import butterknife.OnClick;
 public class HomeActivity extends AppCompatActivity implements HomeActivityContract.view {
 
     private static final String TAG = "HomeActivity";
-
+    private static final String PARTY_ID = "party_id";
     @BindView(R.id.party_view_pager)
     ViewPager viewPager;
-
-
     @Inject
     HomeActivityPresenter presenter;
-
-    private static final String PARTY_ID = "party_id";
     @BindView(R.id.pbLoading)
     ProgressBar pbLoading;
     @BindView(R.id.flMap)
@@ -72,6 +74,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     Window window;
     @BindView(R.id.toolbar)
     LinearLayout toolbar;
+    @BindView(R.id.action_location)
+    TextView actionLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +123,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     @Override
     public void eventsLoadedUpdateUI(final List<Party> parties) {
-        partiesList = (ArrayList<Party>)parties;
+        partiesList = (ArrayList<Party>) parties;
         final FragmentStatePagerAdapter adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             //each view of the view pager is an Instance of the PartyFragment
 
@@ -165,6 +169,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                         List<Party> parties = partyLabSingleTon.getEvents();
                         parties.add(party);
                         partyLabSingleTon.setEvents(parties);
+                        partyLabSingleTon.setEvents(parties);
                         adapter.notifyDataSetChanged();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -178,7 +183,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                         adapter.notifyDataSetChanged();
                     }
                 });
-               
+
                 adapter.notifyDataSetChanged();
             }
 
@@ -243,43 +248,70 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         });
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(LocalEvent locale) {
+        if (locale != null) {
+            actionLocation.setText(locale.toString());
+        } else {
+            Snackbar sb = Snackbar
+                    .make(findViewById(R.id.main_content), "Invalid Zipcode", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("RETRY", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getZip();
+                        }
+                    });
+            sb.show();
+        }
+    }
+
     @OnClick({R.id.action_map, R.id.action_location, R.id.action_profile})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.action_map:
-//                //if there is no current user send the user to log in
-//                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-//                    Intent addPartyIntent = new Intent(this, AddPartyActivity.class);
-//                    startActivity(addPartyIntent);
-//                } else {
-//                    Intent logInIntent = new Intent(this, LoginActivity.class);
-//                    startActivity(logInIntent);
-//                }
-                // TODO: 9/17/17 implement the Map View
+
                 Intent intent = new Intent(this, MapsActivity.class);
                 intent.putParcelableArrayListExtra("parties", partiesList);
                 startActivity(intent);
 
                 break;
             case R.id.action_location:
-                Toast.makeText(this, "Location", Toast.LENGTH_SHORT).show();
+
+                getZip();
+
                 break;
             case R.id.action_profile:
-//                Intent loginIntent = new Intent(this, LoginActivity.class);
-//                startActivity(loginIntent);
+
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    /*startActivity(new Intent(this, MyPartiesActivity.class));*/
                     startActivity(new Intent(this, ProfileActivity.class));
                 } else {
-                    Intent logInIntent = new Intent(this, LoginActivity.class);
-                    startActivity(logInIntent);
+                    startActivity(new Intent(this, LoginActivity.class));
                 }
-                // TODO: 9/17/17 need to implement back button for profile class
+
                 break;
 
         }
     }
 
+    private void getZip() {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.new_zipcode);
+        dialog.setTitle("Enter New Zip code");
+
+        Button btnSaveZip = dialog.findViewById(R.id.btnSaveZip);
+        btnSaveZip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText etZip = dialog.findViewById(R.id.etZipcode);
+                presenter.getLocaleRetrofit(etZip.getText().toString());
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
     public void goToLocation(View view) {
     }
+
 }

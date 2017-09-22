@@ -3,10 +3,14 @@ package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.olegsagenadatrytwo.partyapp.eventbus.LocalEvent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.Event;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
+import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.GeocodingProfile;
 import com.olegsagenadatrytwo.partyapp.retrofit.RetrofitHelper;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +21,9 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class HomeActivityPresenter implements HomeActivityContract.presenter {
@@ -74,6 +81,25 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                         view.eventsLoadedUpdateUI(parties);
                     }
                 }));
+    }
+
+    @Override
+    public void getLocaleRetrofit(String zip) {
+
+        apiService = new RetrofitHelper().getLocaleService();
+        retrofit2.Call<GeocodingProfile> getLocale = apiService.queryGetLocale("postal_code:"+zip);
+        getLocale.enqueue(new Callback<GeocodingProfile>() {
+            @Override
+            public void onResponse(Call<GeocodingProfile> call, Response<GeocodingProfile> response) {
+                String locale = response.body().getResults().get(0).getAddressComponents().get(1).getShortName();
+                EventBus.getDefault().post(new LocalEvent(locale));
+            }
+
+            @Override
+            public void onFailure(Call<GeocodingProfile> call, Throwable t) {
+
+            }
+        });
     }
 
 
