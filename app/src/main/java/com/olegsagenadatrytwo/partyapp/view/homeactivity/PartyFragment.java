@@ -1,6 +1,7 @@
 package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -263,6 +264,20 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                 break;
             case R.id.btnShareParty:
                 btnShareParty.startAnimation(animation);
+
+                try {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("text/plain");
+                    i.putExtra(Intent.EXTRA_SUBJECT, "Party App");
+                    String sAux = "\nLet me recommend you this application\n\n";
+                    sAux = sAux + "https://play.google.com/store/apps/details?id=PartyApp \n\n";
+                    i.putExtra(Intent.EXTRA_TEXT, sAux);
+                    startActivity(Intent.createChooser(i, "choose one"));
+
+                } catch(Exception e) {
+                    //e.toString();
+                }
+
                 break;
             case R.id.btnPublicOrPrivate:
                 btnPublicOrPrivate.startAnimation(animation);

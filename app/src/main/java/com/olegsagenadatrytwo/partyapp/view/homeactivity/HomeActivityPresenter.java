@@ -2,6 +2,7 @@ package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.ShareActionProvider;
 
 import com.olegsagenadatrytwo.partyapp.eventbus.LocalEvent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
@@ -33,6 +34,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
     // Query Eventbrite with this
     @NonNull
     RetrofitHelper.ApiService apiService;
+    private ShareActionProvider mShareActionProvider;
     private Context context;
     // Collects subscriptions to unsubscribe later
     @NonNull

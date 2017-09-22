@@ -109,6 +109,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_margin="5dp"
+                    android:actionProviderClass="android.widget.ShareActionProvider"
                     android:background="@drawable/round_button"
                     android:elevation="3dp"
                     app:srcCompat="@drawable/ic_share" />
