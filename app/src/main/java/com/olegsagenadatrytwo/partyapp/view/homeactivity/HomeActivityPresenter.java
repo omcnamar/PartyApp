@@ -62,7 +62,6 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
     @Override
     public void rxJavaEventbrite() {
 
-        Log.d("wwwww", ": presenter get parties");
         apiService = new RetrofitHelper().getEventBriteService();
         compositeDisposable.add(apiService.queryEventList("")
                 .subscribeOn(Schedulers.io())
@@ -78,6 +77,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                     @Override
                     public void accept(final List<Event> events) throws Exception {
 
+                        Log.d(TAG, "accept: ");
                         PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
                         List<Party> parties = convertEventsToParties(events);
                         partyLabSingleTon.setEvents(parties);
@@ -109,11 +109,9 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                         partiesReference.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                Log.d("wwwww", "onChildAdded: ");
                                 final Party party = dataSnapshot.getValue(Party.class);
                                 party.setId(dataSnapshot.getKey());
 
-                                Log.d("wwwww", "onSuccess: Home: " +  "on child added before image: ");
                                 //get reference to storage
                                 FirebaseStorage storage = FirebaseStorage.getInstance();
                                 StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
@@ -122,7 +120,6 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                                 storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
-                                        Log.d("wwwww", "onSuccess: " +  "on child added image success: ");
                                         party.setImageURL(uri.toString());
                                         PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
                                         List<Party> parties = partyLabSingleTon.getEvents();
@@ -152,12 +149,10 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                                 FirebaseStorage storage = FirebaseStorage.getInstance();
                                 StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
 
-                                Log.d("ggg", "onSuccess: Home: " +  "on child changed before image: ");
                                 //download image
                                 storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
-                                        Log.d("ggg", "onSuccess: Home: " +  "on child changed image: success");
                                         party.setImageURL(uri.toString());
                                         PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
                                         List<Party> parties = partyLabSingleTon.getEvents();
@@ -169,7 +164,6 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception exception) {
-                                        Log.d("ggg", "onSuccess: Home: " +  "on child changed image: faild");
 
                                         // Handle any errors
                                         PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);

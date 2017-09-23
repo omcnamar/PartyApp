@@ -70,6 +70,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         DaggerHomeActivityComponent.create().inject(this);
+        createViewPagerAdapter();
         presenter.attachView(this);
         presenter.setContext(this);
         // Check if we're running on Android 5.0 or higher
@@ -109,33 +110,33 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     @Override
     public void eventsLoadedUpdateUI(final List<Party> parties) {
-        partiesList = (ArrayList<Party>)parties;
+        Log.d(TAG, "eventsLoadedUpdateUI: ");
+        PartyLabSingleTon.getInstance(getApplicationContext()).setEvents(parties);
+        pbLoading.setVisibility(View.GONE);
+        adapter.notifyDataSetChanged();
+    }
 
-        Log.d("wwwww", "eventsLoadedUpdateUI: ");
-        if(adapter == null) {
-            adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-                //each view of the view pager is an Instance of the PartyFragment
+    private void createViewPagerAdapter() {
+        Log.d(TAG, "createViewPagerAdapter: ");
+        adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+            //each view of the view pager is an Instance of the PartyFragment
+            @Override
+            public Fragment getItem(int position) {
+                //get the Event from the list of the events
+                Party party = PartyLabSingleTon.getInstance(getApplicationContext()).getEvents().get(position);
+                //return an instance of the PartyFragment which is initialized with with the id of the event
+                return PartyFragment.newInstance(party.getId());
+            }
 
-                @Override
-                public Fragment getItem(int position) {
-                    //get the Event from the list of the events
-                    Party party = parties.get(position);
-                    //return an instance of the PartyFragment which is initialized with with the id of the event
-                    return PartyFragment.newInstance(party.getId());
-                }
+            @Override
+            public int getCount() {
+                return PartyLabSingleTon.getInstance(getApplicationContext()).getEvents().size();
+            }
+        };
+        viewPager.setPageTransformer(true, new DepthPageTransformer());
+        //set Adapter for ViewPager
+        viewPager.setAdapter(adapter);
 
-                @Override
-                public int getCount() {
-                    return parties.size();
-                }
-            };
-            pbLoading.setVisibility(View.GONE);
-            viewPager.setPageTransformer(true, new DepthPageTransformer());
-            //set Adapter for ViewPager
-            viewPager.setAdapter(adapter);
-        }else{
-            viewPager.setAdapter(adapter);
-        }
     }
 
     @OnClick({R.id.action_map, R.id.action_location, R.id.action_profile})
@@ -207,7 +208,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 // app-defined int constant. The callback method gets the
                 // result of the request.
             }
-        }else{
+        } else {
             presenter.rxJavaEventbrite();
         }
 
