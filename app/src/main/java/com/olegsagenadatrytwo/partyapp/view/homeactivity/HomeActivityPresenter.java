@@ -164,7 +164,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                                         party.setImageURL(uri.toString());
                                         PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
                                         List<Party> parties = partyLabSingleTon.getEvents();
-                                        int i = parties.indexOf(party.getId());
+                                        int i = parties.indexOf(party);
                                         parties.set(i, party);
                                         partyLabSingleTon.setEvents(parties);
                                         view.eventsLoadedUpdateUI(parties);

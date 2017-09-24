@@ -42,6 +42,17 @@ public class Party implements Parcelable{
         this.latlng = latlng;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null) {
+            return false;
+        } else if (!(obj instanceof Party)){
+            return false;
+        }
+        Party p = (Party)(obj);
+        return this.getId().equals(p.getId());
+    }
+
     public String getId() {
         return id;
     }
