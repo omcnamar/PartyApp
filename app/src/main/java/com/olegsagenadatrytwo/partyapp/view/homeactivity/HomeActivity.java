@@ -1,11 +1,13 @@
 package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -16,19 +18,26 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.olegsagenadatrytwo.partyapp.R;
+import com.olegsagenadatrytwo.partyapp.eventbus.LocalEvent;
 import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
-import com.olegsagenadatrytwo.partyapp.utils.DepthPageTransformer;
+import com.olegsagenadatrytwo.partyapp.utilities.viewpager_utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 import com.olegsagenadatrytwo.partyapp.view.map_fragment.MapsActivity;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +56,6 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     @BindView(R.id.party_view_pager)
     ViewPager viewPager;
-
-
     @Inject
     HomeActivityPresenter presenter;
 
@@ -61,6 +68,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     ImageView ivMapBackgroundFrame;
     ArrayList<Party> partiesList;
     Window window;
+    @BindView(R.id.toolbar)
+    LinearLayout toolbar;
+    @BindView(R.id.action_location)
+    TextView actionLocation;
 
     private FragmentStatePagerAdapter adapter;
 
@@ -139,41 +150,67 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(LocalEvent locale) {
+        if (locale != null) {
+            actionLocation.setText(locale.toString());
+        } else {
+            Snackbar sb = Snackbar
+                    .make(findViewById(R.id.main_content), "Invalid Zipcode", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("RETRY", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getZip();
+                        }
+                    });
+            sb.show();
+        }
+    }
+
     @OnClick({R.id.action_map, R.id.action_location, R.id.action_profile})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.action_map:
-//                //if there is no current user send the user to log in
-//                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-//                    Intent addPartyIntent = new Intent(this, AddPartyActivity.class);
-//                    startActivity(addPartyIntent);
-//                } else {
-//                    Intent logInIntent = new Intent(this, LoginActivity.class);
-//                    startActivity(logInIntent);
-//                }
-                // TODO: 9/17/17 implement the Map View
+
                 Intent intent = new Intent(this, MapsActivity.class);
                 intent.putParcelableArrayListExtra("parties", partiesList);
                 startActivity(intent);
 
                 break;
             case R.id.action_location:
-                Toast.makeText(this, "Location", Toast.LENGTH_SHORT).show();
+
+                getZip();
+
                 break;
             case R.id.action_profile:
-//                Intent loginIntent = new Intent(this, LoginActivity.class);
-//                startActivity(loginIntent);
+
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    /*startActivity(new Intent(this, MyPartiesActivity.class));*/
                     startActivity(new Intent(this, ProfileActivity.class));
                 } else {
-                    Intent logInIntent = new Intent(this, LoginActivity.class);
-                    startActivity(logInIntent);
+                    startActivity(new Intent(this, LoginActivity.class));
                 }
-                // TODO: 9/17/17 need to implement back button for profile class
+
                 break;
 
         }
+    }
+
+    private void getZip() {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.new_zipcode);
+        dialog.setTitle("Enter New Zip code");
+
+        Button btnSaveZip = dialog.findViewById(R.id.btnSaveZip);
+        btnSaveZip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText etZip = dialog.findViewById(R.id.etZipcode);
+                presenter.getLocaleRetrofit(etZip.getText().toString());
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     public void goToLocation(View view) {

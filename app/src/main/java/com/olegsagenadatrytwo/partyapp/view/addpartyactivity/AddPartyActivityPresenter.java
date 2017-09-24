@@ -15,9 +15,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
+import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.GeocodingProfile;
+import com.olegsagenadatrytwo.partyapp.retrofit.RetrofitHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.util.UUID;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddPartyActivityPresenter implements AddPartyActivityContract.presenter {
 
@@ -48,8 +54,38 @@ public class AddPartyActivityPresenter implements AddPartyActivityContract.prese
     }
 
     @Override
+    public String getPartyLocationLatLng(Party p) {
+
+        if(p.getAddress() != null) {
+            RetrofitHelper.ApiService apiService = new RetrofitHelper().getLocaleService();
+            retrofit2.Call<GeocodingProfile> getLatLng = apiService.queryGetLocale(p.getAddress());
+            getLatLng.enqueue(new Callback<GeocodingProfile>() {
+                @Override
+                public void onResponse(Call<GeocodingProfile> call, Response<GeocodingProfile> response) {
+                    String latlng;
+                    com.olegsagenadatrytwo.partyapp.model.geocoding_profile.Location location = response.body().getResults().get(0).getGeometry().getLocation();
+                    if (location != null){
+                        latlng = location.getLat() + "," + location.getLng();
+                    } else {
+                        latlng = null;
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<GeocodingProfile> call, Throwable t) {
+
+                }
+            });
+        }
+        return null;
+    }
+
+    @Override
     public void addNewParty(final Party party, Bitmap bitmap) {
 
+
+        //party.setLatlng(getPartyLocationLatLng(party));
         //add new UUID to the party
         UUID id = UUID.randomUUID();
         final String idString = id.toString();
@@ -101,4 +137,5 @@ public class AddPartyActivityPresenter implements AddPartyActivityContract.prese
 
         view.partySaved(true);
     }
+
 }

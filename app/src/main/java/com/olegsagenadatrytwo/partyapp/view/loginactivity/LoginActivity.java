@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
                 }
             }
         };
-        loginWithGoogle.setSize(SignInButton.SIZE_WIDE);
+        loginWithGoogle.setSize(SignInButton.SIZE_ICON_ONLY);
         loginWithGoogle.setColorScheme(SignInButton.COLOR_LIGHT);
         mPresenter.loginWithGoogleSetUp(this, mAuth);
         loginWithGoogle.setOnClickListener(new View.OnClickListener() {
@@ -108,9 +108,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityCon
 
         //Twitter
         btnTwitter.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.tw__ic_logo_default), null, null, null);
-        btnTwitter.setTextSize(15);
-        btnTwitter.setText("Sign in with Twitter");
-        btnTwitter.setPadding(30, 20, 20, 20);
+        btnTwitter.setText("");
+        btnTwitter.setPadding(180, 20, 20, 20);
         btnTwitter.setTextColor(getResources().getColor(R.color.tw__composer_white));
         btnTwitter.setCallback(new Callback<TwitterSession>() {
             @Override

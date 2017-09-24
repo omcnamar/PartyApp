@@ -21,5 +21,7 @@ public interface AddPartyActivityContract {
         void addNewParty(Party party, Bitmap bitmap);
         void setContext(Context context);
         void init();
+
+        String getPartyLocationLatLng(Party party);
     }
 }

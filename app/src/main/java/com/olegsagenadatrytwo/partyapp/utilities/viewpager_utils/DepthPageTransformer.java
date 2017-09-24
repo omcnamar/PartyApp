@@ -1,4 +1,4 @@
-package com.olegsagenadatrytwo.partyapp.utils;
+package com.olegsagenadatrytwo.partyapp.utilities.viewpager_utils;
 
 import android.support.v4.view.ViewPager;
 import android.view.View;

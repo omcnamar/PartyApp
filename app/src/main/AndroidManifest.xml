@@ -74,13 +74,11 @@
 
         <activity
             android:name=".view.editpartyactivity.EditPartyActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.profileactivity.ProfileActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"/>
             android:screenOrientation="portrait" />
-
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -90,12 +88,10 @@
             android:name=".view.map_fragment.MapsActivity"
             >
             <intent-filter>
-
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".view.settingsactivity.SettingsActivity"></activity>
     </application>
 
 </manifest>

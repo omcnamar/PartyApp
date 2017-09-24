@@ -14,10 +14,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.olegsagenadatrytwo.partyapp.eventbus.LocalEvent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.Event;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
+import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.GeocodingProfile;
 import com.olegsagenadatrytwo.partyapp.retrofit.RetrofitHelper;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +32,16 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class HomeActivityPresenter implements HomeActivityContract.presenter {
 
     private static final String TAG = "HomeActivityPresenter";
     HomeActivityContract.view view;
-    // Query Event bright with this
+    // Query Eventbrite with this
     @NonNull
     RetrofitHelper.ApiService apiService;
     private Context context;
@@ -44,6 +51,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
 
     public void attachView(HomeActivityContract.view view) {
         this.view = view;
+        // TODO: 9/22/2017 get current area
     }
 
     public void setContext(Context context) {
@@ -156,7 +164,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                                         party.setImageURL(uri.toString());
                                         PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
                                         List<Party> parties = partyLabSingleTon.getEvents();
-                                        int i = parties.indexOf(party);
+                                        int i = parties.indexOf(party.getId());
                                         parties.set(i, party);
                                         partyLabSingleTon.setEvents(parties);
                                         view.eventsLoadedUpdateUI(parties);
@@ -200,6 +208,24 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                         });
                     }
                 }));
+    }
+
+    @Override
+    public void getLocaleRetrofit(String zip) {
+        apiService = new RetrofitHelper().getLocaleService();
+        retrofit2.Call<GeocodingProfile> getLocale = apiService.queryGetLocale("postal_code:"+zip);
+        getLocale.enqueue(new Callback<GeocodingProfile>() {
+            @Override
+            public void onResponse(Call<GeocodingProfile> call, Response<GeocodingProfile> response) {
+                String locale = response.body().getResults().get(0).getAddressComponents().get(1).getShortName();
+                EventBus.getDefault().post(new LocalEvent(locale));
+            }
+
+            @Override
+            public void onFailure(Call<GeocodingProfile> call, Throwable t) {
+
+            }
+        });
     }
 
 

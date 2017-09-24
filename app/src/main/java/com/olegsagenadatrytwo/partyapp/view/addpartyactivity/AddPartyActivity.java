@@ -186,7 +186,6 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
         }
     }
 
-
     //method to add a party to the dataBase
     public void addParty(View view) {
 
@@ -246,7 +245,6 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
             party.setEndTime(mEtEndTime.getText().toString());
             party.setAgeRequired(mEtMinAge.getText().toString());
             party.setCapacity(Integer.parseInt(mEtCapacity.getText().toString()));
-
             presenter.addNewParty(party, bitmap);
 
         }

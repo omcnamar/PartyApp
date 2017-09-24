@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Party implements Parcelable{
+
     private String id;
     private String ownerId;
     private String partyName;
@@ -18,109 +19,27 @@ public class Party implements Parcelable{
     private String imageURL;
     private boolean isLiked;
     private String distance;
-
-    public String getDistance() {
-        return distance;
-    }
-
-    public void setDistance(String distance) {
-        this.distance = distance;
-    }
-
-    private int currentAttendance;
+    private String latlng;
 
     public Party() {
     }
 
-    protected Party(Parcel in) {
-        id = in.readString();
-        ownerId = in.readString();
-        partyName = in.readString();
-        description = in.readString();
-        address = in.readString();
-        date = in.readString();
-        startTime = in.readString();
-        endDate = in.readString();
-        endTime = in.readString();
-        ageRequired = in.readString();
-        capacity = in.readInt();
-        imageURL = in.readString();
-        currentAttendance = in.readInt();
-        distance = in.readString();
-    }
-
-    public static final Creator<Party> CREATOR = new Creator<Party>() {
-        @Override
-        public Party createFromParcel(Parcel in) {
-            return new Party(in);
-        }
-
-        @Override
-        public Party[] newArray(int size) {
-            return new Party[size];
-        }
-    };
-
-    @Override
-    public String toString() {
-        return "Party{" +
-                "id='" + id + '\'' +
-                ", ownerId='" + ownerId + '\'' +
-                ", partyName='" + partyName + '\'' +
-                ", description='" + description + '\'' +
-                ", address='" + address + '\'' +
-                ", date='" + date + '\'' +
-                ", startTime='" + startTime + '\'' +
-                ", date='" + endDate + '\'' +
-                ", endTime='" + endTime + '\'' +
-                ", ageRequired='" + ageRequired + '\'' +
-                ", capacity=" + capacity +
-                ", currentAttendance=" + currentAttendance +
-                '}';
-    }
-
-    public Party(Party party){
-        this.id = party.getId();
-        this.ownerId = party.getOwnerId();
-        this.partyName = party.getPartyName();
-        this.description = party.getDescription();
-        this.address = party.getAddress();
-        this.date = party.getDate();
-        this.startTime = party.getStartTime();
-        this.endDate = party.getEndDate();
-        this.endTime = party.getEndTime();
-        this.ageRequired = party.getAgeRequired();
-        this.capacity = party.getCapacity();
-        this.currentAttendance = party.getCurrentAttendance();
-        this.isLiked = party.isLiked();
-}
-
-    @Override
-    public boolean equals(Object obj) {
-        Party p = (Party)obj;
-        boolean eq = true;
-
-        if(!this.id.toString().equals(p.getId().toString())){
-            return false;
-        }
-
-        return eq;
-    }
-
-    public boolean isLiked() {
-        return isLiked;
-    }
-
-    public void setLiked(boolean liked) {
-        isLiked = liked;
-    }
-
-    public String getImageURL() {
-        return imageURL;
-    }
-
-    public void setImageURL(String imageURL) {
+    public Party(String id, String ownerId, String partyName, String description, String address, String date, String startTime, String endDate, String endTime, String ageRequired, int capacity, String imageURL, boolean isLiked, String distance, String latlng) {
+        this.id = id;
+        this.ownerId = ownerId;
+        this.partyName = partyName;
+        this.description = description;
+        this.address = address;
+        this.date = date;
+        this.startTime = startTime;
+        this.endDate = endDate;
+        this.endTime = endTime;
+        this.ageRequired = ageRequired;
+        this.capacity = capacity;
         this.imageURL = imageURL;
+        this.isLiked = isLiked;
+        this.distance = distance;
+        this.latlng = latlng;
     }
 
     public String getId() {
@@ -211,13 +130,71 @@ public class Party implements Parcelable{
         this.capacity = capacity;
     }
 
-    public int getCurrentAttendance() {
-        return currentAttendance;
+    public String getImageURL() {
+        return imageURL;
     }
 
-    public void setCurrentAttendance(int currentAttendance) {
-        this.currentAttendance = currentAttendance;
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
+    public String getLatlng() {
+        return latlng;
+    }
+
+    public void setLatlng(String latlng) {
+        this.latlng = latlng;
+    }
+
+    public static Creator<Party> getCREATOR() {
+        return CREATOR;
+    }
+
+    protected Party(Parcel in) {
+        id = in.readString();
+        ownerId = in.readString();
+        partyName = in.readString();
+        description = in.readString();
+        address = in.readString();
+        date = in.readString();
+        startTime = in.readString();
+        endDate = in.readString();
+        endTime = in.readString();
+        ageRequired = in.readString();
+        capacity = in.readInt();
+        imageURL = in.readString();
+        isLiked = in.readByte() != 0;
+        distance = in.readString();
+        latlng = in.readString();
+    }
+
+    public static final Creator<Party> CREATOR = new Creator<Party>() {
+        @Override
+        public Party createFromParcel(Parcel in) {
+            return new Party(in);
+        }
+
+        @Override
+        public Party[] newArray(int size) {
+            return new Party[size];
+        }
+    };
 
     @Override
     public int describeContents() {
@@ -238,9 +215,8 @@ public class Party implements Parcelable{
         parcel.writeString(ageRequired);
         parcel.writeInt(capacity);
         parcel.writeString(imageURL);
-        parcel.writeInt(currentAttendance);
+        parcel.writeByte((byte) (isLiked ? 1 : 0));
         parcel.writeString(distance);
+        parcel.writeString(latlng);
     }
-
-
 }

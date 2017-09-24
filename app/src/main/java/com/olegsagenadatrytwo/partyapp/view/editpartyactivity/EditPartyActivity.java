@@ -35,11 +35,14 @@ import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.olegsagenadatrytwo.partyapp.utilities.location.LocationUtilities.getDistanceFromDeviceLocation;
 
 public class EditPartyActivity extends AppCompatActivity implements EditPartyActivityContract.view {
 
@@ -261,7 +264,11 @@ public class EditPartyActivity extends AppCompatActivity implements EditPartyAct
             party.setEndTime(mEtEndTime.getText().toString());
             party.setAgeRequired(mEtMinAge.getText().toString());
             party.setCapacity(Integer.parseInt(mEtCapacity.getText().toString()));
-
+            try {
+                party.setDistance(getDistanceFromDeviceLocation(party, this));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             presenter.editParty(party, bitmap);
 
         }
