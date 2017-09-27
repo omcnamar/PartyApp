@@ -94,6 +94,7 @@ dependencies {
     //Google Maps
     compile 'com.google.maps.android:android-maps-utils:0.4+'
     compile 'com.google.android.gms:play-services-maps:11.2.2'
+    compile 'com.google.android.gms:play-services-location:11.2.2'
 
     // RxJava2
     compile "io.reactivex.rxjava2:rxjava:2.0.1"

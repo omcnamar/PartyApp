@@ -16,7 +16,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.GeocodingProfile;
-import com.olegsagenadatrytwo.partyapp.retrofit.RetrofitHelper;
+import com.olegsagenadatrytwo.partyapp.data.remote.RetrofitHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.util.UUID;

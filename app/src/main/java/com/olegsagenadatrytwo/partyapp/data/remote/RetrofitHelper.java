@@ -1,4 +1,4 @@
-package com.olegsagenadatrytwo.partyapp.retrofit;
+package com.olegsagenadatrytwo.partyapp.data.remote;
 
 import com.olegsagenadatrytwo.partyapp.Constant;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
@@ -122,5 +122,8 @@ public class RetrofitHelper {
 
         @GET(Constant.GEOCODE_PATH)
         Call<GeocodingProfile> queryGetLocale(@Query("components") String zip);
+
+        @GET(Constant.GEOCODE_PATH)
+        Call<GeocodingProfile> queryGetCurrentLocale(@Query("latlng") String latlng);
     }
 }

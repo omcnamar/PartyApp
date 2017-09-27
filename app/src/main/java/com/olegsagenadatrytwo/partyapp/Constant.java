@@ -69,8 +69,8 @@ public class Constant {
     public static final int ZOOM_LEVEL_NINE = 3000;
     public static final int ZOOM_LEVEL_TEN = 6000;
 
-
-
-
-
+    /**
+     * Shared preference keys
+     */
+    public static final String ZIP = "ZipSharedPreference";
 }

@@ -19,7 +19,8 @@ import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.Event;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
 import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.GeocodingProfile;
-import com.olegsagenadatrytwo.partyapp.retrofit.RetrofitHelper;
+import com.olegsagenadatrytwo.partyapp.data.remote.RetrofitHelper;
+import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.Result;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -217,7 +218,37 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
         getLocale.enqueue(new Callback<GeocodingProfile>() {
             @Override
             public void onResponse(Call<GeocodingProfile> call, Response<GeocodingProfile> response) {
-                String locale = response.body().getResults().get(0).getAddressComponents().get(1).getShortName();
+                String locale;
+                List<Result> results = response.body().getResults();
+                if(results.size() > 0){
+                    locale = results.get(0).getAddressComponents().get(1).getShortName();
+                }else {
+                    locale = null;
+                }
+                EventBus.getDefault().post(new LocalEvent(locale));
+            }
+
+            @Override
+            public void onFailure(Call<GeocodingProfile> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void getCurrentLocale(String latlng) {
+        apiService = new RetrofitHelper().getLocaleService();
+        retrofit2.Call<GeocodingProfile> getLocale = apiService.queryGetCurrentLocale(latlng);
+        getLocale.enqueue(new Callback<GeocodingProfile>() {
+            @Override
+            public void onResponse(Call<GeocodingProfile> call, Response<GeocodingProfile> response) {
+                String locale;
+                List<Result> results = response.body().getResults();
+                if(results.size() > 0){
+                    locale = results.get(0).getAddressComponents().get(2).getShortName();
+                }else {
+                    locale = null;
+                }
                 EventBus.getDefault().post(new LocalEvent(locale));
             }
 

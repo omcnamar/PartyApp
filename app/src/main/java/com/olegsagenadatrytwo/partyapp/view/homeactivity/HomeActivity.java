@@ -4,8 +4,11 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -25,17 +28,25 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.olegsagenadatrytwo.partyapp.App;
+import com.olegsagenadatrytwo.partyapp.Constant;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.eventbus.LocalEvent;
-import com.olegsagenadatrytwo.partyapp.inject.view.home_activity.DaggerHomeActivityComponent;
+import com.olegsagenadatrytwo.partyapp.inject.view.shared_preference.MySharedPreferences;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.utilities.viewpager_utils.DepthPageTransformer;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 import com.olegsagenadatrytwo.partyapp.view.map_fragment.MapsActivity;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.ProfileActivity;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -50,7 +61,7 @@ import butterknife.OnClick;
 
 import static com.olegsagenadatrytwo.partyapp.Constant.MY_PERMISSIONS_REQUEST_READ_LOCATION;
 
-public class HomeActivity extends AppCompatActivity implements HomeActivityContract.view {
+public class HomeActivity extends AppCompatActivity implements HomeActivityContract.view, LocationListener {
 
     private static final String TAG = "HomeActivity";
 
@@ -58,6 +69,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     ViewPager viewPager;
     @Inject
     HomeActivityPresenter presenter;
+    @Inject
+    MySharedPreferences preferences;
 
     private static final String PARTY_ID = "party_id";
     @BindView(R.id.pbLoading)
@@ -66,12 +79,12 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     FrameLayout flMap;
     @BindView(R.id.ivMapBackgroundFrame)
     ImageView ivMapBackgroundFrame;
-    ArrayList<Party> partiesList;
-    Window window;
     @BindView(R.id.toolbar)
     LinearLayout toolbar;
     @BindView(R.id.action_location)
     TextView actionLocation;
+    ArrayList<Party> partiesList;
+    Window window;
 
     private FragmentStatePagerAdapter adapter;
 
@@ -80,7 +93,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-        DaggerHomeActivityComponent.create().inject(this);
+        ((App)getApplicationContext()).getHomeActivityComponent().inject(this);
         createViewPagerAdapter();
         presenter.attachView(this);
         presenter.setContext(this);
@@ -91,8 +104,32 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         } else {
             // Implement this feature without material design
         }
+
+
+        loadLocation();
+
         runtimePermission();
         updateMapSnapshot();
+    }
+
+    private void loadLocation() {
+        if(preferences.getStringData(Constant.ZIP) != null){
+            actionLocation.setText(preferences.getStringData(Constant.ZIP));
+        }else {
+            FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    String latlng = location.getLatitude() + "," + location.getLongitude();
+                    presenter.getCurrentLocale(latlng);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    getZip();
+                }
+            });
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -111,6 +148,18 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         // TODO: 9/21/2017 if user has no saved snapshot load default else load snapshot
         ivMapBackgroundFrame.setImageResource(R.drawable.default_map_background);
         ivMapBackgroundFrame.setAlpha(0.2f);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
@@ -152,8 +201,9 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(LocalEvent locale) {
-        if (locale != null) {
-            actionLocation.setText(locale.toString());
+        if (locale.getLocale() != null) {
+            actionLocation.setText(locale.getLocale());
+            preferences.putStringData(Constant.ZIP, locale.getLocale());
         } else {
             Snackbar sb = Snackbar
                     .make(findViewById(R.id.main_content), "Invalid Zipcode", Snackbar.LENGTH_INDEFINITE)
@@ -271,5 +321,25 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
             // other 'case' lines to check for other
             // permissions this app might request
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
     }
 }

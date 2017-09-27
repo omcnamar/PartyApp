@@ -20,5 +20,6 @@ public interface HomeActivityContract {
 
         void rxJavaEventbrite();
         void getLocaleRetrofit(String zip);
+        void getCurrentLocale(String latlng);
     }
 }
