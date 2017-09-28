@@ -73,4 +73,11 @@ public class Constant {
      * Shared preference keys
      */
     public static final String ZIP = "ZipSharedPreference";
+
+    /**
+     * Firebase
+     */
+    public static final String ADD_NEW_PARTY = "add";
+    public static final String UPDATE_PARTY = "update";
+    public static final String DELETE_PARTY = "delete";
 }

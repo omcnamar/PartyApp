@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.annotation.RequiresPermission;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -112,6 +113,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         updateMapSnapshot();
     }
 
+    @RequiresPermission(allOf = {Manifest.permission_group.LOCATION})
     private void loadLocation() {
         if(preferences.getStringData(Constant.ZIP) != null){
             actionLocation.setText(preferences.getStringData(Constant.ZIP));
