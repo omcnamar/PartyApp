@@ -9,6 +9,7 @@ public class Constant {
     /**
      * Eventbrite
      */
+    public static final String EVENTBRITE = "eventbrite";
     public static final String EVENTBRITE_TOKEN = "JWRK43KE6JVXMOR3JCLF";
     public static final String EVENTBRITE_BASE_URL = "https://www.eventbriteapi.com/v3/";
     public static final String EVENTBRITE_EVENTS_PATH = "events/search/";
@@ -16,6 +17,7 @@ public class Constant {
     /**
      * Google geolocation
      */
+    public static final String GEOLOCATION = "geolocation";
     public static final String GEOCODE_BASE_URL = "https://maps.googleapis.com/";
     public static final String GEOCODE_PATH = "maps/api/geocode/json?";
     //API Keys
@@ -80,4 +82,5 @@ public class Constant {
     public static final String ADD_NEW_PARTY = "add";
     public static final String UPDATE_PARTY = "update";
     public static final String DELETE_PARTY = "delete";
+
 }

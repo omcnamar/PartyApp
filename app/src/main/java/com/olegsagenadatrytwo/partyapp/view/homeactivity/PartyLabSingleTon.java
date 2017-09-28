@@ -40,6 +40,17 @@ public class PartyLabSingleTon {
 
     //this method will set the list of events
     void setEvents(List<Party> events) {
+       /* HomeActivityPresenter presenter = new HomeActivityPresenter();
+        if(!events.isEmpty()){
+            for (Party p: events) {
+                if(p.getLatlng() == null && p.getAddress() != null){
+                    p.setLatlng(getLatLng(p.getAddress()));
+                    if(p.getLatlng() != null) {
+                        presenter.setupParty(p, Constant.UPDATE_PARTY);
+                    }
+                }
+            }
+        }*/
         /*if(events.isEmpty()){
             Log.d(TAG + " DISTANCE", "getInstance: Is Empty" );
         } else {
@@ -56,5 +67,32 @@ public class PartyLabSingleTon {
         }*/
         this.events = events;
     }
+
+/*
+    private String getLatLng(String address) {
+        final String[] latlng = new String[1];
+        RetrofitHelper.ApiService apiService = new RetrofitHelper().getLocaleService();
+        CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+
+
+        retrofit2.Call<GeocodingProfile> getLatLng = apiService.queryGetLatLng(address);
+        getLatLng.enqueue(new Callback<GeocodingProfile>() {
+            @Override
+            public void onResponse(Call<GeocodingProfile> call, Response<GeocodingProfile> response) {
+                Location location = response.body().getResults().get(0).getGeometry().getLocation();
+                latlng[0] = location.getLat() + "," + location.getLng();
+            }
+
+            @Override
+            public void onFailure(Call<GeocodingProfile> call, Throwable t) {
+
+            }
+        });
+        return latlng[0];
+    }
+*/
+
+
 }
 

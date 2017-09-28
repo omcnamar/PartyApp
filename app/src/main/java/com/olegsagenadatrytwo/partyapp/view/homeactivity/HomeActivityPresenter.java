@@ -130,7 +130,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                 }));
     }
 
-    private void setupParty(final Party party, final String task) {
+    public void setupParty(final Party party, final String task) {
         //get reference to storage
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
