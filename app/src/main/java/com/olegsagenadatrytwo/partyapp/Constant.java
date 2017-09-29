@@ -56,7 +56,7 @@ public class Constant {
     public static final int MARKER_LENGTH_DEFAULT = 50;
     public static final int MARKER_WIDTH_DEFAULT = 50;
 
-    public static final int MY_PERMISSIONS_REQUEST_READ_LOCATION = 402;
+    public static final int REQUEST_PERMISSION = 402;
 
     //Zoom Levels
     public static final int ZOOM_LEVEL_ZERO = 5;
@@ -75,12 +75,13 @@ public class Constant {
      * Shared preference keys
      */
     public static final String ZIP = "ZipSharedPreference";
+    public static final String CURRENT_LOCATION = "CurrentLocationSP";
 
     /**
      * Firebase
      */
     public static final String ADD_NEW_PARTY = "add";
     public static final String UPDATE_PARTY = "update";
-    public static final String DELETE_PARTY = "delete";
 
+    public static final String DELETE_PARTY = "delete";
 }

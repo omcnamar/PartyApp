@@ -29,13 +29,21 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.olegsagenadatrytwo.partyapp.R;
+import com.olegsagenadatrytwo.partyapp.data.remote.RetrofitHelper;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
+import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.GeocodingProfile;
+import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.Location;
 
 import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 public class AddPartyActivity extends AppCompatActivity implements AddPartyActivityContract.view {
 
@@ -92,6 +100,7 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
     private AddPartyActivityPresenter presenter;
     private Party party;
     private Bitmap bitmap;
+    private CompositeDisposable compositeDisposable;
 
     //DatePicker and TimePicker implementation
     private static final int DIALOG_CAL = 0;
@@ -233,9 +242,9 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
             valid = false;
         }
         if (valid) {
-            Party party = new Party();
-            party.setOwnerId(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            party = new Party();
 
+            party.setOwnerId(FirebaseAuth.getInstance().getCurrentUser().getUid());
             party.setPartyName(mEtPartyName.getText().toString());
             party.setAddress(mEtPartyAddress.getText().toString());
             party.setDescription(mEtPartyDescription.getText().toString());
@@ -245,9 +254,35 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
             party.setEndTime(mEtEndTime.getText().toString());
             party.setAgeRequired(mEtMinAge.getText().toString());
             party.setCapacity(Integer.parseInt(mEtCapacity.getText().toString()));
-            presenter.addNewParty(party, bitmap);
+
+            getLatLng();
+
 
         }
+    }
+
+    private void getLatLng() {
+        compositeDisposable = new CompositeDisposable();
+        RetrofitHelper.ApiService apiService = new RetrofitHelper().getLocaleService();
+        compositeDisposable.add(apiService.queryGetLatLng(party.getAddress())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Function<GeocodingProfile, Location>() {
+                    @Override
+                    public Location apply(GeocodingProfile profile) throws Exception {
+                        return profile.getResults().get(0).getGeometry().getLocation();
+                    }
+                })
+                .subscribe(new Consumer<Location>() {
+                    @Override
+                    public void accept(Location location) throws Exception {
+                        String latlng = location.getLat() + "," + location.getLng();
+                        party.setLatlng(latlng);
+                        presenter.addNewParty(party, bitmap);
+                    }
+                })
+        );
+
     }
 
     @Override
@@ -358,5 +393,11 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
                 onBackPressed();
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.dispose();
     }
 }

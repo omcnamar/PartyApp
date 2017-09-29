@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.annotation.RequiresPermission;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -29,7 +28,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -52,7 +50,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -60,20 +57,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.olegsagenadatrytwo.partyapp.Constant.MY_PERMISSIONS_REQUEST_READ_LOCATION;
+import static com.olegsagenadatrytwo.partyapp.Constant.REQUEST_PERMISSION;
 
 public class HomeActivity extends AppCompatActivity implements HomeActivityContract.view, LocationListener {
 
     private static final String TAG = "HomeActivity";
-
+    private static final String PARTY_ID = "party_id";
     @BindView(R.id.party_view_pager)
     ViewPager viewPager;
     @Inject
     HomeActivityPresenter presenter;
     @Inject
     MySharedPreferences preferences;
-
-    private static final String PARTY_ID = "party_id";
     @BindView(R.id.pbLoading)
     ProgressBar pbLoading;
     @BindView(R.id.flMap)
@@ -94,7 +89,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-        ((App)getApplicationContext()).getHomeActivityComponent().inject(this);
+        ((App) getApplicationContext()).getHomeActivityComponent().inject(this);
         createViewPagerAdapter();
         presenter.attachView(this);
         presenter.setContext(this);
@@ -106,33 +101,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
             // Implement this feature without material design
         }
 
-
-        loadLocation();
-
-        runtimePermission();
+        checkPermissions();
         updateMapSnapshot();
     }
 
-    @RequiresPermission(allOf = {Manifest.permission_group.LOCATION})
-    private void loadLocation() {
-        if(preferences.getStringData(Constant.ZIP) != null){
-            actionLocation.setText(preferences.getStringData(Constant.ZIP));
-        }else {
-            FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    String latlng = location.getLatitude() + "," + location.getLongitude();
-                    presenter.getCurrentLocale(latlng);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    getZip();
-                }
-            });
-        }
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void updateStatusBar() {
@@ -171,11 +143,15 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     }
 
     @Override
-    public void eventsLoadedUpdateUI(final List<Party> parties) {
+    public void eventsLoadedUpdateUI() {
         Log.d(TAG, "eventsLoadedUpdateUI: ");
-        PartyLabSingleTon.getInstance(getApplicationContext()).setEvents(parties);
         pbLoading.setVisibility(View.GONE);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public String getCurrentLocation() {
+        return preferences.getStringData(Constant.CURRENT_LOCATION);
     }
 
     private void createViewPagerAdapter() {
@@ -271,7 +247,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     //                       //
     //  Runtime Permission   //
     //=======================//
-    public void runtimePermission() {
+    public void checkPermissions() {
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -284,20 +260,24 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
-
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_PERMISSION);
             } else {
 
                 // No explanation needed, we can request the permission.
 
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_READ_LOCATION);
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_PERMISSION);
 
                 // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                 // app-defined int constant. The callback method gets the
                 // result of the request.
             }
         } else {
+            saveUpdatedCurrentLocation();
+            loadLocation();
             presenter.rxJavaEventbrite();
         }
 
@@ -310,18 +290,76 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_LOCATION: {
+            case REQUEST_PERMISSION: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    presenter.rxJavaEventbrite();
 
+                    saveUpdatedCurrentLocation();
+                    loadLocation();
+                    presenter.rxJavaEventbrite();
                 }
 
             }
 
             // other 'case' lines to check for other
             // permissions this app might request
+        }
+    }
+
+    private void saveUpdatedCurrentLocation() {
+        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                String latlng = location.getLatitude() + "," + location.getLongitude();
+                preferences.putStringData(Constant.CURRENT_LOCATION, latlng);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+    private void loadLocation() {
+        if (preferences.getStringData(Constant.ZIP) != null) {
+            actionLocation.setText(preferences.getStringData(Constant.ZIP));
+        } else {
+            FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    String latlng = location.getLatitude() + "," + location.getLongitude();
+                    presenter.getCurrentLocale(latlng);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    getZip();
+                }
+            });
         }
     }
 

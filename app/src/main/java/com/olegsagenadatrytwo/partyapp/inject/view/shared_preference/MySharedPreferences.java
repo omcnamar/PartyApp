@@ -22,7 +22,7 @@ public class MySharedPreferences {
     }
 
     public String getStringData(String key) {
-        return mSharedPreferences.getString(key, "");
+        return mSharedPreferences.getString(key, null);
     }
 
     public void putIntData(String key, int data) {

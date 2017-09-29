@@ -8,8 +8,6 @@ import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
-
-import static com.olegsagenadatrytwo.partyapp.Constant.METERS_TO_MILES_RATIO;
 import static com.olegsagenadatrytwo.partyapp.Constant.MILES_TO_METERS_RATIO;
 
 /**
@@ -18,7 +16,7 @@ import static com.olegsagenadatrytwo.partyapp.Constant.MILES_TO_METERS_RATIO;
 
 public class ConvertionUtilities {
     public static double convertMetersToMiles(double meters){
-        return meters * METERS_TO_MILES_RATIO;
+        return meters / MILES_TO_METERS_RATIO;
     }
     public static double convertMilesToMeters(double miles){
         return miles * MILES_TO_METERS_RATIO;

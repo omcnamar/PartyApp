@@ -124,12 +124,15 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         if (party != null) {
             tvPartyType.setText(party.getPartyName());
             tvDescription.setText(party.getDescription());
-//            double distance = Double.parseDouble(party.getDistance().replace(",", "").replaceAll("[^\\d.]", ""));
-//            if(distance <=10000000) {
-//                tvDistance.setText(String.valueOf(distance) + " miles away");
-//            } else {
-//                tvDistance.setText("Unknown distance");
-//            }
+            if(party.getDistance() != null){
+                Log.d("PartyST", "onCreateView: "+ party.getDistance() + " miles away");
+                /*double distance = Double.parseDouble(party.getDistance().replace(",", "").replaceAll("[^\\d.]", ""));
+                if(distance <= 10000000)
+                    tvDistance.setText(String.valueOf(distance) + " miles away");*/
+                tvDistance.setText(party.getDistance()+ " miles away");
+            }else {
+                tvDistance.setText("Unknown distance");
+            }
             loadPartyImage(party.getImageURL(), ivLogo); // Header Image
             getHostImage(party);
 
@@ -228,11 +231,8 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                     @Override
                     public void onSuccess(Uri uri) {
                         Log.d(TAG, "onSuccess: " + "image success");
-                        party.setImageURL(uri.toString());
                         tvPartyType.setText(partyChanged.getPartyName());
                         tvDescription.setText(partyChanged.getDescription());
-                        party.setPartyName(partyChanged.getPartyName());
-                        party.setDescription(partyChanged.getDescription());
                         loadPartyImage(uri.toString(), ivLogo); // Header Image
                         getHostImage(partyChanged);// Host Image
                     }
@@ -243,8 +243,6 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                         // Handle any errors
                         tvPartyType.setText(partyChanged.getPartyName());
                         tvDescription.setText(partyChanged.getDescription());
-                        party.setPartyName(partyChanged.getPartyName());
-                        party.setDescription(partyChanged.getDescription());
                         getHostImage(partyChanged);
                     }
                 });

@@ -192,6 +192,7 @@ public class LocationUtilities {
              double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
              float dist = (float) (earthRadius * c);
 
+             Log.d(TAG, "getDistanceAsTheCrowFlies: " + ConvertionUtilities.convertMetersToMiles(dist));
              return String.format("%.2f", ConvertionUtilities.convertMetersToMiles(dist));
          } else {
              return String.valueOf(apiFailureDistanceFailSafe++);

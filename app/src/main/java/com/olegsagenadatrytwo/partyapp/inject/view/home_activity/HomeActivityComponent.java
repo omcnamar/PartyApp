@@ -3,6 +3,7 @@ package com.olegsagenadatrytwo.partyapp.inject.view.home_activity;
 import com.olegsagenadatrytwo.partyapp.inject.view.ContextModule;
 import com.olegsagenadatrytwo.partyapp.inject.view.shared_preference.SharedPreferencesModule;
 import com.olegsagenadatrytwo.partyapp.view.homeactivity.HomeActivity;
+import com.olegsagenadatrytwo.partyapp.view.homeactivity.PartyLabSingleTon;
 
 import javax.inject.Singleton;
 
@@ -16,5 +17,7 @@ import dagger.Component;
 public interface HomeActivityComponent {
 
     void inject(HomeActivity homeActivity);
+
+    void inject(PartyLabSingleTon partyLabSingleTon);
 
 }

@@ -25,7 +25,7 @@ import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.Result;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,6 +37,8 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.olegsagenadatrytwo.partyapp.utilities.location.LocationUtilities.getDistanceFromDeviceLocation;
 
 
 public class HomeActivityPresenter implements HomeActivityContract.presenter {
@@ -88,9 +90,10 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                     public void accept(final List<Event> events) throws Exception {
 
                         Log.d(TAG, "accept: ");
-                        PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
-                        List<Party> parties = convertEventsToParties(events);
-                        partyLabSingleTon.setEvents(parties);
+                        convertEventsToParties(events);
+                        //partyLabSingleTon.setEvents(parties, view.getCurrentLocation());
+                        view.eventsLoadedUpdateUI();
+
                         //add the listener to change the list when its changed
                         DatabaseReference partiesReference = FirebaseDatabase.getInstance().getReference("parties");
 
@@ -134,43 +137,43 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
         //get reference to storage
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
-
+        try {
+            party.setDistance(getDistanceFromDeviceLocation(party, context));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //download image
         storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 party.setImageURL(uri.toString());
                 PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
-                List<Party> parties = partyLabSingleTon.getEvents();
 
                 if(task.equals(Constant.ADD_NEW_PARTY)){
-                    parties.add(party);
+                    partyLabSingleTon.getEvents().add(party);
                 } else if(task.equals(Constant.UPDATE_PARTY)) {
-                    parties.set(parties.indexOf(party), party);
+                    partyLabSingleTon.getEvents().set(partyLabSingleTon.getEvents().indexOf(party), party);
                 } else if(task.equals(Constant.DELETE_PARTY)){
-                    parties.remove(parties.indexOf(party));
+                    partyLabSingleTon.getEvents().remove(partyLabSingleTon.getEvents().indexOf(party));
                 }
 
-                partyLabSingleTon.setEvents(parties);
-                view.eventsLoadedUpdateUI(parties);
+                view.eventsLoadedUpdateUI();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle any errors
                 PartyLabSingleTon partyLabSingleTon = PartyLabSingleTon.getInstance(context);
-                List<Party> parties = partyLabSingleTon.getEvents();
 
                 if(task.equals(Constant.ADD_NEW_PARTY)){
-                    parties.add(party);
+                    partyLabSingleTon.getEvents().add(party);
                 } else if(task.equals(Constant.UPDATE_PARTY)) {
-                    parties.set(parties.indexOf(party), party);
+                    partyLabSingleTon.getEvents().set(partyLabSingleTon.getEvents().indexOf(party), party);
                 } else if(task.equals(Constant.DELETE_PARTY)){
-                    parties.remove(parties.indexOf(party));
+                    partyLabSingleTon.getEvents().remove(partyLabSingleTon.getEvents().indexOf(party));
                 }
 
-                partyLabSingleTon.setEvents(parties);
-                view.eventsLoadedUpdateUI(parties);
+                view.eventsLoadedUpdateUI();
             }
         });
     }
@@ -224,10 +227,9 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
     }
 
 
-    private List<Party> convertEventsToParties(List<Event> events) {
+    private void convertEventsToParties(List<Event> events) {
 
         //copy events from API into parties
-        List<Party> parties = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             Party p = new Party();
             p.setId(UUID.randomUUID().toString());
@@ -238,9 +240,8 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
             p.setCapacity(events.get(i).getCapacity());
             p.setImageURL(events.get(i).getLogo().getUrl());
             p.setLiked(false);
-            parties.add(p);
+            PartyLabSingleTon.getInstance(context).getEvents().add(p);
 
         }
-        return parties;
     }
 }

@@ -1,8 +1,11 @@
 package com.olegsagenadatrytwo.partyapp.view.homeactivity;
 
 import android.content.Context;
+import android.location.Location;
+import android.util.Log;
 
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
+import com.olegsagenadatrytwo.partyapp.utilities.ConvertionUtilities.ConvertionUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,59 +43,34 @@ public class PartyLabSingleTon {
 
     //this method will set the list of events
     void setEvents(List<Party> events) {
-       /* HomeActivityPresenter presenter = new HomeActivityPresenter();
-        if(!events.isEmpty()){
-            for (Party p: events) {
-                if(p.getLatlng() == null && p.getAddress() != null){
-                    p.setLatlng(getLatLng(p.getAddress()));
-                    if(p.getLatlng() != null) {
-                        presenter.setupParty(p, Constant.UPDATE_PARTY);
-                    }
-                }
-            }
-        }*/
-        /*if(events.isEmpty()){
-            Log.d(TAG + " DISTANCE", "getInstance: Is Empty" );
-        } else {
-            try {
-                events = LocationUtilities.setPartyDistances(events, context);
-                //events = LocationUtilities.setPartyLatLng(events, context);
-                for(Party p : events){
-                    //p.setLatlng(LocationUtilities.getPartyLocationLatLng(p));
-                    Log.d(TAG + " DISTANCE", "getInstance: " + p.getDistance());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }*/
         this.events = events;
     }
 
-/*
-    private String getLatLng(String address) {
-        final String[] latlng = new String[1];
-        RetrofitHelper.ApiService apiService = new RetrofitHelper().getLocaleService();
-        CompositeDisposable compositeDisposable = new CompositeDisposable();
+    public String getDistance(Party p, String currentLatLng) {
+        String[] myLocation = currentLatLng.split(",");
+        double startLatitude = Double.valueOf(myLocation[0]);
+        double startLongitude = Double.valueOf(myLocation[0]);
 
+        String[] partylocation = p.getLatlng().split(",");
+        double endLatitude = Double.valueOf(partylocation[0]);
+        double endLongitude = Double.valueOf(partylocation[1]);
 
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(endLatitude - startLatitude);
+        double dLng = Math.toRadians(endLongitude - startLongitude);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(startLatitude)) * Math.cos(Math.toRadians(endLatitude)) *
+                        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        float dist = (float) (earthRadius * c);
 
-        retrofit2.Call<GeocodingProfile> getLatLng = apiService.queryGetLatLng(address);
-        getLatLng.enqueue(new Callback<GeocodingProfile>() {
-            @Override
-            public void onResponse(Call<GeocodingProfile> call, Response<GeocodingProfile> response) {
-                Location location = response.body().getResults().get(0).getGeometry().getLocation();
-                latlng[0] = location.getLat() + "," + location.getLng();
-            }
+        float[] results = new float[1];
+        Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, results);
+        Log.d(TAG, "getDistance: " + String.format("%.2f", ConvertionUtilities.convertMetersToMiles(dist))
+        + "---" + ConvertionUtilities.convertMetersToMiles(results[0]));
 
-            @Override
-            public void onFailure(Call<GeocodingProfile> call, Throwable t) {
-
-            }
-        });
-        return latlng[0];
+        return String.format("%.2f", ConvertionUtilities.convertMetersToMiles(dist));
     }
-*/
-
 
 }
 
