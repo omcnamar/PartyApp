@@ -3,6 +3,7 @@ package com.olegsagenadatrytwo.partyapp.model.custompojos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Party implements Parcelable{
@@ -25,6 +26,7 @@ public class Party implements Parcelable{
     private List<String> profileIdLikes;
 
     public Party() {
+        profileIdLikes = new ArrayList<>();
     }
 
     public Party(String id, String ownerId, String partyName, String description, String address, String date, String startTime, String endDate, String endTime, String ageRequired, int capacity, String imageURL, boolean isLiked, String distance, String latlng, List<String> profileIdLikes) {
@@ -205,7 +207,7 @@ public class Party implements Parcelable{
         isLiked = in.readByte() != 0;
         distance = in.readString();
         latlng = in.readString();
-        in.readStringList(getProfileIdLikes());
+        in.readStringList(profileIdLikes);
     }
 
     public static final Creator<Party> CREATOR = new Creator<Party>() {

@@ -25,6 +25,7 @@ import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.Result;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -134,15 +135,36 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 final Party party = dataSnapshot.getValue(Party.class);
-                party.setId(dataSnapshot.getKey());
-                setupParty(party, Constant.ADD_NEW_PARTY);
+
+                if(party != null) {
+                    party.setId(dataSnapshot.getKey());
+                    //create an array list of likes and fill it with user ids that liked this party
+                    ArrayList<String> likes = new ArrayList<>();
+                    for (DataSnapshot snap : dataSnapshot.child("profileIdLikes").getChildren()) {
+                        if (snap.getValue() != null) {
+                            likes.add(snap.getValue().toString());
+                        }
+                    }
+                    party.setProfileIdLikes(likes);
+                    setupParty(party, Constant.ADD_NEW_PARTY);
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 final Party party = dataSnapshot.getValue(Party.class);
-                party.setId(dataSnapshot.getKey());
-                setupParty(party, Constant.UPDATE_PARTY);
+                if(party != null) {
+                    party.setId(dataSnapshot.getKey());
+                    //create an array list of likes and fill it with user ids that liked this party
+                    ArrayList<String> likes = new ArrayList<>();
+                    for (DataSnapshot snap : dataSnapshot.child("profiles_that_liked").getChildren()) {
+                        if (snap.getValue() != null) {
+                            likes.add(snap.getValue().toString());
+                        }
+                    }
+                    party.setProfileIdLikes(likes);
+                    setupParty(party, Constant.UPDATE_PARTY);
+                }
             }
 
             @Override

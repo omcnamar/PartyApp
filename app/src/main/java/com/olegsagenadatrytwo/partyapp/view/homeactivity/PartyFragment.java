@@ -28,7 +28,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
@@ -138,25 +137,18 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
             loadPartyImage(party.getImageURL(), ivLogo); // Header Image
             getHostImage(party);
 
-            // TODO: 9/30/2017 Check if party is in users liked list, if so set party.isLiked to True
-            checkIfPartyIsLiked();
-            if (party.isLiked()){
-                btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
-            } else {
-                btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike));
+            //check if the current user liked the party
+            if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                for (int i = 0; i < party.getProfileIdLikes().size(); i++) {
+
+                    if (party.getProfileIdLikes().get(i).equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
+                        party.setLiked(true);
+                    }
+                }
             }
         }
         return v;
-    }
-
-    private void checkIfPartyIsLiked() {
-        // TODO: 9/30/2017 Check liked list from Users db and check if current party is in it
-        final DatabaseReference profileReference = FirebaseDatabase.getInstance().getReference("profiles");
-        profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("liked_parties");
-
-        GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {};
-        //List<String> likedParties = dataSnapshot.getValue(t);
-
     }
 
     //this method will place the Host of the party image into ivPartyHost
@@ -298,31 +290,29 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
 
         switch (view.getId()) {
             case R.id.btnLike:
-                if(party.isLiked()){
+
+                //if party is not liked, like it and send it to database
+                if(!party.isLiked()){
+                    party.setLiked(true);
+                    btnLike.setImageDrawable(like);
+                    unlike.reverseTransition(500);
+                    btnLike.startAnimation(animation);
+                    btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
+                    party.getProfileIdLikes().add(party.getOwnerId());
+                    saveLikeToDatabase();
+
+                }
+                //if party is liked remove it from likes
+                else {
                     party.setLiked(false);
                     btnLike.setImageDrawable(unlike);
-                    unlike.reverseTransition(500);
+                    like.reverseTransition(1000);
                     btnLike.startAnimation(animation);
                     btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike));
 
-                    // TODO: 9/29/2017 delete partyID to likeList
-
-                } else {
-                    party.setLiked(true);
-                    btnLike.setImageDrawable(like);
-                    like.reverseTransition(1000);
-                    btnLike.startAnimation(animation);
-
-                    // TODO: 9/29/2017 add partyID to likeList
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    //add the liked party to the user liked party List
-                    final DatabaseReference profileReference = database.getReference("profiles");
-                    profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("liked_parties").push().setValue(party.getId());
-
-                    //add the party to all parties
-                    DatabaseReference partyReference = database.getReference("parties");
-                    partyReference.child(party.getId()).child("profiles_that_liked").push().setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
+                    //remove like from database
+                    party.getProfileIdLikes().remove(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    saveLikeToDatabase();
                 }
 
                 break;
@@ -346,6 +336,24 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
             case R.id.btnPublicOrPrivate:
                 btnPublicOrPrivate.startAnimation(animation);
                 break;
+        }
+    }
+
+    private void saveLikeToDatabase() {
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            //Edit the party to the user
+            final DatabaseReference profileReference = database.getReference("profiles");
+            profileReference.child(party.getOwnerId()).child("parties").child(party.getId()).setValue(party);
+            //add the liked party to the user liked party List
+            profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("liked_parties").setValue(party.getId());
+
+            //edit the party to all parties
+            DatabaseReference partyReference = database.getReference("parties");
+            partyReference.child(party.getId()).setValue(party);
+            //add the party to all parties
+            //partyReference.child(party.getId()).child("profiles_that_liked").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         }
     }
 }
