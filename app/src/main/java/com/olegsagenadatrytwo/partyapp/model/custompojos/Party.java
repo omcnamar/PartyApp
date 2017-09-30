@@ -3,6 +3,8 @@ package com.olegsagenadatrytwo.partyapp.model.custompojos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 public class Party implements Parcelable{
 
     private String id;
@@ -20,11 +22,12 @@ public class Party implements Parcelable{
     private boolean isLiked;
     private String distance;
     private String latlng;
+    private List<String> profileIdLikes;
 
     public Party() {
     }
 
-    public Party(String id, String ownerId, String partyName, String description, String address, String date, String startTime, String endDate, String endTime, String ageRequired, int capacity, String imageURL, boolean isLiked, String distance, String latlng) {
+    public Party(String id, String ownerId, String partyName, String description, String address, String date, String startTime, String endDate, String endTime, String ageRequired, int capacity, String imageURL, boolean isLiked, String distance, String latlng, List<String> profileIdLikes) {
         this.id = id;
         this.ownerId = ownerId;
         this.partyName = partyName;
@@ -40,6 +43,7 @@ public class Party implements Parcelable{
         this.isLiked = isLiked;
         this.distance = distance;
         this.latlng = latlng;
+        this.profileIdLikes = profileIdLikes;
     }
 
     @Override
@@ -173,6 +177,14 @@ public class Party implements Parcelable{
         this.latlng = latlng;
     }
 
+    public List<String> getProfileIdLikes() {
+        return profileIdLikes;
+    }
+
+    public void setProfileIdLikes(List<String> profileIdLikes) {
+        this.profileIdLikes = profileIdLikes;
+    }
+
     public static Creator<Party> getCREATOR() {
         return CREATOR;
     }
@@ -193,6 +205,7 @@ public class Party implements Parcelable{
         isLiked = in.readByte() != 0;
         distance = in.readString();
         latlng = in.readString();
+        in.readStringList(getProfileIdLikes());
     }
 
     public static final Creator<Party> CREATOR = new Creator<Party>() {
@@ -229,5 +242,6 @@ public class Party implements Parcelable{
         parcel.writeByte((byte) (isLiked ? 1 : 0));
         parcel.writeString(distance);
         parcel.writeString(latlng);
+        parcel.writeStringList(profileIdLikes);
     }
 }

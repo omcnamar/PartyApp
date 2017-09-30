@@ -11,6 +11,7 @@ public class Profile {
     String id;
     String userName;
     List<Party> parties;
+    List<String> likesPartyID;
 
     public Profile() {
         parties = new ArrayList<>();
@@ -38,5 +39,13 @@ public class Profile {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public List<String> getLikesPartyID() {
+        return likesPartyID;
+    }
+
+    public void setLikesPartyID(List<String> likesPartyID) {
+        this.likesPartyID = likesPartyID;
     }
 }

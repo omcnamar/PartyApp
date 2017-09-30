@@ -19,7 +19,6 @@ import com.olegsagenadatrytwo.partyapp.data.remote.RetrofitHelper;
 import com.olegsagenadatrytwo.partyapp.eventbus.LocalEvent;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.model.eventbrite.Event;
-import com.olegsagenadatrytwo.partyapp.model.eventbrite.EventbriteEvents;
 import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.GeocodingProfile;
 import com.olegsagenadatrytwo.partyapp.model.geocoding_profile.Result;
 
@@ -29,11 +28,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -74,7 +69,7 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
     @Override
     public void rxJavaEventbrite() {
 
-        apiService = new RetrofitHelper().getEventBriteService();
+        /*apiService = new RetrofitHelper().getEventBriteService();
         compositeDisposable.add(apiService.queryEventList("")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -130,7 +125,43 @@ public class HomeActivityPresenter implements HomeActivityContract.presenter {
                             }
                         });
                     }
-                }));
+                }));*/
+
+        //add the listener to change the list when its changed
+        DatabaseReference partiesReference = FirebaseDatabase.getInstance().getReference("parties");
+
+        partiesReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                final Party party = dataSnapshot.getValue(Party.class);
+                party.setId(dataSnapshot.getKey());
+                setupParty(party, Constant.ADD_NEW_PARTY);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                final Party party = dataSnapshot.getValue(Party.class);
+                party.setId(dataSnapshot.getKey());
+                setupParty(party, Constant.UPDATE_PARTY);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                final Party party = dataSnapshot.getValue(Party.class);
+                party.setId(dataSnapshot.getKey());
+                setupParty(party, Constant.DELETE_PARTY);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildMoved: ");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: ");
+            }
+        });
     }
 
     public void setupParty(final Party party, final String task) {

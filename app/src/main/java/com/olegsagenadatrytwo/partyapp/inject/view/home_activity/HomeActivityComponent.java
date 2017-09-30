@@ -12,7 +12,7 @@ import dagger.Component;
 /**
  * Created by Admin on 9/13/2017.
  */
-@Component(modules = {HomeActivityModule.class, SharedPreferencesModule.class, ContextModule.class})
+@Component(modules = {HomeActivityModule.class, SharedPreferencesModule.class, ContextModule.class })
 @Singleton
 public interface HomeActivityComponent {
 

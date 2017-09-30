@@ -22,11 +22,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
@@ -136,6 +138,8 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
             loadPartyImage(party.getImageURL(), ivLogo); // Header Image
             getHostImage(party);
 
+            // TODO: 9/30/2017 Check if party is in users liked list, if so set party.isLiked to True
+            checkIfPartyIsLiked();
             if (party.isLiked()){
                 btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
             } else {
@@ -143,6 +147,16 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
             }
         }
         return v;
+    }
+
+    private void checkIfPartyIsLiked() {
+        // TODO: 9/30/2017 Check liked list from Users db and check if current party is in it
+        final DatabaseReference profileReference = FirebaseDatabase.getInstance().getReference("profiles");
+        profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("liked_parties");
+
+        GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {};
+        //List<String> likedParties = dataSnapshot.getValue(t);
+
     }
 
     //this method will place the Host of the party image into ivPartyHost
@@ -290,11 +304,25 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                     unlike.reverseTransition(500);
                     btnLike.startAnimation(animation);
                     btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike));
+
+                    // TODO: 9/29/2017 delete partyID to likeList
+
                 } else {
                     party.setLiked(true);
                     btnLike.setImageDrawable(like);
                     like.reverseTransition(1000);
                     btnLike.startAnimation(animation);
+
+                    // TODO: 9/29/2017 add partyID to likeList
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    //add the liked party to the user liked party List
+                    final DatabaseReference profileReference = database.getReference("profiles");
+                    profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("liked_parties").push().setValue(party.getId());
+
+                    //add the party to all parties
+                    DatabaseReference partyReference = database.getReference("parties");
+                    partyReference.child(party.getId()).child("profiles_that_liked").push().setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
                 }
 
                 break;
