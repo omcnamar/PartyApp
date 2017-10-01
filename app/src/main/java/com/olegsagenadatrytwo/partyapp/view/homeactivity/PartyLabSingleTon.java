@@ -37,7 +37,7 @@ public class PartyLabSingleTon {
     }
 
     //this method will return the list of events
-    List<Party> getEvents() {
+    public List<Party> getEvents() {
         return events;
     }
 

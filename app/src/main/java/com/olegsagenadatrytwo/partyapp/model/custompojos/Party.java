@@ -20,7 +20,6 @@ public class Party implements Parcelable{
     private String ageRequired;
     private int capacity;
     private String imageURL;
-    private boolean isLiked;
     private String distance;
     private String latlng;
     private List<String> profileIdLikes;
@@ -29,7 +28,7 @@ public class Party implements Parcelable{
         profileIdLikes = new ArrayList<>();
     }
 
-    public Party(String id, String ownerId, String partyName, String description, String address, String date, String startTime, String endDate, String endTime, String ageRequired, int capacity, String imageURL, boolean isLiked, String distance, String latlng, List<String> profileIdLikes) {
+    public Party(String id, String ownerId, String partyName, String description, String address, String date, String startTime, String endDate, String endTime, String ageRequired, int capacity, String imageURL, String distance, String latlng, List<String> profileIdLikes) {
         this.id = id;
         this.ownerId = ownerId;
         this.partyName = partyName;
@@ -42,7 +41,6 @@ public class Party implements Parcelable{
         this.ageRequired = ageRequired;
         this.capacity = capacity;
         this.imageURL = imageURL;
-        this.isLiked = isLiked;
         this.distance = distance;
         this.latlng = latlng;
         this.profileIdLikes = profileIdLikes;
@@ -155,14 +153,6 @@ public class Party implements Parcelable{
         this.imageURL = imageURL;
     }
 
-    public boolean isLiked() {
-        return isLiked;
-    }
-
-    public void setLiked(boolean liked) {
-        isLiked = liked;
-    }
-
     public String getDistance() {
         return distance;
     }
@@ -204,7 +194,6 @@ public class Party implements Parcelable{
         ageRequired = in.readString();
         capacity = in.readInt();
         imageURL = in.readString();
-        isLiked = in.readByte() != 0;
         distance = in.readString();
         latlng = in.readString();
         in.readStringList(profileIdLikes);
@@ -241,7 +230,6 @@ public class Party implements Parcelable{
         parcel.writeString(ageRequired);
         parcel.writeInt(capacity);
         parcel.writeString(imageURL);
-        parcel.writeByte((byte) (isLiked ? 1 : 0));
         parcel.writeString(distance);
         parcel.writeString(latlng);
         parcel.writeStringList(profileIdLikes);

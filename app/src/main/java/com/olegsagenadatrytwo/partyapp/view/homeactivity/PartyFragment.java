@@ -17,6 +17,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -30,12 +31,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.olegsagenadatrytwo.partyapp.App;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView;
+import com.olegsagenadatrytwo.partyapp.data.remote.FirebaseHelper;
+import com.olegsagenadatrytwo.partyapp.eventbus.MyLikes;
+import com.olegsagenadatrytwo.partyapp.inject.view.shared_preference.MySharedPreferences;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.squareup.picasso.Picasso;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
+
+import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -44,6 +55,9 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
     public static final String TAG = "PartyFragment";
     private static final String PARTY_ID = "party_id";
 
+    @Inject
+    MySharedPreferences preferences;
+    private FirebaseHelper firebaseHelper;
 
     AppCompatImageButton btnLike;
     AppCompatImageButton btnShareParty;
@@ -53,10 +67,10 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
     AutoResizeTextView tvPartyType;
     AutoResizeTextView tvDescription;
     CircleImageView ivPartyHost;
+    TextView tvLikes;
 
     private List<Party> parties;
     private Party party;
-    private DatabaseReference partiesReference;
     private Context context;
 
     TextView tvDistance;
@@ -83,8 +97,11 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         party = getParty(id);
 
         this.context = getActivity();
+        ((App) context.getApplicationContext()).getPartyFragmentComponent().inject(this);
 
-        partiesReference = FirebaseDatabase.getInstance().getReference("parties");
+        firebaseHelper = new FirebaseHelper();
+
+        DatabaseReference partiesReference = FirebaseDatabase.getInstance().getReference("parties");
         partiesReference.addChildEventListener(this);
         setHasOptionsMenu(true);
     }
@@ -102,6 +119,7 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
+
         View v = inflater.inflate(R.layout.party_card_item2, container, false);
         ivPartyHost = v.findViewById(R.id.ivPartyHost);
         btnLike = v.findViewById(R.id.btnLike);
@@ -110,6 +128,7 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         tvPartyType = v.findViewById(R.id.tvPartyType);
         tvDescription= v.findViewById(R.id.tvPartyDescription);
         ivLogo = v.findViewById(R.id.ivPartyHeader);
+        tvLikes = v.findViewById(R.id.tvLikes);
         btnLike.setOnClickListener(this);
         btnPublicOrPrivate.setOnClickListener(this);
         btnShareParty.setOnClickListener(this);
@@ -143,10 +162,10 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
 
                     if (party.getProfileIdLikes().get(i).equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                         btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
-                        party.setLiked(true);
                     }
                 }
             }
+            tvLikes.setText(String.valueOf(party.getProfileIdLikes().size()));
         }
         return v;
     }
@@ -252,6 +271,8 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                         getHostImage(partyChanged);
                     }
                 });
+
+                tvLikes.setText(String.valueOf(partyChanged.getProfileIdLikes().size()));
             }
         }
     }
@@ -290,29 +311,11 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
 
         switch (view.getId()) {
             case R.id.btnLike:
-
-                //if party is not liked, like it and send it to database
-                if(!party.isLiked()){
-                    party.setLiked(true);
-                    btnLike.setImageDrawable(like);
-                    unlike.reverseTransition(500);
-                    btnLike.startAnimation(animation);
-                    btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
-                    party.getProfileIdLikes().add(party.getOwnerId());
-                    saveLikeToDatabase();
-
-                }
-                //if party is liked remove it from likes
-                else {
-                    party.setLiked(false);
-                    btnLike.setImageDrawable(unlike);
-                    like.reverseTransition(1000);
-                    btnLike.startAnimation(animation);
-                    btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike));
-
-                    //remove like from database
-                    party.getProfileIdLikes().remove(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    saveLikeToDatabase();
+                if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    EventBus.getDefault().register(this);
+                    firebaseHelper.getMyLikes();
+                }else{
+                    Toast.makeText(context, "You must sign in to Like!", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
@@ -339,21 +342,39 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         }
     }
 
-    private void saveLikeToDatabase() {
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            //Edit the party to the user
-            final DatabaseReference profileReference = database.getReference("profiles");
-            profileReference.child(party.getOwnerId()).child("parties").child(party.getId()).setValue(party);
-            //add the liked party to the user liked party List
-            profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("liked_parties").setValue(party.getId());
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(MyLikes myLikes) {
 
-            //edit the party to all parties
-            DatabaseReference partyReference = database.getReference("parties");
-            partyReference.child(party.getId()).setValue(party);
-            //add the party to all parties
-            //partyReference.child(party.getId()).child("profiles_that_liked").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        Log.d("abc", "onEvent: ");
+        final Animation animation = AnimationUtils.loadAnimation(context, R.anim.bounce);
+        TransitionDrawable like = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.like);
+        TransitionDrawable unlike = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.unlike);
 
+        List<String> likes = myLikes.getLikes();
+        Log.d("abc", "onEvent: " + likes.size());
+        //if party is not liked, like it and send it to database
+        if (!likes.contains(party.getId())) {
+            btnLike.setImageDrawable(like);
+            unlike.reverseTransition(500);
+            btnLike.startAnimation(animation);
+            btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
+            party.getProfileIdLikes().add(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            likes.add(party.getId());
+            firebaseHelper.saveLike(party, likes);
         }
+        //if party is liked remove it from likes
+        else {
+            btnLike.setImageDrawable(unlike);
+            like.reverseTransition(1000);
+            btnLike.startAnimation(animation);
+            btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike));
+
+            //remove like from database
+            party.getProfileIdLikes().remove(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            likes.remove(party.getId());
+            party.getProfileIdLikes().remove(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            firebaseHelper.saveLike(party, likes);
+        }
+        EventBus.getDefault().unregister(this);
     }
 }

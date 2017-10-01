@@ -10,14 +10,12 @@ import com.olegsagenadatrytwo.partyapp.BaseView;
 public interface HomeActivityContract {
 
     interface view extends BaseView {
-        void eventsLoadedUpdateUI();
-
         String getCurrentLocation();
     }
 
     interface presenter extends BasePresenter<view> {
 
-        void rxJavaEventbrite();
+        void getPartiesFromFireBase();
         void getLocaleRetrofit(String zip);
         void getCurrentLocale(String latlng);
     }

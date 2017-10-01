@@ -37,6 +37,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.olegsagenadatrytwo.partyapp.App;
 import com.olegsagenadatrytwo.partyapp.Constant;
 import com.olegsagenadatrytwo.partyapp.R;
+import com.olegsagenadatrytwo.partyapp.eventbus.Caller;
 import com.olegsagenadatrytwo.partyapp.eventbus.LocalEvent;
 import com.olegsagenadatrytwo.partyapp.inject.view.shared_preference.MySharedPreferences;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
@@ -142,9 +143,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         super.onDestroy();
     }
 
-    @Override
-    public void eventsLoadedUpdateUI() {
-        Log.d(TAG, "eventsLoadedUpdateUI: ");
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(Caller caller) {
         pbLoading.setVisibility(View.GONE);
         adapter.notifyDataSetChanged();
     }
@@ -278,7 +278,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         } else {
             saveUpdatedCurrentLocation();
             loadLocation();
-            presenter.rxJavaEventbrite();
+            presenter.getPartiesFromFireBase();
         }
 
     }
@@ -297,7 +297,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
                     saveUpdatedCurrentLocation();
                     loadLocation();
-                    presenter.rxJavaEventbrite();
+                    presenter.getPartiesFromFireBase();
                 }
 
             }
