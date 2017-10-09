@@ -82,6 +82,11 @@ public class Constant {
      */
     public static final String ADD_NEW_PARTY = "add";
     public static final String UPDATE_PARTY = "update";
-
     public static final String DELETE_PARTY = "delete";
+
+    //global parties constants
+    public static final String PARTIES = "parties";
+    public static final String PROFILES = "profiles";
+    public static final String IDS_OF_USERS_WHO_LIKED_THIS_PARTY = "idsOfUsersWhoLikedThisParty";
+    public static final String IDS_OF_PARTIES_THAT_CURRNET_USER_LIKED = "idsOfPartiesThatCurrentUserLiked";
 }

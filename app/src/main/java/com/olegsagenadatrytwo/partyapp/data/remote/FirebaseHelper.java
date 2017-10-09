@@ -3,7 +3,6 @@ package com.olegsagenadatrytwo.partyapp.data.remote;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,11 +25,15 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.olegsagenadatrytwo.partyapp.utilities.location.LocationUtilities.getDistanceFromDeviceLocation;
 
 public class FirebaseHelper implements FirebaseInterface {
+
+    public static final String TAG = "FirebaseHelper";
 
     /**
      * Method that gets all parties from Fire base
@@ -38,7 +41,7 @@ public class FirebaseHelper implements FirebaseInterface {
     @Override
     public void getAllParties(final Context context) {
         //add the listener to change the list when its changed
-        DatabaseReference partiesReference = FirebaseDatabase.getInstance().getReference("parties");
+        DatabaseReference partiesReference = FirebaseDatabase.getInstance().getReference(Constant.PARTIES);
 
         partiesReference.addChildEventListener(new ChildEventListener() {
             @Override
@@ -47,14 +50,14 @@ public class FirebaseHelper implements FirebaseInterface {
 
                 if (party != null) {
                     party.setId(dataSnapshot.getKey());
-                    //create an array list of likes and fill it with user ids that liked this party
-                    ArrayList<String> likes = new ArrayList<>();
-                    for (DataSnapshot snap : dataSnapshot.child("profileIdLikes").getChildren()) {
+                    //create Map list of likes and fill it with user ids that liked this party
+                    Map<String, String> likes = new HashMap<>();
+                    for (DataSnapshot snap : dataSnapshot.child(Constant.IDS_OF_USERS_WHO_LIKED_THIS_PARTY).getChildren()) {
                         if (snap.getValue() != null) {
-                            likes.add(snap.getValue().toString());
+                            likes.put(snap.getValue().toString(), snap.getValue().toString());
                         }
                     }
-                    party.setProfileIdLikes(likes);
+                    party.setIdsOfUsersWhoLikedThisParty(likes);
                     setupParty(party, Constant.ADD_NEW_PARTY, context);
                 }
             }
@@ -64,14 +67,14 @@ public class FirebaseHelper implements FirebaseInterface {
                 final Party party = dataSnapshot.getValue(Party.class);
                 if (party != null) {
                     party.setId(dataSnapshot.getKey());
-                    //create an array list of likes and fill it with user ids that liked this party
-                    ArrayList<String> likes = new ArrayList<>();
-                    for (DataSnapshot snap : dataSnapshot.child("profileIdLikes").getChildren()) {
+                    //create Map list of likes and fill it with user ids that liked this party
+                    Map<String, String> likes = new HashMap<>();
+                    for (DataSnapshot snap : dataSnapshot.child(Constant.IDS_OF_USERS_WHO_LIKED_THIS_PARTY).getChildren()) {
                         if (snap.getValue() != null) {
-                            likes.add(snap.getValue().toString());
+                            likes.put(snap.getValue().toString(), snap.getValue().toString());
                         }
                     }
-                    party.setProfileIdLikes(likes);
+                    party.setIdsOfUsersWhoLikedThisParty(likes);
                     setupParty(party, Constant.UPDATE_PARTY, context);
                 }
             }
@@ -154,40 +157,95 @@ public class FirebaseHelper implements FirebaseInterface {
         });
     }
 
+    /**
+     * This method will save a like to the party that was liked
+     */
     @Override
-    public void saveLike(Party party, List<String> likes) {
-        Log.d("abc", "saveLike: ");
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+    public void saveLike(String userId, String partyId, String partyOwnerID) {
+        //if user is not null you can save the like to the current party
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            //add the like to the party inside user profile
-            final DatabaseReference profileReference = database.getReference("profiles");
-            profileReference.child(party.getOwnerId()).child("parties").child(party.getId()).setValue(party);
 
-            //add like to the party where all parties
-            DatabaseReference partyReference = database.getReference("parties");
-            partyReference.child(party.getId()).setValue(party);
+            //add the like to the party (all parties)
+            final DatabaseReference partiesReference = database.getReference(Constant.PARTIES);
+            partiesReference
+                    .child(partyId)
+                    .child(Constant.IDS_OF_USERS_WHO_LIKED_THIS_PARTY)
+                    .child(userId)
+                    .setValue(userId);
 
-            //add the liked party to the user liked party List
-            profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .child("myLikes").setValue(likes);
+            //add the like to the party (inside profile)
+            final DatabaseReference profileReference = database.getReference(Constant.PROFILES);
+            profileReference
+                    .child(partyOwnerID)
+                    .child(Constant.PARTIES)
+                    .child(partyId)
+                    .child(Constant.IDS_OF_USERS_WHO_LIKED_THIS_PARTY)
+                    .child(userId)
+                    .setValue(userId);
 
+            //add the id of the party to the liked parties of user
+            profileReference
+                    .child(userId)
+                    .child(Constant.IDS_OF_PARTIES_THAT_CURRNET_USER_LIKED)
+                    .child(partyId)
+                    .setValue(partyId);
         }
     }
 
+
+    /**
+     * This method will remove a like from the party that was previously liked
+     */
+    @Override
+    public void removeLike(String userId, String partyId, String partyOwnerId) {
+        //if user is not null you can remove the like from the party
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+            //remove the like to the party (all parties)
+            final DatabaseReference partiesReference = database.getReference(Constant.PARTIES);
+            partiesReference
+                    .child(partyId)
+                    .child(Constant.IDS_OF_USERS_WHO_LIKED_THIS_PARTY)
+                    .child(userId)
+                    .setValue(null);
+
+            //remove the like to the party (inside profile)
+            final DatabaseReference profileReference = database.getReference(Constant.PROFILES);
+            profileReference
+                    .child(partyOwnerId)
+                    .child(Constant.PARTIES)
+                    .child(partyId)
+                    .child(Constant.IDS_OF_USERS_WHO_LIKED_THIS_PARTY)
+                    .child(userId)
+                    .setValue(null);
+
+            //remove the id of the party to the liked parties of user
+            profileReference
+                    .child(userId)
+                    .child(Constant.IDS_OF_PARTIES_THAT_CURRNET_USER_LIKED)
+                    .child(partyId)
+                    .setValue(null);
+        }
+    }
+
+    /**
+     * This method will get ids of all parties that current user liked
+     */
     @Override
     public void getMyLikes() {
-        Log.d("abc", "getMyLikes: " + 1);
+        //likes holds ids of parties that current user liked
         final List<String> likes = new ArrayList<>();
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference profileReference = database.getReference("profiles");
+        final DatabaseReference profileReference = database.getReference(Constant.PROFILES);
 
-        profileReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        profileReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("abc", "getMyLikes: " + 2);
-                for(DataSnapshot snapshot: dataSnapshot
-                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("myLikes").getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(Constant.IDS_OF_PARTIES_THAT_CURRNET_USER_LIKED).getChildren()) {
                     likes.add(snapshot.getValue().toString());
                 }
                 EventBus.getDefault().post(new MyLikes(likes));
@@ -195,7 +253,6 @@ public class FirebaseHelper implements FirebaseInterface {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d("abc", "getMyLikes: " + 3);
 
             }
         });

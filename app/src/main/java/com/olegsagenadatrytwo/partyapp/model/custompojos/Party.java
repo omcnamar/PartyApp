@@ -3,8 +3,8 @@ package com.olegsagenadatrytwo.partyapp.model.custompojos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Party implements Parcelable{
 
@@ -22,28 +22,10 @@ public class Party implements Parcelable{
     private String imageURL;
     private String distance;
     private String latlng;
-    private List<String> profileIdLikes;
+    private Map<String, String> idsOfUsersWhoLikedThisParty;
 
     public Party() {
-        profileIdLikes = new ArrayList<>();
-    }
-
-    public Party(String id, String ownerId, String partyName, String description, String address, String date, String startTime, String endDate, String endTime, String ageRequired, int capacity, String imageURL, String distance, String latlng, List<String> profileIdLikes) {
-        this.id = id;
-        this.ownerId = ownerId;
-        this.partyName = partyName;
-        this.description = description;
-        this.address = address;
-        this.date = date;
-        this.startTime = startTime;
-        this.endDate = endDate;
-        this.endTime = endTime;
-        this.ageRequired = ageRequired;
-        this.capacity = capacity;
-        this.imageURL = imageURL;
-        this.distance = distance;
-        this.latlng = latlng;
-        this.profileIdLikes = profileIdLikes;
+        idsOfUsersWhoLikedThisParty = new HashMap<>();
     }
 
     @Override
@@ -169,12 +151,12 @@ public class Party implements Parcelable{
         this.latlng = latlng;
     }
 
-    public List<String> getProfileIdLikes() {
-        return profileIdLikes;
+    public Map<String, String> getIdsOfUsersWhoLikedThisParty() {
+        return idsOfUsersWhoLikedThisParty;
     }
 
-    public void setProfileIdLikes(List<String> profileIdLikes) {
-        this.profileIdLikes = profileIdLikes;
+    public void setIdsOfUsersWhoLikedThisParty(Map<String, String> idsOfUsersWhoLikedThisParty) {
+        this.idsOfUsersWhoLikedThisParty = idsOfUsersWhoLikedThisParty;
     }
 
     public static Creator<Party> getCREATOR() {
@@ -196,7 +178,7 @@ public class Party implements Parcelable{
         imageURL = in.readString();
         distance = in.readString();
         latlng = in.readString();
-        in.readStringList(profileIdLikes);
+        in.readMap(idsOfUsersWhoLikedThisParty, String.class.getClassLoader());
     }
 
     public static final Creator<Party> CREATOR = new Creator<Party>() {
@@ -232,6 +214,6 @@ public class Party implements Parcelable{
         parcel.writeString(imageURL);
         parcel.writeString(distance);
         parcel.writeString(latlng);
-        parcel.writeStringList(profileIdLikes);
+        parcel.writeMap(idsOfUsersWhoLikedThisParty);
     }
 }

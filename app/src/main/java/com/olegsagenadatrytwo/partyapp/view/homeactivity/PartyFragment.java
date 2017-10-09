@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.App;
+import com.olegsagenadatrytwo.partyapp.Constant;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView;
 import com.olegsagenadatrytwo.partyapp.data.remote.FirebaseHelper;
@@ -45,6 +46,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -126,7 +128,7 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         btnShareParty = v.findViewById(R.id.btnShareParty);
         btnPublicOrPrivate = v.findViewById(R.id.btnPublicOrPrivate);
         tvPartyType = v.findViewById(R.id.tvPartyType);
-        tvDescription= v.findViewById(R.id.tvPartyDescription);
+        tvDescription = v.findViewById(R.id.tvPartyDescription);
         ivLogo = v.findViewById(R.id.ivPartyHeader);
         tvLikes = v.findViewById(R.id.tvLikes);
         btnLike.setOnClickListener(this);
@@ -144,28 +146,24 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         if (party != null) {
             tvPartyType.setText(party.getPartyName());
             tvDescription.setText(party.getDescription());
-            if(party.getDistance() != null){
-                Log.d("PartyST", "onCreateView: "+ party.getDistance() + " miles away");
-                /*double distance = Double.parseDouble(party.getDistance().replace(",", "").replaceAll("[^\\d.]", ""));
-                if(distance <= 10000000)
-                    tvDistance.setText(String.valueOf(distance) + " miles away");*/
-                tvDistance.setText(party.getDistance()+ " miles away");
-            }else {
+            if (party.getDistance() != null) {
+                tvDistance.setText(party.getDistance() + " miles away");
+            } else {
                 tvDistance.setText("Unknown distance");
             }
             loadPartyImage(party.getImageURL(), ivLogo); // Header Image
             getHostImage(party);
 
             //check if the current user liked the party
-            if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-                for (int i = 0; i < party.getProfileIdLikes().size(); i++) {
-
-                    if (party.getProfileIdLikes().get(i).equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                for (Map.Entry<String, String> entry : party.getIdsOfUsersWhoLikedThisParty().entrySet()) {
+                    if (entry.getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                         btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
+                        break;
                     }
                 }
             }
-            tvLikes.setText(String.valueOf(party.getProfileIdLikes().size()));
+            tvLikes.setText(String.valueOf(party.getIdsOfUsersWhoLikedThisParty().size()));
         }
         return v;
     }
@@ -244,7 +242,7 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         final Party partyChanged = dataSnapshot.getValue(Party.class);
         partyChanged.setId(dataSnapshot.getKey());
 
-        if(party != null) {
+        if (party != null) {
             //if the party that was changed is the one on the screen update the changes live
             if (partyChanged.getId().equals(party.getId())) {
                 //get reference to storage
@@ -272,7 +270,15 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                     }
                 });
 
-                tvLikes.setText(String.valueOf(partyChanged.getProfileIdLikes().size()));
+                //create count likes
+                int count = 0;
+                for (DataSnapshot snap : dataSnapshot.child(Constant.IDS_OF_USERS_WHO_LIKED_THIS_PARTY).getChildren()) {
+                    if (snap.getValue() != null) {
+                        count++;
+                    }
+                }
+
+                tvLikes.setText(String.valueOf(count));
             }
         }
     }
@@ -282,12 +288,13 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
         final Party partyChanged = dataSnapshot.getValue(Party.class);
         partyChanged.setId(dataSnapshot.getKey());
 
-        if(party != null) {
+        if (party != null) {
             if (party.getId().equals(partyChanged.getId())) {
                 tvPartyType.setText("This party was just deleted");
                 tvDescription.setText("");
                 ivLogo.setImageBitmap(null);
                 ivPartyHost.setImageBitmap(null);
+                tvLikes.setText("");
             }
         }
     }
@@ -302,7 +309,6 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
 
     }
 
-
     @Override
     public void onClick(View view) {
         final Animation animation = AnimationUtils.loadAnimation(context, R.anim.bounce);
@@ -311,10 +317,12 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
 
         switch (view.getId()) {
             case R.id.btnLike:
-                if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    EventBus.getDefault().register(this);
-                    firebaseHelper.getMyLikes();
-                }else{
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    if (!EventBus.getDefault().isRegistered(this)) {
+                        EventBus.getDefault().register(this);
+                        firebaseHelper.getMyLikes();
+                    }
+                } else {
                     Toast.makeText(context, "You must sign in to Like!", Toast.LENGTH_SHORT).show();
                 }
 
@@ -331,7 +339,7 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                     i.putExtra(Intent.EXTRA_TEXT, sAux);
                     startActivity(Intent.createChooser(i, "choose one"));
 
-                } catch(Exception e) {
+                } catch (Exception e) {
                     //e.toString();
                 }
 
@@ -345,36 +353,45 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(MyLikes myLikes) {
 
-        Log.d("abc", "onEvent: ");
-        final Animation animation = AnimationUtils.loadAnimation(context, R.anim.bounce);
-        TransitionDrawable like = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.like);
-        TransitionDrawable unlike = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.unlike);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            final Animation animation = AnimationUtils.loadAnimation(context, R.anim.bounce);
+            TransitionDrawable like = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.like);
+            TransitionDrawable unlike = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.unlike);
 
-        List<String> likes = myLikes.getLikes();
-        Log.d("abc", "onEvent: " + likes.size());
-        //if party is not liked, like it and send it to database
-        if (!likes.contains(party.getId())) {
-            btnLike.setImageDrawable(like);
-            unlike.reverseTransition(500);
-            btnLike.startAnimation(animation);
-            btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
-            party.getProfileIdLikes().add(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            likes.add(party.getId());
-            firebaseHelper.saveLike(party, likes);
-        }
-        //if party is liked remove it from likes
-        else {
-            btnLike.setImageDrawable(unlike);
-            like.reverseTransition(1000);
-            btnLike.startAnimation(animation);
-            btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike));
+            //likes holds party ids of parties that current user liked
+            List<String> likes = myLikes.getLikes();
 
-            //remove like from database
-            party.getProfileIdLikes().remove(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            likes.remove(party.getId());
-            party.getProfileIdLikes().remove(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            firebaseHelper.saveLike(party, likes);
+            //if party is not liked, like it and send it to database
+            if (!likes.contains(party.getId())) {
+                //set the image of the btn to heart
+                btnLike.setImageDrawable(like);
+                unlike.reverseTransition(1000);
+                btnLike.startAnimation(animation);
+                btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_like_48dp));
+                btnLike.clearAnimation();
+
+                firebaseHelper
+                        .saveLike(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                                party.getId(),
+                                party.getOwnerId());
+
+            }
+            //if party is liked remove it from likes
+            else {
+
+                btnLike.setImageDrawable(unlike);
+                like.reverseTransition(2000);
+                btnLike.startAnimation(animation);
+                btnLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_unlike));
+                btnLike.clearAnimation();
+
+                firebaseHelper
+                        .removeLike(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                                party.getId(),
+                                party.getOwnerId());
+
+            }
+            EventBus.getDefault().unregister(this);
         }
-        EventBus.getDefault().unregister(this);
     }
 }

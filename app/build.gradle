@@ -69,8 +69,8 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
 
     // Retrofit
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.retrofit2:retrofit:'+rootProject.ext.retrofitVersion
+    compile 'com.squareup.retrofit2:converter-gson:'+rootProject.ext.retrofitVersion
     compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
 
     // Dagger
