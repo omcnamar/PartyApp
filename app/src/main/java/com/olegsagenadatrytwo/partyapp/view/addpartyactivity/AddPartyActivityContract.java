@@ -1,6 +1,5 @@
 package com.olegsagenadatrytwo.partyapp.view.addpartyactivity;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.olegsagenadatrytwo.partyapp.BasePresenter;
@@ -19,9 +18,5 @@ public interface AddPartyActivityContract {
 
     interface presenter extends BasePresenter<AddPartyActivityContract.view> {
         void addNewParty(Party party, Bitmap bitmap);
-        void setContext(Context context);
-        void init();
-
-        String getPartyLocationLatLng(Party party);
     }
 }

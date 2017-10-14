@@ -84,9 +84,25 @@ public class Constant {
     public static final String UPDATE_PARTY = "update";
     public static final String DELETE_PARTY = "delete";
 
-    //global parties constants
+    /**
+     * global parties constants
+     */
     public static final String PARTIES = "parties";
     public static final String PROFILES = "profiles";
     public static final String IDS_OF_USERS_WHO_LIKED_THIS_PARTY = "idsOfUsersWhoLikedThisParty";
     public static final String IDS_OF_PARTIES_THAT_CURRNET_USER_LIKED = "idsOfPartiesThatCurrentUserLiked";
+    public static final String  ID = "id";
+    public static final String OWNERID = "ownerId";
+    public static final String PARTYNAME = "partyName";
+    public static final String DESCRIPTION = "description";
+    public static final String ADDRESS = "address";
+    public static final String DATE = "date";
+    public static final String STARTTIME = "startTime";
+    public static final String ENDDATE = "endDate";
+    public static final String ENDTIME = "endTime";
+    public static final String AGEREQUIRED = "ageRequired";
+    public static final String CAPACITY = "capacity";
+    public static final String IMAGEURL = "imageURL";
+    public static final String DISTANCE = "distance";
+    public static final String LATLNG = "latlng";
 }

@@ -57,10 +57,13 @@ public class MyPartiesFragment extends Fragment {
 
 
     public void getMyParties() {
-        //database.getReference().child("Student1").child("Grades");
-        DatabaseReference partiesReference = FirebaseDatabase.getInstance().getReference("profiles").
-                child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+
+        //get the reference to the current users parties
+        DatabaseReference partiesReference = FirebaseDatabase.getInstance().getReference("profiles")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("parties");
+
+        //get all the parties that belong to the current user
         partiesReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -2,21 +2,10 @@ package com.olegsagenadatrytwo.partyapp.view.editpartyactivity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import com.olegsagenadatrytwo.partyapp.data.remote.FirebaseHelper;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
-
-import java.io.ByteArrayOutputStream;
 
 /**
  * Created by omcna on 9/21/2017.
@@ -51,61 +40,8 @@ public class EditPartyActivityPresenter implements EditPartyActivityContract.pre
 
     @Override
     public void editParty(final Party party, Bitmap bitmap) {
-
-        Log.d(TAG, "editParty: " + party.getId());
-
-        //add the image of the party to the firebase
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
-        StorageReference mountainImagesRef = storageRef.child("images/" + party.getId() + ".jpg");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        if(bitmap != null) {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] data = baos.toByteArray();
-            UploadTask uploadTask = mountainImagesRef.putBytes(data);
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                    //Edit the party to the user
-                    final DatabaseReference profileReference = database.getReference("profiles");
-                    profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(party.getId()).setValue(party);
-
-                    //edit the party to all parties
-                    DatabaseReference partyReference = database.getReference("parties");
-                    partyReference.child(party.getId()).setValue(party);
-                    view.partyEdited(true);
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    Log.d(TAG, "onSuccess: " + downloadUrl);
-                    //sendMsg("" + downloadUrl, 2);
-                    //Log.d("downloadUrl-->", "" + downloadUrl);
-
-                    //Edit the party to the user
-                    final DatabaseReference profileReference = database.getReference("profiles");
-                    profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(party.getId()).setValue(party);
-
-                    //edit the party to all parties
-                    DatabaseReference partyReference = database.getReference("parties");
-                    partyReference.child(party.getId()).setValue(party);
-                    view.partyEdited(true);
-                }
-            });
-        }else{
-            //Edit the party to the user
-            final DatabaseReference profileReference = database.getReference("profiles");
-            profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(party.getId()).setValue(party);
-
-            //edit the party to all parties
-            DatabaseReference partyReference = database.getReference("parties");
-            partyReference.child(party.getId()).setValue(party);
-            view.partyEdited(true);
-        }
-
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper.editParty(party, bitmap);
+        view.partyEdited(true);
     }
 }

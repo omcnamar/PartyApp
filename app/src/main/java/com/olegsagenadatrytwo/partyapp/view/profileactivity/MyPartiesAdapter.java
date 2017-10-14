@@ -68,6 +68,7 @@ public class MyPartiesAdapter extends RecyclerView.Adapter<MyPartiesAdapter.View
         storageRef.child("images/" + parties.get(position).getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
+                parties.get(position).setImageURL(uri.toString());
                 Picasso.with(context)
                         .load(uri.toString())
                         .into(holder.ivPartyLogo);

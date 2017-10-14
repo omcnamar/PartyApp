@@ -106,6 +106,11 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         updateMapSnapshot();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void updateStatusBar() {

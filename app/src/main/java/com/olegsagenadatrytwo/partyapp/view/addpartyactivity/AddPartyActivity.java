@@ -122,8 +122,6 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
         //set up presenter
         presenter = new AddPartyActivityPresenter();
         presenter.attachView(this);
-        presenter.setContext(this);
-        presenter.init();
         //DatePicker and TimerPicker implementation
         mEtDate.setInputType(InputType.TYPE_NULL);
         mEtEndDate.setInputType(InputType.TYPE_NULL);
@@ -288,7 +286,8 @@ public class AddPartyActivity extends AppCompatActivity implements AddPartyActiv
     @Override
     public void partySaved(Boolean saved) {
         if (saved) {
-            Toast.makeText(this, "Saved Successfull", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Saved Successful", Toast.LENGTH_SHORT).show();
+            onBackPressed();
         } else {
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
         }

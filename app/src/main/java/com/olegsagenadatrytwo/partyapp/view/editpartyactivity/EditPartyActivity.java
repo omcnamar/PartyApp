@@ -28,21 +28,14 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 
-import java.io.IOException;
 import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.olegsagenadatrytwo.partyapp.utilities.location.LocationUtilities.getDistanceFromDeviceLocation;
 
 public class EditPartyActivity extends AppCompatActivity implements EditPartyActivityContract.view {
 
@@ -112,25 +105,7 @@ public class EditPartyActivity extends AppCompatActivity implements EditPartyAct
             mEtEndTime.setText(party.getEndTime());
             mEtMinAge.setText(String.valueOf(party.getAgeRequired()));
             mEtCapacity.setText(String.valueOf(party.getCapacity()));
-
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
-
-            //download image
-            storageRef.child("images/" + party.getId() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    party.setImageURL(uri.toString());
-                    Glide.with(getApplicationContext()).load(uri.toString()).into(mIvPartyLogo);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-
-                }
-            });
-
+            Glide.with(getApplicationContext()).load(party.getImageURL()).into(mIvPartyLogo);
         }
 
         //set up presenter
@@ -264,11 +239,11 @@ public class EditPartyActivity extends AppCompatActivity implements EditPartyAct
             party.setEndTime(mEtEndTime.getText().toString());
             party.setAgeRequired(mEtMinAge.getText().toString());
             party.setCapacity(Integer.parseInt(mEtCapacity.getText().toString()));
-            try {
-                party.setDistance(getDistanceFromDeviceLocation(party, this));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                party.setDistance(getDistanceFromDeviceLocation(party, this));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
             presenter.editParty(party, bitmap);
 
         }

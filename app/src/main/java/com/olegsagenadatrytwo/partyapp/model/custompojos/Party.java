@@ -178,6 +178,7 @@ public class Party implements Parcelable{
         imageURL = in.readString();
         distance = in.readString();
         latlng = in.readString();
+        idsOfUsersWhoLikedThisParty = new HashMap<>();
         in.readMap(idsOfUsersWhoLikedThisParty, String.class.getClassLoader());
     }
 

@@ -1,8 +1,10 @@
 package com.olegsagenadatrytwo.partyapp.data.remote;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -15,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.olegsagenadatrytwo.partyapp.Constant;
 import com.olegsagenadatrytwo.partyapp.eventbus.Caller;
 import com.olegsagenadatrytwo.partyapp.eventbus.MyLikes;
@@ -23,11 +26,13 @@ import com.olegsagenadatrytwo.partyapp.view.homeactivity.PartyLabSingleTon;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.olegsagenadatrytwo.partyapp.utilities.location.LocationUtilities.getDistanceFromDeviceLocation;
 
@@ -256,5 +261,247 @@ public class FirebaseHelper implements FirebaseInterface {
 
             }
         });
+    }
+
+    @Override
+    public void addParty(final Party party, Bitmap bitmap) {
+
+        //add new UUID to the party
+        UUID id = UUID.randomUUID();
+        final String idString = id.toString();
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //add the image of the party to the firebase
+        if(bitmap != null) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
+            StorageReference mountainImagesRef = storageRef.child("images/" + idString + ".jpg");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+            UploadTask uploadTask = mountainImagesRef.putBytes(data);
+
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                    //add the party to the user
+                    final DatabaseReference profileReference = database.getReference("profiles");
+                    profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(idString).setValue(party);
+
+                    //add the party to all parties
+                    DatabaseReference partyReference = database.getReference("parties");
+                    partyReference.child(idString).setValue(party);
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    Log.d(TAG, "onSuccess: " + downloadUrl);
+                    if(downloadUrl != null) {
+                        party.setImageURL(downloadUrl.toString());
+                    }
+                    //add the party to the user
+                    final DatabaseReference profileReference = database.getReference("profiles");
+                    profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("parties").child(idString).setValue(party);
+
+                    //add the party to all parties
+                    DatabaseReference partyReference = database.getReference("parties");
+                    partyReference.child(idString).setValue(party);
+                }
+            });
+
+        }
+    }
+
+    @Override
+    public void editParty(final Party party, Bitmap bitmap) {
+
+        if(bitmap != null) {
+
+            //add the image of the party to the firebase
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
+            StorageReference mountainImagesRef = storageRef.child("images/" + party.getId() + ".jpg");
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            byte[] data = byteArrayOutputStream.toByteArray();
+            UploadTask uploadTask = mountainImagesRef.putBytes(data);
+
+            //set a listener when image is done uploading
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    saveEditParty(party);
+
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    saveEditParty(party);
+                }
+            });
+
+        }else{
+            //Edit the party to the user
+            saveEditParty(party);
+        }
+    }
+
+    private void saveEditParty(Party party) {
+
+        //get Reference to database
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        //Edit the party to the user
+        final DatabaseReference profileReference = database.getReference("profiles");
+        profileReference
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("parties")
+                .child(party.getId())
+                .child(Constant.OWNERID)
+                .setValue(party.getOwnerId());
+
+        profileReference
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("parties")
+                .child(party.getId())
+                .child(Constant.PARTYNAME)
+                .setValue(party.getPartyName());
+
+        profileReference
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("parties")
+                .child(party.getId())
+                .child(Constant.DESCRIPTION)
+                .setValue(party.getDescription());
+
+        profileReference
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("parties")
+                .child(party.getId())
+                .child(Constant.ADDRESS)
+                .setValue(party.getAddress());
+
+        profileReference
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("parties")
+                .child(party.getId())
+                .child(Constant.DATE)
+                .setValue(party.getDate());
+
+        profileReference
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("parties")
+                .child(party.getId())
+                .child(Constant.ENDDATE)
+                .setValue(party.getEndDate());
+
+        profileReference
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("parties")
+                .child(party.getId())
+                .child(Constant.STARTTIME)
+                .setValue(party.getStartTime());
+
+        profileReference
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("parties")
+                .child(party.getId())
+                .child(Constant.ENDTIME)
+                .setValue(party.getEndTime());
+
+        profileReference
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("parties")
+                .child(party.getId())
+                .child(Constant.AGEREQUIRED)
+                .setValue(party.getAgeRequired());
+
+        profileReference
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("parties")
+                .child(party.getId())
+                .child(Constant.CAPACITY)
+                .setValue(party.getCapacity());
+
+        profileReference
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("parties")
+                .child(party.getId())
+                .child(Constant.IMAGEURL)
+                .setValue(party.getImageURL());
+
+        profileReference
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("parties")
+                .child(party.getId())
+                .child(Constant.LATLNG)
+                .setValue(party.getLatlng());
+
+        //edit the party to all parties
+        DatabaseReference partyReference = database.getReference("parties");
+
+        partyReference
+                .child(party.getId())
+                .child(Constant.OWNERID)
+                .setValue(party.getOwnerId());
+
+        partyReference
+                .child(party.getId())
+                .child(Constant.PARTYNAME)
+                .setValue(party.getPartyName());
+
+        partyReference
+                .child(party.getId())
+                .child(Constant.DESCRIPTION)
+                .setValue(party.getDescription());
+
+        partyReference
+                .child(party.getId())
+                .child(Constant.ADDRESS)
+                .setValue(party.getAddress());
+
+        partyReference
+                .child(party.getId())
+                .child(Constant.DATE)
+                .setValue(party.getDate());
+
+        partyReference
+                .child(party.getId())
+                .child(Constant.ENDDATE)
+                .setValue(party.getEndDate());
+
+        partyReference
+                .child(party.getId())
+                .child(Constant.STARTTIME)
+                .setValue(party.getStartTime());
+
+        partyReference
+                .child(party.getId())
+                .child(Constant.ENDTIME)
+                .setValue(party.getEndTime());
+
+        partyReference
+                .child(party.getId())
+                .child(Constant.AGEREQUIRED)
+                .setValue(party.getAgeRequired());
+
+        partyReference
+                .child(party.getId())
+                .child(Constant.CAPACITY)
+                .setValue(party.getCapacity());
+
+        profileReference
+                .child(party.getId())
+                .child(Constant.IMAGEURL)
+                .setValue(party.getImageURL());
+
+        partyReference
+                .child(party.getId())
+                .child(Constant.LATLNG)
+                .setValue(party.getLatlng());
+
     }
 }
