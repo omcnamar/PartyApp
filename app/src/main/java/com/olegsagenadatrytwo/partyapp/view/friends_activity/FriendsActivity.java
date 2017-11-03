@@ -90,7 +90,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsActivit
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(AllUsers allUsers) {
         List<String> userIDs = allUsers.getUserIds();
-        AdapterPeopleInfo adapter = new AdapterPeopleInfo(userIDs, this);
+        AdapterPeopleInfo adapter = new AdapterPeopleInfo(userIDs, this, this);
         mRecyclerViewPeople.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }

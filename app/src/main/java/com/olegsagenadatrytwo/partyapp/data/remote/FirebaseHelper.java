@@ -355,6 +355,18 @@ public class FirebaseHelper implements FirebaseInterface {
         }
     }
 
+    @Override
+    public void updateImageURLForUser(String url) {
+        //get Reference to database
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference profileReference = database.getReference("profiles");
+        //edit user image url
+        profileReference
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("imageURL")
+                .setValue(url);
+    }
+
     /**
      * helper method to edit Party
      */

@@ -11,7 +11,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -31,6 +30,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView;
+import com.olegsagenadatrytwo.partyapp.data.remote.FirebaseHelper;
 import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
 import com.olegsagenadatrytwo.partyapp.view.friends_activity.FriendsActivity;
 import com.olegsagenadatrytwo.partyapp.view.homeactivity.HomeActivity;
@@ -182,6 +182,7 @@ public class ProfileActivity extends AppCompatActivity implements PopupMenu.OnMe
                 FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates);
                 ibEdit.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_mode_edit_black_48dp));
                 displayName.setText(etName.getText().toString());
+
                 break;
             case R.id.civProfilePicture:
                 Intent i = new Intent(
@@ -220,8 +221,11 @@ public class ProfileActivity extends AppCompatActivity implements PopupMenu.OnMe
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    Toast.makeText(ProfileActivity.this, "Image saved", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "onSuccess: " + downloadUrl);
+                    if(downloadUrl != null) {
+                        Toast.makeText(ProfileActivity.this, "Image saved", Toast.LENGTH_SHORT).show();
+                        FirebaseHelper firebaseHelper = new FirebaseHelper();
+                        firebaseHelper.updateImageURLForUser(downloadUrl.toString());
+                    }
                 }
             });
         }

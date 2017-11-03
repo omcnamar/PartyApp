@@ -12,4 +12,5 @@ public interface FirebaseInterface {
     void getMyLikes();
     void addParty(Party party, Bitmap bitmap);
     void editParty(Party party, Bitmap bitmap);
+    void updateImageURLForUser(String url);
 }
