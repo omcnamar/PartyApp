@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.olegsagenadatrytwo.partyapp">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.olegsagenadatrytwo.partyapp">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:name=".App"
@@ -27,12 +28,13 @@
         android:roundIcon="@drawable/partylogo"
         android:supportsRtl="true"
         android:theme="@style/LoginThem">
-        <activity android:name=".view.splashactivity.SplashActivity"
+        <activity
+            android:name=".view.splashactivity.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
@@ -41,30 +43,33 @@
         </activity>
         <activity
             android:name=".view.loginactivity.LoginActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
 
-        <!--<meta-data-->
-            <!--android:name="com.facebook.sdk.ApplicationId"-->
-            <!--android:value="@string/facebook_app_id"/>-->
+        <!-- <meta-data -->
+        <!-- android:name="com.facebook.sdk.ApplicationId" -->
+        <!-- android:value="@string/facebook_app_id"/> -->
 
-        <!--<activity-->
-            <!--android:name="com.facebook.FacebookActivity"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"-->
-            <!--android:label="@string/app_name"/>-->
-        <!--<activity-->
-            <!--android:name="com.facebook.CustomTabActivity"-->
-            <!--android:exported="true"-->
-            <!--android:screenOrientation="portrait">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.VIEW"/>-->
 
-                <!--<category android:name="android.intent.category.DEFAULT"/>-->
-                <!--<category android:name="android.intent.category.BROWSABLE"/>-->
+        <!-- <activity -->
+        <!-- android:name="com.facebook.FacebookActivity" -->
+        <!-- android:screenOrientation="portrait" -->
+        <!-- android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" -->
+        <!-- android:label="@string/app_name"/> -->
+        <!-- <activity -->
+        <!-- android:name="com.facebook.CustomTabActivity" -->
+        <!-- android:exported="true" -->
+        <!-- android:screenOrientation="portrait"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.VIEW"/> -->
 
-                <!--<data android:scheme="@string/fb_login_protocol_scheme"/>-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
+
+        <!-- <category android:name="android.intent.category.DEFAULT"/> -->
+        <!-- <category android:name="android.intent.category.BROWSABLE"/> -->
+
+
+        <!-- <data android:scheme="@string/fb_login_protocol_scheme"/> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
         <activity
             android:name=".view.registeractivity.RegisterActivity"
             android:screenOrientation="portrait"/>
@@ -74,27 +79,26 @@
         <activity
             android:name=".view.addpartyactivity.AddPartyActivity"
             android:screenOrientation="portrait"/>
-
         <activity
             android:name=".view.editpartyactivity.EditPartyActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.profileactivity.ProfileActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="@string/google_maps_key"/>
 
-        <activity
-            android:name=".view.map_fragment.MapsActivity"
-            >
+        <activity android:name=".view.map_fragment.MapsActivity">
             <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".view.settingsactivity.SettingsActivity"></activity>
+        <activity android:name=".view.settingsactivity.SettingsActivity"/>
+        <activity android:name=".view.friends_activity.FriendsActivity">
+        </activity>
     </application>
 
 </manifest>

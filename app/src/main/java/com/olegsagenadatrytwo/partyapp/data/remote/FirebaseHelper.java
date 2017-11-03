@@ -19,6 +19,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.olegsagenadatrytwo.partyapp.Constant;
+import com.olegsagenadatrytwo.partyapp.eventbus.AllUsers;
 import com.olegsagenadatrytwo.partyapp.eventbus.Caller;
 import com.olegsagenadatrytwo.partyapp.eventbus.MyLikes;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
@@ -198,7 +199,6 @@ public class FirebaseHelper implements FirebaseInterface {
         }
     }
 
-
     /**
      * This method will remove a like from the party that was previously liked
      */
@@ -263,6 +263,9 @@ public class FirebaseHelper implements FirebaseInterface {
         });
     }
 
+    /**
+     * This method will add Party
+     */
     @Override
     public void addParty(final Party party, Bitmap bitmap) {
 
@@ -315,6 +318,9 @@ public class FirebaseHelper implements FirebaseInterface {
         }
     }
 
+    /**
+     * This method will Edit Party
+     */
     @Override
     public void editParty(final Party party, Bitmap bitmap) {
 
@@ -349,6 +355,9 @@ public class FirebaseHelper implements FirebaseInterface {
         }
     }
 
+    /**
+     * helper method to edit Party
+     */
     private void saveEditParty(Party party) {
 
         //get Reference to database
@@ -356,6 +365,8 @@ public class FirebaseHelper implements FirebaseInterface {
 
         //Edit the party to the user
         final DatabaseReference profileReference = database.getReference("profiles");
+
+        //edit each individual field inorder to keep likes saved
         profileReference
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("parties")
@@ -503,5 +514,27 @@ public class FirebaseHelper implements FirebaseInterface {
                 .child(Constant.LATLNG)
                 .setValue(party.getLatlng());
 
+    }
+
+    public void getAllUsers() {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference profileReference = database.getReference(Constant.PROFILES);
+
+        profileReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //likes holds ids of parties that current user liked
+                List<String> userIDs = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    userIDs.add(snapshot.getKey());
+                }
+                EventBus.getDefault().post(new AllUsers(userIDs));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

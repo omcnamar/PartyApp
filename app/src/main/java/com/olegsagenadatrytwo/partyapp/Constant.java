@@ -91,7 +91,7 @@ public class Constant {
     public static final String PROFILES = "profiles";
     public static final String IDS_OF_USERS_WHO_LIKED_THIS_PARTY = "idsOfUsersWhoLikedThisParty";
     public static final String IDS_OF_PARTIES_THAT_CURRNET_USER_LIKED = "idsOfPartiesThatCurrentUserLiked";
-    public static final String  ID = "id";
+    public static final String ID = "id";
     public static final String OWNERID = "ownerId";
     public static final String PARTYNAME = "partyName";
     public static final String DESCRIPTION = "description";

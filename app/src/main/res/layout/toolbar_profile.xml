@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar2"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:paddingTop="10dp"
+    android:background="@color/colorCustomToolbar"
+    android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/action_backbutton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorCustomToolbar"
+        android:layout_gravity="left"
+        android:layout_weight="3"
+        android:orderInCategory="200"
+        app:srcCompat="@drawable/ic_arrow_back_black_48dp" />
+
+
+    <TextView
+        android:id="@+id/action_location"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.6"
+        android:gravity="center"
+        android:hint=""
+        android:textSize="30dp"
+        android:textColor="@android:color/black"
+
+        />
+
+    <ImageButton
+        android:id="@+id/action_add_party"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:background="@color/colorCustomToolbar"
+        app:srcCompat="@drawable/ic_party48dp"
+        android:title="@string/action_profile" />
+
+    <ImageButton
+        android:id="@+id/action_profileSettings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorCustomToolbar"
+        android:layout_weight="3"
+        app:srcCompat="@drawable/ic_more_vert_black_48dp"
+        android:title="@string/action_profile"/>
+
+
+</LinearLayout>

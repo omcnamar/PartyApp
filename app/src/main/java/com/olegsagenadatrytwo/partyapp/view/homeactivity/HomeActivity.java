@@ -63,7 +63,6 @@ import static com.olegsagenadatrytwo.partyapp.Constant.REQUEST_PERMISSION;
 public class HomeActivity extends AppCompatActivity implements HomeActivityContract.view, LocationListener {
 
     private static final String TAG = "HomeActivity";
-    private static final String PARTY_ID = "party_id";
     @BindView(R.id.party_view_pager)
     ViewPager viewPager;
     @Inject
@@ -249,13 +248,12 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
     public void goToLocation(View view) {
     }
 
-    //                       //
-    //  Runtime Permission   //
-    //=======================//
+    /**
+     * Runtime Permission
+     */
     public void checkPermissions() {
         // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
@@ -288,12 +286,13 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     }
 
-    //                       //
-    //  Permission Result    //
-    //=======================//
+    /**
+     * Permission Result
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_PERMISSION: {
                 // If request is cancelled, the result arrays are empty.
@@ -303,6 +302,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
                     saveUpdatedCurrentLocation();
                     loadLocation();
                     presenter.getPartiesFromFireBase();
+                }else{
+                    checkPermissions();
                 }
 
             }

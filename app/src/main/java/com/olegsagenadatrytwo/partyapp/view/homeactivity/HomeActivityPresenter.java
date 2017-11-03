@@ -24,7 +24,6 @@ import retrofit2.Response;
 
 public class HomeActivityPresenter implements HomeActivityContract.presenter {
 
-    private static final String TAG = "HomeActivityPresenter";
     private HomeActivityContract.view view;
     private RetrofitHelper.ApiService apiService;
     private Context context;

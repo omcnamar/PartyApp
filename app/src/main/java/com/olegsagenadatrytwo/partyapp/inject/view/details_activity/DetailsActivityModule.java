@@ -5,9 +5,6 @@ import com.olegsagenadatrytwo.partyapp.view.details_activity.DetailsActivityPres
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * Created by Admin on 9/13/2017.
- */
 @Module
 class DetailsActivityModule {
 

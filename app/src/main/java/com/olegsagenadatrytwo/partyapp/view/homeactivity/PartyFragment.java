@@ -312,8 +312,6 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
     @Override
     public void onClick(View view) {
         final Animation animation = AnimationUtils.loadAnimation(context, R.anim.bounce);
-        TransitionDrawable like = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.like);
-        TransitionDrawable unlike = (TransitionDrawable) ContextCompat.getDrawable(context, R.drawable.unlike);
 
         switch (view.getId()) {
             case R.id.btnLike:
@@ -325,7 +323,6 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                 } else {
                     Toast.makeText(context, "You must sign in to Like!", Toast.LENGTH_SHORT).show();
                 }
-
                 break;
             case R.id.btnShareParty:
                 btnShareParty.startAnimation(animation);

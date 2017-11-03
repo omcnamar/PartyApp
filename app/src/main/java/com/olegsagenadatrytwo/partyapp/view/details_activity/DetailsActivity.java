@@ -10,7 +10,9 @@ import javax.inject.Inject;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsActivityContract.view {
 
-    @Inject DetailsActivityPresenter presenter;
+    @Inject
+    DetailsActivityPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

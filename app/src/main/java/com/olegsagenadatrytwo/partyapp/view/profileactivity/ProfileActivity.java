@@ -32,6 +32,7 @@ import com.google.firebase.storage.UploadTask;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView;
 import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
+import com.olegsagenadatrytwo.partyapp.view.friends_activity.FriendsActivity;
 import com.olegsagenadatrytwo.partyapp.view.homeactivity.HomeActivity;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivity;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.FirstFragment;
@@ -82,7 +83,7 @@ public class ProfileActivity extends AppCompatActivity implements PopupMenu.OnMe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
         ButterKnife.bind(this);
-        actionLocation.setText("Party App");
+        actionLocation.setText(R.string.Profile);
         actionLocation.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         myAdapter = new PagerAdapter(getSupportFragmentManager());
@@ -266,6 +267,9 @@ public class ProfileActivity extends AppCompatActivity implements PopupMenu.OnMe
                     Toast.makeText(this, "Logged out!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, HomeActivity.class));
                 }
+                return true;
+            case R.id.action_people:
+                startActivity(new Intent(this, FriendsActivity.class));
                 return true;
             default:
                 return false;
