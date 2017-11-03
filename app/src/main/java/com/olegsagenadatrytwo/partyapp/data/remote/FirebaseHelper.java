@@ -516,7 +516,7 @@ public class FirebaseHelper implements FirebaseInterface {
                 .child(Constant.CAPACITY)
                 .setValue(party.getCapacity());
 
-        profileReference
+        partyReference
                 .child(party.getId())
                 .child(Constant.IMAGEURL)
                 .setValue(party.getImageURL());
@@ -538,6 +538,7 @@ public class FirebaseHelper implements FirebaseInterface {
                 //likes holds ids of parties that current user liked
                 List<String> userIDs = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Log.d("asdf", "onDataChange: " + snapshot.getKey());
                     userIDs.add(snapshot.getKey());
                 }
                 EventBus.getDefault().post(new AllUsers(userIDs));
