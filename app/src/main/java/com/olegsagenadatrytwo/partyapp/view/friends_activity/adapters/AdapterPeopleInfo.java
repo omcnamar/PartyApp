@@ -49,8 +49,10 @@ public class AdapterPeopleInfo extends RecyclerView.Adapter<AdapterPeopleInfo.Vi
         profileReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String url  = dataSnapshot.child(idsList.get(position)).child("imageURL").getValue().toString();
-                Glide.with(context).load(url).into(holder.ivProfileImage);
+                if(dataSnapshot.child(idsList.get(position)).child("imageURL").getValue() != null) {
+                    String url = dataSnapshot.child(idsList.get(position)).child("imageURL").getValue().toString();
+                    Glide.with(context).load(url).into(holder.ivProfileImage);
+                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
