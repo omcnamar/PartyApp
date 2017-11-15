@@ -17,6 +17,23 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp" >
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/signup_input_layout_username"
+            android:textColorHint="@color/colorWhite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp">
+            <EditText
+                android:id="@+id/signup_input_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorWhite"
+                android:textColor="@color/colorWhite"
+                android:ems="10"
+                android:inputType="textEmailAddress"
+                android:hint="@string/user_name" />
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/signup_input_layout_email"
             android:textColorHint="@color/colorWhite"
             android:layout_width="match_parent"

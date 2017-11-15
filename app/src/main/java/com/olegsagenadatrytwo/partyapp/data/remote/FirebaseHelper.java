@@ -535,13 +535,14 @@ public class FirebaseHelper implements FirebaseInterface {
         profileReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //likes holds ids of parties that current user liked
                 List<String> userIDs = new ArrayList<>();
+                List<String> usernameList = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Log.d("asdf", "onDataChange: " + snapshot.getKey());
                     userIDs.add(snapshot.getKey());
+                    usernameList.add(snapshot.child("username").getValue().toString());
                 }
-                EventBus.getDefault().post(new AllUsers(userIDs));
+                EventBus.getDefault().post(new AllUsers(userIDs, usernameList));
             }
 
             @Override

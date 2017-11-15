@@ -9,7 +9,8 @@ import java.util.List;
 
 public class Profile {
     String id;
-    String userName;
+    String email;
+    String username;
     List<Party> parties;
     List<String> likesPartyID;
 
@@ -17,12 +18,12 @@ public class Profile {
         parties = new ArrayList<>();
     }
 
-    public String getUserName() {
-        return userName;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public List<Party> getParties() {
@@ -47,5 +48,13 @@ public class Profile {
 
     public void setLikesPartyID(List<String> likesPartyID) {
         this.likesPartyID = likesPartyID;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

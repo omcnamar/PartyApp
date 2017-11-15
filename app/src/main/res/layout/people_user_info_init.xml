@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+              android:layout_height="150dp">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ivProfileImage"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:src="@mipmap/ic_launcher"
+        android:layout_weight="2"
+        app:civ_border_color="#999999"
+        app:civ_border_width="3dp" />
 
     <TextView
         android:id="@+id/tvUserID"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="ID"
+        android:layout_weight="1"
+        android:text="@string/user_name"
         android:textColor="@color/colorBlack"
         android:textSize="30sp"
         android:textStyle="bold"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:padding="16dp"/>
 
 </LinearLayout>

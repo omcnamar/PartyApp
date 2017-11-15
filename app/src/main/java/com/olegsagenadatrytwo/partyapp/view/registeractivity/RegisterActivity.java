@@ -1,5 +1,6 @@
 package com.olegsagenadatrytwo.partyapp.view.registeractivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -16,10 +17,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Profile;
+import com.olegsagenadatrytwo.partyapp.view.homeactivity.HomeActivity;
 import com.olegsagenadatrytwo.partyapp.view.loginactivity.LoginActivityContract;
 
 import butterknife.BindView;
@@ -38,12 +44,16 @@ public class RegisterActivity extends AppCompatActivity implements LoginActivity
     Button btnSignup;
     @BindView(R.id.signup_input_password_confirm)
     EditText signupInputPasswordConfirm;
+    @BindView(R.id.signup_input_username)
+    EditText signupInputUsername;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser user;
     private RegisterActivityPresenter mPresenter;
     private GoogleApiClient mGoogleApiClient;
+    private boolean userCreated = false;
+    private boolean registrationComplete = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,50 +95,77 @@ public class RegisterActivity extends AppCompatActivity implements LoginActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_signup:
-                final String userName = signupInputEmail.getText().toString();
+
+                final String email = signupInputEmail.getText().toString();
                 final String password = signupInputPassword.getText().toString();
+                final String username = signupInputUsername.getText().toString();
+
                 if (!signupInputPasswordConfirm.getText().toString().equals(signupInputPassword.getText().toString())) {
                     signupInputPasswordConfirm.setError("Passwords do not match!");
                     Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
-                } else if (userName.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(userName).matches()) {
+                } else if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                     signupInputEmail.setError("Please enter a valid email address");
                 } else {
-                    mAuth.createUserWithEmailAndPassword(userName, password)
-                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(RegisterActivity.this, "Your account was created successfully!" +
-                                                        "\n Go to Log in.",
-                                                Toast.LENGTH_LONG).show();
-                                        signupInputEmail.setText("");
-                                        signupInputPassword.setText("");
-                                        /*After signing up the user logs in*/
-                                        mPresenter.signIn(userName, password);
 
-                                        //add user to fire base database with no parties
-                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                        DatabaseReference profileReference = database.getReference("profiles");
+                    if(!userCreated) {
+                        mAuth.createUserWithEmailAndPassword(email, password)
+                                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
 
-                                        Profile profile = new Profile();
-                                        profile.setUserName(userName);
-                                        profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(profile);
-
-
+                                        if (task.isSuccessful()) {
+                                            userCreated = true;
+                                            createUserProfileDatabase(username, email);
+                                        }else{
+                                            Toast.makeText(RegisterActivity.this, "Email exists", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                    // If sign in fails, display a message to the user. If sign in succeeds
-                                    // the auth state listener will be notified and logic to handle the
-                                    // signed in user can be handled in the listener.
-                                    if (!task.isSuccessful()) {
-                                        Toast.makeText(RegisterActivity.this, "Sign Up failed",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
+                                });
+                    }else{
+                        createUserProfileDatabase(username, email);
+                    }
                     break;
                 }
         }
+    }
+
+    private void createUserProfileDatabase(final String username, final String email) {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference firebaseRef = database.getReference();
+        firebaseRef.child("usernames").child(username).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if (mutableData.getValue() == null) {
+                    mutableData.setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    return Transaction.success(mutableData);
+                }
+
+                return Transaction.abort();
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean commited, DataSnapshot dataSnapshot) {
+                if (commited) {
+                    // username saved
+                    //add user to fire base database with no parties
+                    DatabaseReference profileReference = database.getReference("profiles");
+
+                    Profile profile = new Profile();
+                    profile.setEmail(email);
+                    profile.setUsername(username);
+                    profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(profile);
+                    Toast.makeText(RegisterActivity.this, "Your account was created successfully!", Toast.LENGTH_LONG).show();
+                    registrationComplete = true;
+                    Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                    getApplicationContext().startActivity(homeIntent);
+                } else {
+                    // username exists
+                    Toast.makeText(RegisterActivity.this, "Username already exists", Toast.LENGTH_LONG).show();
+                }
+            }
+
+
+        });
     }
 
     @Override
@@ -152,5 +189,15 @@ public class RegisterActivity extends AppCompatActivity implements LoginActivity
     @Override
     public void googleApiClientReady(GoogleApiClient googleApiClient) {
         this.mGoogleApiClient = googleApiClient;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(!registrationComplete){
+            if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                FirebaseAuth.getInstance().getCurrentUser().delete();
+            }
+        }
     }
 }

@@ -24,11 +24,13 @@ import java.util.List;
 public class AdapterPeopleInfo extends RecyclerView.Adapter<AdapterPeopleInfo.ViewHolder> {
 
     private List<String> idsList = new ArrayList<>();
+    private List<String> usernameList = new ArrayList<>();
     private FriendsActivityContract.view view;
     private Context context;
 
-    public AdapterPeopleInfo(List<String> idsList, FriendsActivityContract.view view, Context context) {
+    public AdapterPeopleInfo(List<String> idsList, List<String> usernameList, FriendsActivityContract.view view, Context context) {
         this.idsList = idsList;
+        this.usernameList = usernameList;
         this.view = view;
         this.context = context;
     }
@@ -41,7 +43,7 @@ public class AdapterPeopleInfo extends RecyclerView.Adapter<AdapterPeopleInfo.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.tvID.setText(idsList.get(position));
+        holder.tvID.setText(usernameList.get(position));
 
         //load the profile image of each user
         final FirebaseDatabase database = FirebaseDatabase.getInstance();

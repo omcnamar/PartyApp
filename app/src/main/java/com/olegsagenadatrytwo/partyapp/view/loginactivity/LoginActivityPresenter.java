@@ -155,7 +155,7 @@ public class LoginActivityPresenter implements LoginActivityContract.Presenter, 
                             DatabaseReference profileReference = database.getReference("profiles");
 
                             Profile profile = new Profile();
-                            profile.setUserName(user.getEmail());
+                            profile.setEmail(user.getEmail());
                             profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(profile);
 
 
