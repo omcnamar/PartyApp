@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="150dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ivProfileImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/ic_launcher"
+        android:layout_weight="2"
+        app:civ_border_color="#999999"
+        app:civ_border_width="3dp" />
+
+    <com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView
+        android:id="@+id/tvUserID"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:maxLines="1"
+        android:text="@string/user_name"
+        android:textSize="30sp"
+        android:textColor="@color/colorBlack"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:padding="16dp"/>
+
+    <Button
+        android:id="@+id/btnAddToFriends"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="@drawable/rounded_corners_black"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:text="Friend Request"/>
+
+</LinearLayout>
