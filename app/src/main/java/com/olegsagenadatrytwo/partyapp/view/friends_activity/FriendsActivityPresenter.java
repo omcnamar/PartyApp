@@ -27,4 +27,14 @@ public class FriendsActivityPresenter implements FriendsActivityContract.present
     public void getAllUsers() {
         firebaseHelper.getAllUsers();
     }
+
+    @Override
+    public void getPendingFriendRequests() {
+        firebaseHelper.getPendingFriendRequests();
+    }
+
+    @Override
+    public void getMyFriends() {
+        firebaseHelper.getMyFriends();
+    }
 }

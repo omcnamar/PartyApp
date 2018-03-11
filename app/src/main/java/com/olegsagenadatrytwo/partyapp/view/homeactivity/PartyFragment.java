@@ -163,6 +163,8 @@ public class PartyFragment extends Fragment implements ChildEventListener, View.
                     }
                 }
             }
+            float d = getResources().getDisplayMetrics().density;
+            Log.d("abc", "onCreateView: " + d);
             tvLikes.setText(String.valueOf(party.getIdsOfUsersWhoLikedThisParty().size()));
         }
         return v;

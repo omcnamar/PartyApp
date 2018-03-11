@@ -137,8 +137,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
 
     @Override
     protected void onStop() {
-        EventBus.getDefault().unregister(this);
         super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -204,9 +204,9 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityContr
         switch (view.getId()) {
             case R.id.action_map:
 
-                Intent intent = new Intent(this, MapsActivity.class);
-                intent.putParcelableArrayListExtra("parties", partiesList);
-                startActivity(intent);
+//                Intent intent = new Intent(this, MapsActivity.class);
+//                intent.putParcelableArrayListExtra("parties", partiesList);
+//                startActivity(intent);
 
                 break;
             case R.id.action_location:

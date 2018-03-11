@@ -15,6 +15,8 @@ public interface FriendsActivityContract {
 
     interface presenter extends BasePresenter<view> {
         void getAllUsers();
+        void getPendingFriendRequests();
+        void getMyFriends();
     }
 
 }

@@ -14,6 +14,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -21,7 +23,10 @@ import com.google.firebase.storage.UploadTask;
 import com.olegsagenadatrytwo.partyapp.Constant;
 import com.olegsagenadatrytwo.partyapp.eventbus.AllUsers;
 import com.olegsagenadatrytwo.partyapp.eventbus.Caller;
+import com.olegsagenadatrytwo.partyapp.eventbus.Friends;
 import com.olegsagenadatrytwo.partyapp.eventbus.MyLikes;
+import com.olegsagenadatrytwo.partyapp.eventbus.User;
+import com.olegsagenadatrytwo.partyapp.eventbus.UsersWhoRequested;
 import com.olegsagenadatrytwo.partyapp.model.custompojos.Party;
 import com.olegsagenadatrytwo.partyapp.view.homeactivity.PartyLabSingleTon;
 
@@ -138,7 +143,7 @@ public class FirebaseHelper implements FirebaseInterface {
                         partyLabSingleTon.getEvents().remove(partyLabSingleTon.getEvents().indexOf(party));
                         break;
                 }
-                EventBus.getDefault().post(new Caller());
+                EventBus.getDefault().post(new Caller(""));
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -158,7 +163,7 @@ public class FirebaseHelper implements FirebaseInterface {
                         partyLabSingleTon.getEvents().remove(partyLabSingleTon.getEvents().indexOf(party));
                         break;
                 }
-                EventBus.getDefault().post(new Caller());
+                EventBus.getDefault().post(new Caller(""));
             }
         });
     }
@@ -196,6 +201,102 @@ public class FirebaseHelper implements FirebaseInterface {
                     .child(Constant.IDS_OF_PARTIES_THAT_CURRNET_USER_LIKED)
                     .child(partyId)
                     .setValue(partyId);
+        }
+    }
+
+    /**
+     * This method will send a friend request
+     */
+    @Override
+    public void sendFriendRequest(String currentUserId, String friendUserId) {
+        //if user is not null you can save the like to the current party
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+            //add friend request to the user who is being requested
+            final DatabaseReference profileReference = database.getReference(Constant.PROFILES);
+            profileReference
+                    .child(friendUserId)
+                    .child(Constant.FRIEND_REQUEST_LIST)
+                    .child(currentUserId)
+                    .setValue(currentUserId);
+
+            //add friend request to the current user to keep track of pending friend requests
+            final DatabaseReference profileReferenceTwo = database.getReference(Constant.PROFILES);
+            profileReferenceTwo
+                    .child(currentUserId)
+                    .child(Constant.CURRENT_USER_REQUESTED)
+                    .child(friendUserId)
+                    .setValue(friendUserId);
+
+        }
+    }
+
+    /**
+     * This method will accept friend request
+     */
+    @Override
+    public void acceptFriendRequest(String currentUserId, String friendUserId) {
+        //if user is not null you can save the like to the current party
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+            //add friend to the Current user
+            final DatabaseReference profileReference = database.getReference(Constant.PROFILES);
+            profileReference
+                    .child(currentUserId)
+                    .child(Constant.FRIENDS)
+                    .child(friendUserId)
+                    .setValue(friendUserId);
+
+            //add friend to the requesting user
+            profileReference
+                    .child(friendUserId)
+                    .child(Constant.FRIENDS)
+                    .child(currentUserId)
+                    .setValue(currentUserId);
+
+            //remove the pending request
+            final DatabaseReference profileReferenceTwo = database.getReference(Constant.PROFILES);
+            profileReferenceTwo
+                    .child(currentUserId)
+                    .child(Constant.FRIEND_REQUEST_LIST)
+                    .child(friendUserId)
+                    .setValue(null);
+
+            //remove the pending request
+            profileReferenceTwo
+                    .child(friendUserId)
+                    .child(Constant.CURRENT_USER_REQUESTED)
+                    .child(currentUserId)
+                    .setValue(null);
+
+        }
+    }
+
+    /**
+     * This method will remove friend
+     */
+    @Override
+    public void removeFriend(String currentUserId, String friendUserId) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+            //remove friend from the Current user
+            final DatabaseReference profileReference = database.getReference(Constant.PROFILES);
+            profileReference
+                    .child(currentUserId)
+                    .child(Constant.FRIENDS)
+                    .child(friendUserId)
+                    .setValue(null);
+
+            //remove current user from friends of the other user
+            profileReference
+                    .child(friendUserId)
+                    .child(Constant.FRIENDS)
+                    .child(currentUserId)
+                    .setValue(null);
+
         }
     }
 
@@ -537,12 +638,25 @@ public class FirebaseHelper implements FirebaseInterface {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String> userIDs = new ArrayList<>();
                 List<String> usernameList = new ArrayList<>();
+                List<String> listOfAlreadyFriends = new ArrayList<>();
+                List<String> listOfAlreadyRequested = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Log.d("asdf", "onDataChange: " + snapshot.getKey());
                     userIDs.add(snapshot.getKey());
                     usernameList.add(snapshot.child("username").getValue().toString());
+
+                    //if the id is the current users id, then get the list of his friends
+                    if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(snapshot.getKey())){
+                        for(DataSnapshot snap : snapshot.child(Constant.FRIENDS).getChildren()){
+                            listOfAlreadyFriends.add(snap.getKey());
+                        }
+                        for(DataSnapshot snap : snapshot.child(Constant.CURRENT_USER_REQUESTED).getChildren()){
+                            listOfAlreadyRequested.add(snap.getKey());
+                        }
+                    }
+
                 }
-                EventBus.getDefault().post(new AllUsers(userIDs, usernameList));
+                Log.d(TAG, "onDataChange my id: " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                EventBus.getDefault().post(new AllUsers(userIDs, usernameList, listOfAlreadyFriends, listOfAlreadyRequested));
             }
 
             @Override
@@ -550,5 +664,127 @@ public class FirebaseHelper implements FirebaseInterface {
 
             }
         });
+    }
+
+    @Override
+    public void getMyFriends() {
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference profileReference = database.getReference(Constant.PROFILES).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(Constant.FRIENDS);
+
+        profileReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String> userIDsOfFriends = new ArrayList<>();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    userIDsOfFriends.add(snapshot.getKey());
+                }
+                EventBus.getDefault().post(new Friends(userIDsOfFriends));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    /**
+     * This method will get pending Friend Requests list
+     */
+    @Override
+    public void getPendingFriendRequests() {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference profileReference = database.getReference(Constant.PROFILES)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(Constant.FRIEND_REQUEST_LIST);
+
+        profileReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String> userIDsWhoRequested = new ArrayList<>();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    userIDsWhoRequested.add(snapshot.getKey());
+                }
+                EventBus.getDefault().post(new UsersWhoRequested(userIDsWhoRequested));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    /**
+     * This method will get current users username
+     */
+    @Override
+    public void getMyUsername() {
+        //likes holds ids of parties that current user liked
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference profileReference = database.getReference(Constant.PROFILES).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("username");
+
+        profileReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                EventBus.getDefault().post(new User(dataSnapshot.getValue().toString()));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    /**
+     * This method will update Username of the current user
+     */
+    @Override
+    public void updateUsername(final String username, final String oldUsername) {
+
+        //______________________________________________________________
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference firebaseRef = database.getReference();
+        firebaseRef.child("usernames").child(username).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if (mutableData.getValue() == null) {
+                    mutableData.setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    return Transaction.success(mutableData);
+                }
+
+                return Transaction.abort();
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean commited, DataSnapshot dataSnapshot) {
+                if (commited) {
+                    // username saved
+                    final DatabaseReference profileReference = database.getReference(Constant.PROFILES).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("username");
+                    profileReference.setValue(username);
+
+                    final DatabaseReference usernameRef = database.getReference("usernames").child(oldUsername);
+                    usernameRef.setValue(null);
+                    EventBus.getDefault().post(new Caller("Username Updated"));
+
+                } else {
+                    // username exists
+                    EventBus.getDefault().post(new Caller("Username already taken, Try a different one!"));
+
+                }
+            }
+
+
+        });
+
+        //______________________________________________________________
+
     }
 }

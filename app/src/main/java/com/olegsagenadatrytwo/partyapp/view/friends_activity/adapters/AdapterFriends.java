@@ -24,13 +24,13 @@ import com.olegsagenadatrytwo.partyapp.view.friends_activity.FriendsActivityCont
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdapterRequests extends RecyclerView.Adapter<AdapterRequests.ViewHolder> {
+public class AdapterFriends extends RecyclerView.Adapter<AdapterFriends.ViewHolder> {
 
     private List<String> idsList = new ArrayList<>();
     private FriendsActivityContract.view view;
     private Context context;
 
-    public AdapterRequests(List<String> idsList, FriendsActivityContract.view view, Context context) {
+    public AdapterFriends(List<String> idsList, FriendsActivityContract.view view, Context context) {
         this.idsList = idsList;
         this.view = view;
         this.context = context;
@@ -38,7 +38,7 @@ public class AdapterRequests extends RecyclerView.Adapter<AdapterRequests.ViewHo
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friend_request, parent, false);
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friends, parent, false);
         return new ViewHolder(view);
     }
 
@@ -63,22 +63,12 @@ public class AdapterRequests extends RecyclerView.Adapter<AdapterRequests.ViewHo
             }
         });
 
-        //on click for accept
-        holder.btnAccept.setOnClickListener(new View.OnClickListener() {
+        //on click for remove Friend
+        holder.btnRemoveFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseHelper firebaseHelper = new FirebaseHelper();
-                firebaseHelper.acceptFriendRequest(FirebaseAuth.getInstance().getCurrentUser().getUid(), idsList.get(position));
-            }
-        });
-
-        //on click for reject
-        holder.btnReject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                FirebaseHelper firebaseHelper = new FirebaseHelper();
-//                firebaseHelper.sendFriendRequest(FirebaseAuth.getInstance().getCurrentUser().getUid(), idsList.get(position));
-//                Toast.makeText(context, "Requested " + usernameList.get(position), Toast.LENGTH_SHORT).show();
+                firebaseHelper.removeFriend(FirebaseAuth.getInstance().getCurrentUser().getUid(), idsList.get(position));
             }
         });
     }
@@ -92,15 +82,13 @@ public class AdapterRequests extends RecyclerView.Adapter<AdapterRequests.ViewHo
 
         private AutoResizeTextView tvID;
         private ImageView ivProfileImage;
-        private Button btnAccept;
-        private Button btnReject;
+        private Button btnRemoveFriend;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvID = itemView.findViewById(R.id.tvUserID);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
-            btnAccept = itemView.findViewById(R.id.btnAccept);
-            btnReject = itemView.findViewById(R.id.btnReject);
+            btnRemoveFriend = itemView.findViewById(R.id.btnRemoveFriend);
         }
     }
 }

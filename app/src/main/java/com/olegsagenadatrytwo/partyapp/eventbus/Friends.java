@@ -3,16 +3,18 @@ package com.olegsagenadatrytwo.partyapp.eventbus;
 import java.util.List;
 
 
-public class UsersWhoRequested {
+public class Friends {
 
-    private List<String> userIDsWhoRequested;
+    private List<String> friendsList;
 
-    public UsersWhoRequested(List<String> userIDsWhoRequested){
-        this.userIDsWhoRequested = userIDsWhoRequested;
+    public Friends(List<String> friendsList) {
+
+        this.friendsList = friendsList;
     }
 
-    public List<String> getUserIDsWhoRequested() {
-        return userIDsWhoRequested;
+    public List<String> getFriendsList() {
+        return friendsList;
     }
+
 
 }

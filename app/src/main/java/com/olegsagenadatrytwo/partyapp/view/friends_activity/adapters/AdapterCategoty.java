@@ -12,14 +12,14 @@ import com.olegsagenadatrytwo.partyapp.view.friends_activity.FriendsActivityCont
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.ViewHolder> {
+public class AdapterCategoty extends RecyclerView.Adapter<AdapterCategoty.ViewHolder> {
 
     private List<String> categoryList = new ArrayList<>();
     private int positionPreviousColor = 1;
     private TextView tvPrevious;
     private FriendsActivityContract.view view;
 
-    public AdapterCategory(List<String> categoryList, FriendsActivityContract.view view) {
+    public AdapterCategoty(List<String> categoryList, FriendsActivityContract.view view) {
         this.categoryList = categoryList;
         this.view = view;
     }

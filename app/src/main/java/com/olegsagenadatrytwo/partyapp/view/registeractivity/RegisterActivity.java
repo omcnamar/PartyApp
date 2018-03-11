@@ -157,6 +157,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginActivity
                     Toast.makeText(RegisterActivity.this, "Your account was created successfully!", Toast.LENGTH_LONG).show();
                     registrationComplete = true;
                     Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                    homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getApplicationContext().startActivity(homeIntent);
                 } else {
                     // username exists
@@ -194,7 +195,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(!registrationComplete){
+        if(!registrationComplete && userCreated){
             if(FirebaseAuth.getInstance().getCurrentUser() != null) {
                 FirebaseAuth.getInstance().getCurrentUser().delete();
             }

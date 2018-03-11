@@ -5,4 +5,19 @@ package com.olegsagenadatrytwo.partyapp.eventbus;
  */
 
 public class Caller {
+
+    String message;
+
+    public Caller(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
 }

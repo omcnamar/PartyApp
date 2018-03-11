@@ -89,6 +89,9 @@ public class Constant {
      */
     public static final String PARTIES = "parties";
     public static final String PROFILES = "profiles";
+    public static final String FRIENDS = "friendsList";
+    public static final String FRIEND_REQUEST_LIST = "friendRequestList";
+    public static final String CURRENT_USER_REQUESTED = "currentUserRequestedList";
     public static final String IDS_OF_USERS_WHO_LIKED_THIS_PARTY = "idsOfUsersWhoLikedThisParty";
     public static final String IDS_OF_PARTIES_THAT_CURRNET_USER_LIKED = "idsOfPartiesThatCurrentUserLiked";
     public static final String ID = "id";

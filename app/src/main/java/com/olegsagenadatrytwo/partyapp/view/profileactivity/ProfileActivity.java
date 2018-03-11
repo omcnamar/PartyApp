@@ -31,6 +31,8 @@ import com.google.firebase.storage.UploadTask;
 import com.olegsagenadatrytwo.partyapp.R;
 import com.olegsagenadatrytwo.partyapp.customviews.AutoResizeTextView;
 import com.olegsagenadatrytwo.partyapp.data.remote.FirebaseHelper;
+import com.olegsagenadatrytwo.partyapp.eventbus.Caller;
+import com.olegsagenadatrytwo.partyapp.eventbus.User;
 import com.olegsagenadatrytwo.partyapp.view.addpartyactivity.AddPartyActivity;
 import com.olegsagenadatrytwo.partyapp.view.friends_activity.FriendsActivity;
 import com.olegsagenadatrytwo.partyapp.view.homeactivity.HomeActivity;
@@ -39,6 +41,10 @@ import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.FirstFragment;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.MyPartiesFragment;
 import com.olegsagenadatrytwo.partyapp.view.profileactivity.tabs.SecondFragment;
 import com.olegsagenadatrytwo.partyapp.view.settingsactivity.SettingsActivity;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -91,24 +97,18 @@ public class ProfileActivity extends AppCompatActivity implements PopupMenu.OnMe
         pager.beginFakeDrag();
         setupAdapter(pager, myAdapter);
         tabs.setupWithViewPager(pager);
-        userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-        if(userName != null) {
-            if (!userName.equals(""))
-                displayName.setText(userName);
-            else
-                displayName.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-        }
-        else
-            displayName.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+        FirebaseHelper helper = new FirebaseHelper();
+        helper.getMyUsername();
 
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReferenceFromUrl("gs://partyapp-fc6fb.appspot.com/");
-        //download image
 
+        //download image
         storageRef.child("images/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Toast.makeText(ProfileActivity.this, "Image Saved", Toast.LENGTH_SHORT).show();
+                //there is a user image
                 RequestOptions requestOptions = new RequestOptions();
                 requestOptions.centerCrop();
                 Glide.with(getApplicationContext())
@@ -119,11 +119,48 @@ public class ProfileActivity extends AppCompatActivity implements PopupMenu.OnMe
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(ProfileActivity.this, "Image Not Saved", Toast.LENGTH_SHORT).show();
+                //there is no user image
             }
         });
     }
 
+    /**
+     * Register event bus
+     **/
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+
+    }
+
+    /**
+     * UnRegister event bus
+     **/
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * When username of the current user is retrieved this method will update the textView
+     **/
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(User user) {
+        userName = user.getUsername();
+        if (userName != null) {
+            if (!userName.equals(""))
+                displayName.setText(userName);
+            else
+                displayName.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        } else
+            displayName.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+    }
+
+    /**
+     * setUp Adapters and viewPager
+     **/
     public void setupAdapter(ViewPager viewPager, PagerAdapter adapter) {
         adapter.addFragment(new MyPartiesFragment(), "Hosting");
         adapter.addFragment(new FirstFragment(), "Likes");
@@ -133,11 +170,9 @@ public class ProfileActivity extends AppCompatActivity implements PopupMenu.OnMe
 
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
+    /**
+     * onClick for each button
+     **/
     @OnClick({R.id.action_backbutton, R.id.action_add_party, R.id.action_profileSettings, R.id.ibEdit, R.id.ibSave, R.id.civProfilePicture})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -175,20 +210,27 @@ public class ProfileActivity extends AppCompatActivity implements PopupMenu.OnMe
                 ibSave.setVisibility(View.GONE);
                 etName.setVisibility(View.GONE);
                 displayName.setVisibility(View.VISIBLE);
-                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                        .setDisplayName(etName.getText().toString())
-                        .setPhotoUri(selectedImage)
-                        .build();
-                FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates);
-                ibEdit.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_mode_edit_black_48dp));
-                displayName.setText(etName.getText().toString());
 
+                if(!userName.equals(etName.getText().toString().trim())){
+                    FirebaseHelper firebaseHelper = new FirebaseHelper();
+                    firebaseHelper.updateUsername(etName.getText().toString(), userName);
+                }
+                ibEdit.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_mode_edit_black_48dp));
                 break;
             case R.id.civProfilePicture:
                 Intent i = new Intent(
                         Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
         }
+    }
+
+    /**
+     * This method is to display a toast with passed in message
+     **/
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(Caller caller) {
+        String message = caller.getMessage();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -221,7 +263,7 @@ public class ProfileActivity extends AppCompatActivity implements PopupMenu.OnMe
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    if(downloadUrl != null) {
+                    if (downloadUrl != null) {
                         Toast.makeText(ProfileActivity.this, "Image saved", Toast.LENGTH_SHORT).show();
                         FirebaseHelper firebaseHelper = new FirebaseHelper();
                         firebaseHelper.updateImageURLForUser(downloadUrl.toString());

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:padding="16dp"
+    android:gravity="center"
+    android:background="@android:color/darker_gray"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvInstructions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@android:color/holo_red_dark"
+        android:text="Please Enter All Need Information to Create your Event!"
+        android:layout_margin="30dp"/>
+    <TextView
+        android:id="@+id/tvSubInstruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textStyle="italic"
+        android:textSize="15sp"
+        android:textColor="@android:color/holo_purple"
+        android:text="Step 1"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"/>
+
+    <EditText
+        android:id="@+id/etEventName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:maxLength="50"
+        android:hint="Event Name"/>
+
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:background="@android:color/holo_green_dark"
+        android:text="Next"/>
+
+</LinearLayout>
